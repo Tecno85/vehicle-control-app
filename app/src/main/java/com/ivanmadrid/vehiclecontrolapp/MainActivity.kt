@@ -1,5 +1,7 @@
 package com.ivanmadrid.vehiclecontrolapp
 
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Text
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -19,7 +21,16 @@ class MainActivity : ComponentActivity() {
         setContent {
             VehicleControlAppTheme {
                 Scaffold(
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
+                    floatingActionButton = {
+                        FloatingActionButton(
+                            onClick = {
+                                // TODO: Abrir formulario para agregar vehículo
+                            }
+                        ) {
+                            Text(text = "+")
+                        }
+                    }
                 ) { innerPadding ->
                     VehicleListScreen(
                         modifier = Modifier.padding(innerPadding)
