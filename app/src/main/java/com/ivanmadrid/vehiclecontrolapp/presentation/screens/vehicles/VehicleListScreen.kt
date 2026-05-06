@@ -1,5 +1,6 @@
 package com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles
 
+import androidx.compose.foundation.clickable
 import com.ivanmadrid.vehiclecontrolapp.data.sample.sampleVehicleDocuments
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocumentType
@@ -90,7 +91,12 @@ fun VehicleListScreen(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(4.dp))
 
         sampleVehicles.forEach { vehicle ->
-            VehicleCard(vehicle = vehicle)
+            VehicleCard(
+                vehicle = vehicle,
+                onClick = {
+                    // TODO: Abrir detalle del vehículo
+                }
+            )
         }
     }
 }
@@ -156,11 +162,15 @@ fun DocumentReminderCard(document: VehicleDocument) {
     }
 }
 @Composable
-fun VehicleCard(vehicle: Vehicle) {
+fun VehicleCard(
+    vehicle: Vehicle,
+    onClick: () -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 12.dp),
+            .padding(top = 12.dp)
+            .clickable { onClick() },
         elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
