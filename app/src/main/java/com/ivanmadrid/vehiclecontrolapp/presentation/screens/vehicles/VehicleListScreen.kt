@@ -1,5 +1,8 @@
 package com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles
 
+import com.ivanmadrid.vehiclecontrolapp.data.sample.sampleVehicleDocuments
+import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
+import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocumentType
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -64,6 +67,19 @@ fun VehicleListScreen(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(4.dp))
 
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Text(
+            text = "Próximos vencimientos",
+            style = MaterialTheme.typography.titleMedium
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        sampleVehicleDocuments.take(2).forEach { document ->
+            DocumentReminderCard(document = document)
+        }
+
         sampleVehicles.forEach { vehicle ->
             VehicleCard(vehicle = vehicle)
         }
@@ -82,6 +98,38 @@ fun SummaryChip(text: String) {
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
             style = MaterialTheme.typography.labelMedium
         )
+    }
+}
+
+@Composable
+fun DocumentReminderCard(document: VehicleDocument) {
+    val vehicle = sampleVehicles.firstOrNull { vehicle ->
+        vehicle.id == document.vehicleId
+    }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.errorContainer
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(12.dp)
+        ) {
+            Text(
+                text = getDocumentTypeLabel(document.type),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onErrorContainer
+            )
+
+            Text(
+                text = "${vehicle?.plate ?: "Vehículo"} vence el ${document.dueDate}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onErrorContainer
+            )
+        }
     }
 }
 
@@ -222,6 +270,14 @@ fun getVehicleTypeLabel(type: VehicleType): String {
     return when (type) {
         VehicleType.TAXI -> "Taxi"
         VehicleType.PRIVATE -> "Particular"
+    }
+}
+
+fun getDocumentTypeLabel(type: VehicleDocumentType): String {
+    return when (type) {
+        VehicleDocumentType.SOAT -> "SOAT"
+        VehicleDocumentType.TECHNICAL_MECHANICAL_REVIEW -> "Tecnicomecánica"
+        VehicleDocumentType.TAXES -> "Impuestos"
     }
 }
 
