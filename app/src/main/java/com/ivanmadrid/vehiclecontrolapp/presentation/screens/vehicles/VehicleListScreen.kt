@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -26,6 +27,14 @@ import java.util.Locale
 
 @Composable
 fun VehicleListScreen(modifier: Modifier = Modifier) {
+    val taxiCount = sampleVehicles.count { vehicle ->
+        vehicle.type == VehicleType.TAXI
+    }
+
+    val privateCount = sampleVehicles.count { vehicle ->
+        vehicle.type == VehicleType.PRIVATE
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -44,9 +53,35 @@ fun VehicleListScreen(modifier: Modifier = Modifier) {
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            SummaryChip(text = "$taxiCount taxis")
+            SummaryChip(text = "$privateCount particulares")
+        }
+
+        Spacer(modifier = Modifier.height(4.dp))
+
         sampleVehicles.forEach { vehicle ->
             VehicleCard(vehicle = vehicle)
         }
+    }
+}
+
+@Composable
+fun SummaryChip(text: String) {
+    Surface(
+        color = MaterialTheme.colorScheme.secondaryContainer,
+        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        shape = RoundedCornerShape(50.dp)
+    ) {
+        Text(
+            text = text,
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+            style = MaterialTheme.typography.labelMedium
+        )
     }
 }
 
