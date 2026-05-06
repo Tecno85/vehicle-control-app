@@ -107,6 +107,8 @@ fun DocumentReminderCard(document: VehicleDocument) {
         vehicle.id == document.vehicleId
     }
 
+    val vehiclePlate = vehicle?.plate ?: "Vehículo"
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -119,20 +121,31 @@ fun DocumentReminderCard(document: VehicleDocument) {
             modifier = Modifier.padding(12.dp)
         ) {
             Text(
-                text = getDocumentTypeLabel(document.type),
-                style = MaterialTheme.typography.labelMedium,
+                text = "${getDocumentTypeLabel(document.type)} $vehiclePlate",
+                style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onErrorContainer
             )
 
+            Spacer(modifier = Modifier.height(4.dp))
+
             Text(
-                text = "${vehicle?.plate ?: "Vehículo"} vence el ${document.dueDate}",
+                text = "Vence el ${document.dueDate}",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onErrorContainer
             )
+
+            if (!document.notes.isNullOrBlank()) {
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = document.notes,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onErrorContainer
+                )
+            }
         }
     }
 }
-
 @Composable
 fun VehicleCard(vehicle: Vehicle) {
     Card(

@@ -9,14 +9,14 @@ val sampleVehicleDocuments = listOf(
         vehicleId = 1,
         type = VehicleDocumentType.SOAT,
         dueDate = "2026-05-21",
-        notes = "SOAT del taxi ABC123",
+        notes = "Documento obligatorio del vehículo",
     ),
     VehicleDocument(
         id = 2,
         vehicleId = 4,
         type = VehicleDocumentType.TECHNICAL_MECHANICAL_REVIEW,
         dueDate = "2026-05-13",
-        notes = "Revisión tecnicomecánica del vehículo GHI789",
+        notes = "Revisión obligatoria del vehículo",
     ),
     VehicleDocument(
         id = 3,
