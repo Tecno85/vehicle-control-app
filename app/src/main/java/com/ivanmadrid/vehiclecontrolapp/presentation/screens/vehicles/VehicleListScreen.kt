@@ -1,5 +1,8 @@
 package com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles
 
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,23 +37,33 @@ fun VehicleListScreen(modifier: Modifier = Modifier) {
 @Composable
 fun VehicleCard(vehicle: Vehicle) {
     Card(
-        modifier = Modifier.padding(top = 12.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 12.dp)
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
                 text = vehicle.plate,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleLarge
             )
 
-            Text(text = "${vehicle.brand} ${vehicle.model}")
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = "${vehicle.brand} ${vehicle.model}",
+                style = MaterialTheme.typography.bodyLarge
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
 
             Text(text = "Tipo: ${getVehicleTypeLabel(vehicle.type)}")
-
             Text(text = "Estado: ${vehicle.status}")
 
             if (vehicle.type == VehicleType.TAXI) {
+                Spacer(modifier = Modifier.height(8.dp))
+
                 Text(text = "Conductor: ${vehicle.currentDriver ?: "Sin asignar"}")
                 Text(text = "Ingreso diario: $${vehicle.dailyFixedIncome ?: 0.0}")
             }
