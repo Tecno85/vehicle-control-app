@@ -80,6 +80,15 @@ fun VehicleListScreen(modifier: Modifier = Modifier) {
             DocumentReminderCard(document = document)
         }
 
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Text(
+            text = "Vehículos registrados",
+            style = MaterialTheme.typography.titleMedium
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
         sampleVehicles.forEach { vehicle ->
             VehicleCard(vehicle = vehicle)
         }
