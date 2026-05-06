@@ -6,22 +6,22 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
 val sampleVehicles = listOf(
     Vehicle(
         id = 1,
-        plate = "ABC123",
+        plate = "TLV144",
         brand = "Kia",
         model = "Picanto",
         type = VehicleType.TAXI,
         status = "Activo",
-        currentDriver = "Carlos Pérez",
+        currentDriver = "Jean Carlos Gámez",
         dailyFixedIncome = 180000.0,
     ),
     Vehicle(
         id = 2,
-        plate = "XYZ789",
+        plate = "TLV871",
         brand = "Hyundai",
         model = "i10",
         type = VehicleType.TAXI,
         status = "Activo",
-        currentDriver = "Juan Gómez",
+        currentDriver = "Ider Jimenez",
         dailyFixedIncome = 180000.0,
     ),
     Vehicle(
