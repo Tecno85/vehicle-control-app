@@ -15,7 +15,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.ivanmadrid.vehiclecontrolapp.data.sample.sampleVehicleDocuments
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
+import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
 
 @Composable
@@ -24,6 +26,10 @@ fun VehicleDetailScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit
 ) {
+    val vehicleDocuments = sampleVehicleDocuments.filter { document ->
+        document.vehicleId == vehicle.id
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -57,6 +63,10 @@ fun VehicleDetailScreen(
 
             TaxiInfoCard(vehicle = vehicle)
         }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        VehicleDocumentsCard(documents = vehicleDocuments)
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -119,6 +129,65 @@ fun TaxiInfoCard(vehicle: Vehicle) {
             Text(
                 text = "Ingreso diario: ${formatCurrency(vehicle.dailyFixedIncome)}",
                 color = MaterialTheme.colorScheme.onSecondaryContainer
+            )
+        }
+    }
+}
+
+@Composable
+fun VehicleDocumentsCard(documents: List<VehicleDocument>) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(
+                text = "Documentos y vencimientos",
+                style = MaterialTheme.typography.titleMedium
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            if (documents.isEmpty()) {
+                Text(
+                    text = "No hay documentos registrados para este vehículo.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            } else {
+                documents.forEach { document ->
+                    VehicleDocumentItem(document = document)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun VehicleDocumentItem(document: VehicleDocument) {
+    Column(
+        modifier = Modifier.padding(top = 8.dp)
+    ) {
+        Text(
+            text = getDocumentTypeLabel(document.type),
+            style = MaterialTheme.typography.labelLarge
+        )
+
+        Text(
+            text = "Vence el ${document.dueDate}",
+            style = MaterialTheme.typography.bodyMedium
+        )
+
+        if (!document.notes.isNullOrBlank()) {
+            Text(
+                text = document.notes,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
