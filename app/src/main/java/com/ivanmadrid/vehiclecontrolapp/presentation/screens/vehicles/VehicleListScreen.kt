@@ -30,7 +30,10 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
 import java.util.Locale
 
 @Composable
-fun VehicleListScreen(modifier: Modifier = Modifier) {
+fun VehicleListScreen(
+    modifier: Modifier = Modifier,
+    onVehicleClick: (Vehicle) -> Unit
+) {
     val taxiCount = sampleVehicles.count { vehicle ->
         vehicle.type == VehicleType.TAXI
     }
@@ -94,7 +97,7 @@ fun VehicleListScreen(modifier: Modifier = Modifier) {
             VehicleCard(
                 vehicle = vehicle,
                 onClick = {
-                    // TODO: Abrir detalle del vehículo
+                    onVehicleClick(vehicle)
                 }
             )
         }

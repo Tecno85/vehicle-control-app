@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,13 +17,22 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
 @Composable
 fun VehicleDetailScreen(
     vehicle: Vehicle,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onBackClick: () -> Unit
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
+        Button(
+            onClick = onBackClick
+        ) {
+            Text(text = "Volver")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         Text(
             text = vehicle.plate,
             style = MaterialTheme.typography.headlineMedium

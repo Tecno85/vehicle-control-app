@@ -1,5 +1,11 @@
 package com.ivanmadrid.vehiclecontrolapp
 
+import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleDetailScreen
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Text
 import android.os.Bundle
@@ -20,6 +26,10 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             VehicleControlAppTheme {
+                var selectedVehicle by remember {
+                    mutableStateOf<Vehicle?>(null)
+                }
+
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     floatingActionButton = {
@@ -32,9 +42,22 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 ) { innerPadding ->
-                    VehicleListScreen(
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    if (selectedVehicle == null) {
+                        VehicleListScreen(
+                            modifier = Modifier.padding(innerPadding),
+                            onVehicleClick = { vehicle ->
+                                selectedVehicle = vehicle
+                            }
+                        )
+                    } else {
+                        VehicleDetailScreen(
+                            vehicle = selectedVehicle!!,
+                            modifier = Modifier.padding(innerPadding),
+                            onBackClick = {
+                                selectedVehicle = null
+                            }
+                        )
+                    }
                 }
             }
         }
