@@ -1,5 +1,7 @@
 package com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles
 
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,7 +17,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.ivanmadrid.vehiclecontrolapp.data.sample.sampleExpenses
 import com.ivanmadrid.vehiclecontrolapp.data.sample.sampleVehicleDocuments
+import com.ivanmadrid.vehiclecontrolapp.domain.model.Expense
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
@@ -30,9 +34,14 @@ fun VehicleDetailScreen(
         document.vehicleId == vehicle.id
     }
 
+    val vehicleExpenses = sampleExpenses.filter { expense ->
+        expense.vehicleId == vehicle.id
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
         Button(
@@ -60,13 +69,16 @@ fun VehicleDetailScreen(
 
         if (vehicle.type == VehicleType.TAXI) {
             Spacer(modifier = Modifier.height(12.dp))
-
             TaxiInfoCard(vehicle = vehicle)
         }
 
         Spacer(modifier = Modifier.height(12.dp))
 
         VehicleDocumentsCard(documents = vehicleDocuments)
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        VehicleExpensesCard(expenses = vehicleExpenses)
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -194,6 +206,63 @@ fun VehicleDocumentItem(document: VehicleDocument) {
 }
 
 @Composable
+fun VehicleExpensesCard(expenses: List<Expense>) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(
+                text = "Gastos recientes",
+                style = MaterialTheme.typography.titleMedium
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            if (expenses.isEmpty()) {
+                Text(
+                    text = "No hay gastos registrados para este vehículo.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            } else {
+                expenses.forEach { expense ->
+                    VehicleExpenseItem(expense = expense)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun VehicleExpenseItem(expense: Expense) {
+    Column(
+        modifier = Modifier.padding(top = 8.dp)
+    ) {
+        Text(
+            text = expense.description,
+            style = MaterialTheme.typography.labelLarge
+        )
+
+        Text(
+            text = "${getExpenseCategoryLabel(expense.category)} - ${formatCurrency(expense.amount)}",
+            style = MaterialTheme.typography.bodyMedium
+        )
+
+        Text(
+            text = expense.date,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+@Composable
 fun VehicleQuickActionsCard() {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -243,5 +312,18 @@ fun VehicleQuickActionsCard() {
                 Text(text = "Registrar documento")
             }
         }
+    }
+}
+
+fun getExpenseCategoryLabel(category: com.ivanmadrid.vehiclecontrolapp.domain.model.ExpenseCategory): String {
+    return when (category) {
+        com.ivanmadrid.vehiclecontrolapp.domain.model.ExpenseCategory.FUEL -> "Combustible"
+        com.ivanmadrid.vehiclecontrolapp.domain.model.ExpenseCategory.WASH -> "Lavado"
+        com.ivanmadrid.vehiclecontrolapp.domain.model.ExpenseCategory.MAINTENANCE -> "Mantenimiento"
+        com.ivanmadrid.vehiclecontrolapp.domain.model.ExpenseCategory.SPARE_PARTS -> "Repuestos"
+        com.ivanmadrid.vehiclecontrolapp.domain.model.ExpenseCategory.INSURANCE -> "Seguro"
+        com.ivanmadrid.vehiclecontrolapp.domain.model.ExpenseCategory.TAXES -> "Impuestos"
+        com.ivanmadrid.vehiclecontrolapp.domain.model.ExpenseCategory.FINES -> "Multas"
+        com.ivanmadrid.vehiclecontrolapp.domain.model.ExpenseCategory.OTHER -> "Otros"
     }
 }
