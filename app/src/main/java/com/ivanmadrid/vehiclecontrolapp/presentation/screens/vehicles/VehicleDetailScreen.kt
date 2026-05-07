@@ -10,6 +10,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -56,6 +57,10 @@ fun VehicleDetailScreen(
 
             TaxiInfoCard(vehicle = vehicle)
         }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        VehicleQuickActionsCard()
     }
 }
 
@@ -115,6 +120,59 @@ fun TaxiInfoCard(vehicle: Vehicle) {
                 text = "Ingreso diario: ${formatCurrency(vehicle.dailyFixedIncome)}",
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )
+        }
+    }
+}
+
+@Composable
+fun VehicleQuickActionsCard() {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(
+                text = "Acciones rápidas",
+                style = MaterialTheme.typography.titleMedium
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedButton(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    // TODO: Abrir formulario para registrar gasto
+                }
+            ) {
+                Text(text = "Registrar gasto")
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedButton(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    // TODO: Abrir formulario para registrar novedad
+                }
+            ) {
+                Text(text = "Registrar novedad")
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedButton(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    // TODO: Abrir formulario para registrar documento
+                }
+            ) {
+                Text(text = "Registrar documento")
+            }
         }
     }
 }
