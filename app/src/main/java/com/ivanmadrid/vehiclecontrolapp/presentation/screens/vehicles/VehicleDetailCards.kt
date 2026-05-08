@@ -260,7 +260,9 @@ fun VehicleNoveltyItem(novelty: Novelty) {
 }
 
 @Composable
-fun VehicleQuickActionsCard() {
+fun VehicleQuickActionsCard(
+    onRegisterExpenseClick: () -> Unit
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
@@ -280,9 +282,7 @@ fun VehicleQuickActionsCard() {
 
             OutlinedButton(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    // TODO: Abrir formulario para registrar gasto
-                }
+                onClick = onRegisterExpenseClick
             ) {
                 Text(text = "Registrar gasto")
             }

@@ -23,7 +23,8 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
 fun VehicleDetailScreen(
     vehicle: Vehicle,
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onRegisterExpenseClick: () -> Unit
 ) {
     val vehicleDocuments = sampleVehicleDocuments.filter { document ->
         document.vehicleId == vehicle.id
@@ -85,6 +86,8 @@ fun VehicleDetailScreen(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        VehicleQuickActionsCard()
+        VehicleQuickActionsCard(
+            onRegisterExpenseClick = onRegisterExpenseClick
+        )
     }
 }
