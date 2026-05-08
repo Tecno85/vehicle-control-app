@@ -1,13 +1,13 @@
 package com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles
 
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -18,8 +18,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ivanmadrid.vehiclecontrolapp.data.sample.sampleExpenses
+import com.ivanmadrid.vehiclecontrolapp.data.sample.sampleNovelties
 import com.ivanmadrid.vehiclecontrolapp.data.sample.sampleVehicleDocuments
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Expense
+import com.ivanmadrid.vehiclecontrolapp.domain.model.ExpenseCategory
+import com.ivanmadrid.vehiclecontrolapp.domain.model.Novelty
+import com.ivanmadrid.vehiclecontrolapp.domain.model.NoveltyPriority
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
@@ -36,6 +40,10 @@ fun VehicleDetailScreen(
 
     val vehicleExpenses = sampleExpenses.filter { expense ->
         expense.vehicleId == vehicle.id
+    }
+
+    val vehicleNovelties = sampleNovelties.filter { novelty ->
+        novelty.vehicleId == vehicle.id
     }
 
     Column(
@@ -79,6 +87,10 @@ fun VehicleDetailScreen(
         Spacer(modifier = Modifier.height(12.dp))
 
         VehicleExpensesCard(expenses = vehicleExpenses)
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        VehicleNoveltiesCard(novelties = vehicleNovelties)
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -263,6 +275,69 @@ fun VehicleExpenseItem(expense: Expense) {
 }
 
 @Composable
+fun VehicleNoveltiesCard(novelties: List<Novelty>) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(
+                text = "Novedades recientes",
+                style = MaterialTheme.typography.titleMedium
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            if (novelties.isEmpty()) {
+                Text(
+                    text = "No hay novedades registradas para este vehículo.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            } else {
+                novelties.forEach { novelty ->
+                    VehicleNoveltyItem(novelty = novelty)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun VehicleNoveltyItem(novelty: Novelty) {
+    Column(
+        modifier = Modifier.padding(top = 8.dp)
+    ) {
+        Text(
+            text = novelty.type,
+            style = MaterialTheme.typography.labelLarge
+        )
+
+        Text(
+            text = novelty.description,
+            style = MaterialTheme.typography.bodyMedium
+        )
+
+        Text(
+            text = "Prioridad: ${getNoveltyPriorityLabel(novelty.priority)}",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        Text(
+            text = novelty.date,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+@Composable
 fun VehicleQuickActionsCard() {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -315,15 +390,23 @@ fun VehicleQuickActionsCard() {
     }
 }
 
-fun getExpenseCategoryLabel(category: com.ivanmadrid.vehiclecontrolapp.domain.model.ExpenseCategory): String {
+fun getExpenseCategoryLabel(category: ExpenseCategory): String {
     return when (category) {
-        com.ivanmadrid.vehiclecontrolapp.domain.model.ExpenseCategory.FUEL -> "Combustible"
-        com.ivanmadrid.vehiclecontrolapp.domain.model.ExpenseCategory.WASH -> "Lavado"
-        com.ivanmadrid.vehiclecontrolapp.domain.model.ExpenseCategory.MAINTENANCE -> "Mantenimiento"
-        com.ivanmadrid.vehiclecontrolapp.domain.model.ExpenseCategory.SPARE_PARTS -> "Repuestos"
-        com.ivanmadrid.vehiclecontrolapp.domain.model.ExpenseCategory.INSURANCE -> "Seguro"
-        com.ivanmadrid.vehiclecontrolapp.domain.model.ExpenseCategory.TAXES -> "Impuestos"
-        com.ivanmadrid.vehiclecontrolapp.domain.model.ExpenseCategory.FINES -> "Multas"
-        com.ivanmadrid.vehiclecontrolapp.domain.model.ExpenseCategory.OTHER -> "Otros"
+        ExpenseCategory.FUEL -> "Combustible"
+        ExpenseCategory.WASH -> "Lavado"
+        ExpenseCategory.MAINTENANCE -> "Mantenimiento"
+        ExpenseCategory.SPARE_PARTS -> "Repuestos"
+        ExpenseCategory.INSURANCE -> "Seguro"
+        ExpenseCategory.TAXES -> "Impuestos"
+        ExpenseCategory.FINES -> "Multas"
+        ExpenseCategory.OTHER -> "Otros"
+    }
+}
+
+fun getNoveltyPriorityLabel(priority: NoveltyPriority): String {
+    return when (priority) {
+        NoveltyPriority.LOW -> "Baja"
+        NoveltyPriority.MEDIUM -> "Media"
+        NoveltyPriority.HIGH -> "Alta"
     }
 }
