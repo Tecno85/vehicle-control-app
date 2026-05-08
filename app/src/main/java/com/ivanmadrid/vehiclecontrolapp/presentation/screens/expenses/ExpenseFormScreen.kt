@@ -12,6 +12,10 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
@@ -22,6 +26,22 @@ fun ExpenseFormScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit
 ) {
+    var date by remember {
+        mutableStateOf("")
+    }
+
+    var category by remember {
+        mutableStateOf("")
+    }
+
+    var amount by remember {
+        mutableStateOf("")
+    }
+
+    var description by remember {
+        mutableStateOf("")
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -50,9 +70,9 @@ fun ExpenseFormScreen(
 
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
-            value = "",
-            onValueChange = {
-                // TODO: Capturar fecha
+            value = date,
+            onValueChange = { newValue ->
+                date = newValue
             },
             label = {
                 Text(text = "Fecha")
@@ -66,9 +86,9 @@ fun ExpenseFormScreen(
 
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
-            value = "",
-            onValueChange = {
-                // TODO: Capturar categoría
+            value = category,
+            onValueChange = { newValue ->
+                category = newValue
             },
             label = {
                 Text(text = "Categoría")
@@ -82,9 +102,9 @@ fun ExpenseFormScreen(
 
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
-            value = "",
-            onValueChange = {
-                // TODO: Capturar valor
+            value = amount,
+            onValueChange = { newValue ->
+                amount = newValue
             },
             label = {
                 Text(text = "Valor")
@@ -98,9 +118,9 @@ fun ExpenseFormScreen(
 
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
-            value = "",
-            onValueChange = {
-                // TODO: Capturar descripción
+            value = description,
+            onValueChange = { newValue ->
+                description = newValue
             },
             label = {
                 Text(text = "Descripción")
@@ -115,7 +135,7 @@ fun ExpenseFormScreen(
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                // TODO: Guardar gasto
+                // TODO: Guardar gasto cuando implementemos almacenamiento
             }
         ) {
             Text(text = "Guardar gasto")
