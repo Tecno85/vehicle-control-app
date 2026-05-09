@@ -1,6 +1,7 @@
 package com.ivanmadrid.vehiclecontrolapp.presentation.screens.novelties
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,6 +32,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.ivanmadrid.vehiclecontrolapp.domain.model.IncomeAdjustmentType
+import com.ivanmadrid.vehiclecontrolapp.domain.model.NoveltyPriority
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleAvatar
@@ -51,7 +54,7 @@ fun NoveltyFormScreen(
     }
 
     var priority by remember {
-        mutableStateOf("")
+        mutableStateOf<NoveltyPriority?>(null)
     }
 
     var description by remember {
@@ -63,7 +66,7 @@ fun NoveltyFormScreen(
     }
 
     var incomeAdjustmentType by remember {
-        mutableStateOf("")
+        mutableStateOf<IncomeAdjustmentType?>(null)
     }
 
     var adjustedIncomeAmount by remember {
@@ -150,19 +153,19 @@ fun NoveltyFormScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = priority,
-                    onValueChange = { newValue ->
-                        priority = newValue
-                    },
-                    label = {
-                        Text(text = "Prioridad")
-                    },
-                    placeholder = {
-                        Text(text = "Ej: Baja, Media o Alta")
-                    },
-                    singleLine = true
+                Text(
+                    text = "Prioridad",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                PriorityOptions(
+                    selectedPriority = priority,
+                    onPriorityClick = { selectedPriority ->
+                        priority = selectedPriority
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -226,42 +229,44 @@ fun NoveltyFormScreen(
                     if (affectsIncome) {
                         Spacer(modifier = Modifier.height(12.dp))
 
-                        OutlinedTextField(
-                            modifier = Modifier.fillMaxWidth(),
-                            value = incomeAdjustmentType,
-                            onValueChange = { newValue ->
-                                incomeAdjustmentType = newValue
-                            },
-                            label = {
-                                Text(text = "Tipo de ajuste")
-                            },
-                            placeholder = {
-                                Text(text = "Ej: Sin ingreso, medio ingreso o personalizado")
-                            },
-                            singleLine = true
+                        Text(
+                            text = "Tipo de ajuste",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
 
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
 
-                        OutlinedTextField(
-                            modifier = Modifier.fillMaxWidth(),
-                            value = adjustedIncomeAmount,
-                            onValueChange = { newValue ->
-                                if (newValue.all { character -> character.isDigit() }) {
-                                    adjustedIncomeAmount = newValue
-                                }
-                            },
-                            label = {
-                                Text(text = "Valor personalizado")
-                            },
-                            placeholder = {
-                                Text(text = "Ej: 90000")
-                            },
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number
-                            ),
-                            singleLine = true
+                        IncomeAdjustmentOptions(
+                            selectedType = incomeAdjustmentType,
+                            onTypeClick = { selectedType ->
+                                incomeAdjustmentType = selectedType
+                            }
                         )
+
+                        if (incomeAdjustmentType == IncomeAdjustmentType.CUSTOM_AMOUNT) {
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            OutlinedTextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                value = adjustedIncomeAmount,
+                                onValueChange = { newValue ->
+                                    if (newValue.all { character -> character.isDigit() }) {
+                                        adjustedIncomeAmount = newValue
+                                    }
+                                },
+                                label = {
+                                    Text(text = "Valor personalizado")
+                                },
+                                placeholder = {
+                                    Text(text = "Ej: 90000")
+                                },
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Number
+                                ),
+                                singleLine = true
+                            )
+                        }
                     }
                 }
             }
@@ -288,6 +293,89 @@ fun NoveltyFormScreen(
         }
 
         Spacer(modifier = Modifier.height(80.dp))
+    }
+}
+
+@Composable
+fun PriorityOptions(
+    selectedPriority: NoveltyPriority?,
+    onPriorityClick: (NoveltyPriority) -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        NoveltyPriority.entries.forEach { priority ->
+            OptionButton(
+                text = getPriorityLabel(priority),
+                selected = selectedPriority == priority,
+                modifier = Modifier.weight(1f),
+                onClick = {
+                    onPriorityClick(priority)
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun IncomeAdjustmentOptions(
+    selectedType: IncomeAdjustmentType?,
+    onTypeClick: (IncomeAdjustmentType) -> Unit
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        IncomeAdjustmentType.entries.forEach { type ->
+            OptionButton(
+                text = getIncomeAdjustmentLabel(type),
+                selected = selectedType == type,
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    onTypeClick(type)
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun OptionButton(
+    text: String,
+    selected: Boolean,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    if (selected) {
+        Button(
+            modifier = modifier,
+            onClick = onClick
+        ) {
+            Text(text = text)
+        }
+    } else {
+        OutlinedButton(
+            modifier = modifier,
+            onClick = onClick
+        ) {
+            Text(text = text)
+        }
+    }
+}
+
+fun getPriorityLabel(priority: NoveltyPriority): String {
+    return when (priority) {
+        NoveltyPriority.LOW -> "Baja"
+        NoveltyPriority.MEDIUM -> "Media"
+        NoveltyPriority.HIGH -> "Alta"
+    }
+}
+
+fun getIncomeAdjustmentLabel(type: IncomeAdjustmentType): String {
+    return when (type) {
+        IncomeAdjustmentType.NO_INCOME -> "Sin ingreso"
+        IncomeAdjustmentType.HALF_INCOME -> "Medio ingreso"
+        IncomeAdjustmentType.CUSTOM_AMOUNT -> "Valor personalizado"
     }
 }
 
