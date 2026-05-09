@@ -16,6 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.expenses.ExpenseFormScreen
+import com.ivanmadrid.vehiclecontrolapp.presentation.screens.novelties.NoveltyFormScreen
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleDetailScreen
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleListScreen
 import com.ivanmadrid.vehiclecontrolapp.ui.theme.VehicleControlAppTheme
@@ -24,6 +25,7 @@ enum class AppScreen {
     VEHICLE_LIST,
     VEHICLE_DETAIL,
     EXPENSE_FORM,
+    NOVELTY_FORM,
 }
 
 class MainActivity : ComponentActivity() {
@@ -77,6 +79,9 @@ class MainActivity : ComponentActivity() {
                                     },
                                     onRegisterExpenseClick = {
                                         currentScreen = AppScreen.EXPENSE_FORM
+                                    },
+                                    onRegisterNoveltyClick = {
+                                        currentScreen = AppScreen.NOVELTY_FORM
                                     }
                                 )
                             }
@@ -85,6 +90,18 @@ class MainActivity : ComponentActivity() {
                         AppScreen.EXPENSE_FORM -> {
                             selectedVehicle?.let { vehicle ->
                                 ExpenseFormScreen(
+                                    vehicle = vehicle,
+                                    modifier = Modifier.padding(innerPadding),
+                                    onBackClick = {
+                                        currentScreen = AppScreen.VEHICLE_DETAIL
+                                    }
+                                )
+                            }
+                        }
+
+                        AppScreen.NOVELTY_FORM -> {
+                            selectedVehicle?.let { vehicle ->
+                                NoveltyFormScreen(
                                     vehicle = vehicle,
                                     modifier = Modifier.padding(innerPadding),
                                     onBackClick = {

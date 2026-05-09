@@ -30,7 +30,8 @@ fun VehicleDetailScreen(
     vehicle: Vehicle,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
-    onRegisterExpenseClick: () -> Unit
+    onRegisterExpenseClick: () -> Unit,
+    onRegisterNoveltyClick: () -> Unit
 ) {
     val vehicleDocuments = sampleVehicleDocuments.filter { document ->
         document.vehicleId == vehicle.id
@@ -85,7 +86,8 @@ fun VehicleDetailScreen(
         Spacer(modifier = Modifier.height(12.dp))
 
         VehicleQuickActionsCard(
-            onRegisterExpenseClick = onRegisterExpenseClick
+            onRegisterExpenseClick = onRegisterExpenseClick,
+            onRegisterNoveltyClick = onRegisterNoveltyClick
         )
 
         Spacer(modifier = Modifier.height(80.dp))
