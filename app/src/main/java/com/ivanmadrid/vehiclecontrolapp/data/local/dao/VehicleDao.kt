@@ -14,7 +14,7 @@ interface VehicleDao {
     fun getAllVehicles(): Flow<List<VehicleEntity>>
 
     @Query("SELECT * FROM vehicles WHERE id = :vehicleId LIMIT 1")
-    suspend fun getVehicleById(vehicleId: Int): VehicleEntity?
+    fun getVehicleById(vehicleId: Int): Flow<VehicleEntity?>
 
     @Query("SELECT COUNT(*) > 0 FROM vehicles WHERE UPPER(plate) = UPPER(:plate) LIMIT 1")
     suspend fun plateExists(plate: String): Boolean

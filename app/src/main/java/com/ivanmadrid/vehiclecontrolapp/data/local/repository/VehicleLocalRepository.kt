@@ -16,8 +16,10 @@ class VehicleLocalRepository(
         }
     }
 
-    suspend fun getVehicleById(vehicleId: Int): Vehicle? {
-        return vehicleDao.getVehicleById(vehicleId)?.toDomain()
+    fun getVehicleById(vehicleId: Int): Flow<Vehicle?> {
+        return vehicleDao.getVehicleById(vehicleId).map { vehicle ->
+            vehicle?.toDomain()
+        }
     }
 
     suspend fun plateExists(plate: String): Boolean {

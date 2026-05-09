@@ -6,8 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.ivanmadrid.vehiclecontrolapp.data.local.repository.ExpenseLocalRepository
 import com.ivanmadrid.vehiclecontrolapp.data.local.repository.NoveltyLocalRepository
 import com.ivanmadrid.vehiclecontrolapp.data.local.repository.VehicleDocumentLocalRepository
+import com.ivanmadrid.vehiclecontrolapp.data.local.repository.VehicleLocalRepository
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Expense
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Novelty
+import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -15,10 +17,18 @@ import kotlinx.coroutines.flow.stateIn
 
 class VehicleDetailViewModel(
     vehicleId: Int,
+    vehicleRepository: VehicleLocalRepository,
     expenseRepository: ExpenseLocalRepository,
     noveltyRepository: NoveltyLocalRepository,
     vehicleDocumentRepository: VehicleDocumentLocalRepository
 ) : ViewModel() {
+    val vehicle: StateFlow<Vehicle?> = vehicleRepository.getVehicleById(vehicleId)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = null
+        )
+
     val expenses: StateFlow<List<Expense>> = expenseRepository.getExpensesByVehicle(vehicleId)
         .stateIn(
             scope = viewModelScope,
@@ -42,6 +52,7 @@ class VehicleDetailViewModel(
 
     class Factory(
         private val vehicleId: Int,
+        private val vehicleRepository: VehicleLocalRepository,
         private val expenseRepository: ExpenseLocalRepository,
         private val noveltyRepository: NoveltyLocalRepository,
         private val vehicleDocumentRepository: VehicleDocumentLocalRepository
@@ -51,6 +62,7 @@ class VehicleDetailViewModel(
             if (modelClass.isAssignableFrom(VehicleDetailViewModel::class.java)) {
                 return VehicleDetailViewModel(
                     vehicleId = vehicleId,
+                    vehicleRepository = vehicleRepository,
                     expenseRepository = expenseRepository,
                     noveltyRepository = noveltyRepository,
                     vehicleDocumentRepository = vehicleDocumentRepository

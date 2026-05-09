@@ -46,7 +46,7 @@ Estado actual:
 - Ya existe un contenedor manual de dependencias (`AppContainer`).
 - Ya existe un seed inicial que carga los datos de prueba en Room si la base está vacía.
 - La lista de vehículos ya lee vehículos y vencimientos desde Room mediante `VehicleListViewModel`.
-- El detalle ya lee documentos, gastos y novedades desde Room mediante `VehicleDetailViewModel`.
+- El detalle ya lee el vehículo seleccionado, documentos, gastos y novedades desde Room mediante `VehicleDetailViewModel`.
 - El formulario de agregar vehículo ya guarda registros reales en Room mediante `VehicleFormViewModel`.
 - El formulario de registrar gasto ya guarda registros reales en Room mediante `ExpenseFormViewModel`.
 - El formulario de registrar novedad ya guarda registros reales en Room mediante `NoveltyFormViewModel`.

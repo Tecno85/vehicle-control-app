@@ -182,6 +182,7 @@ Estado actual:
 - Para taxis muestra información del taxi.
 - Para taxis muestra un resumen económico estimado.
 - Los particulares no muestran información de taxi ni resumen económico.
+- Ya observa el vehículo seleccionado desde Room mediante `VehicleDetailViewModel`.
 - Ya lee documentos, gastos y novedades desde Room mediante `VehicleDetailViewModel`.
 
 El resumen económico actual es una estimación con datos de prueba:

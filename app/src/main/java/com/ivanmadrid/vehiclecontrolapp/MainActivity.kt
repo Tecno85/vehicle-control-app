@@ -103,17 +103,20 @@ class MainActivity : ComponentActivity() {
                                     key = "vehicle-detail-${vehicle.id}",
                                     factory = VehicleDetailViewModel.Factory(
                                         vehicleId = vehicle.id,
+                                        vehicleRepository = appContainer.vehicleRepository,
                                         expenseRepository = appContainer.expenseRepository,
                                         noveltyRepository = appContainer.noveltyRepository,
                                         vehicleDocumentRepository = appContainer.vehicleDocumentRepository
                                     )
                                 )
+                                val currentVehicle by vehicleDetailViewModel.vehicle.collectAsState()
                                 val vehicleDocuments by vehicleDetailViewModel.documents.collectAsState()
                                 val vehicleExpenses by vehicleDetailViewModel.expenses.collectAsState()
                                 val vehicleNovelties by vehicleDetailViewModel.novelties.collectAsState()
+                                val detailVehicle = currentVehicle ?: vehicle
 
                                 VehicleDetailScreen(
-                                    vehicle = vehicle,
+                                    vehicle = detailVehicle,
                                     documents = vehicleDocuments,
                                     expenses = vehicleExpenses,
                                     novelties = vehicleNovelties,
@@ -123,7 +126,7 @@ class MainActivity : ComponentActivity() {
                                         currentScreen = AppScreen.VEHICLE_LIST
                                     },
                                     onEditVehicleClick = {
-                                        vehicleToEdit = vehicle
+                                        vehicleToEdit = detailVehicle
                                         currentScreen = AppScreen.VEHICLE_FORM
                                     },
                                     onRegisterExpenseClick = {
