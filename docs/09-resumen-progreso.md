@@ -166,6 +166,8 @@ Estado actual:
 - Diferencia taxis y particulares.
 - Permite entrar al detalle de cualquier vehículo.
 - Tiene botón flotante `+` solo en esta pantalla.
+- Ya lee los vehículos desde Room mediante `VehicleListViewModel`.
+- Los vencimientos de la lista todavía usan documentos de prueba.
 
 ### Detalle del vehículo
 
@@ -282,6 +284,7 @@ La app ya permite:
 
 - Ejecutarse en Android Studio.
 - Mostrar lista de vehículos.
+- Cargar vehículos iniciales desde Room usando seed.
 - Diferenciar taxis y particulares.
 - Consultar detalle de cualquier vehículo.
 - Ver documentos, gastos y novedades por vehículo.
@@ -297,7 +300,7 @@ La app todavía no permite:
 - Editar registros existentes.
 - Eliminar registros.
 - Consultar historial completo.
-- Persistir datos con Room.
+- Persistir cambios reales desde formularios hacia Room.
 - Sincronizar con Firebase.
 - Enviar notificaciones del sistema.
 

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,7 +22,9 @@ import com.ivanmadrid.vehiclecontrolapp.presentation.screens.novelties.NoveltyFo
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleDetailScreen
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleFormScreen
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleListScreen
+import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleListViewModel
 import com.ivanmadrid.vehiclecontrolapp.ui.theme.VehicleControlAppTheme
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 enum class AppScreen {
     VEHICLE_LIST,
@@ -36,9 +39,17 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val appContainer = (application as VehicleControlApplication).appContainer
 
         setContent {
             VehicleControlAppTheme {
+                val vehicleListViewModel: VehicleListViewModel = viewModel(
+                    factory = VehicleListViewModel.Factory(
+                        vehicleRepository = appContainer.vehicleRepository
+                    )
+                )
+                val vehicles by vehicleListViewModel.vehicles.collectAsState()
+
                 var selectedVehicle by remember {
                     mutableStateOf<Vehicle?>(null)
                 }
@@ -64,6 +75,7 @@ class MainActivity : ComponentActivity() {
                     when (currentScreen) {
                         AppScreen.VEHICLE_LIST -> {
                             VehicleListScreen(
+                                vehicles = vehicles,
                                 modifier = Modifier.padding(innerPadding),
                                 onVehicleClick = { vehicle ->
                                     selectedVehicle = vehicle

@@ -32,7 +32,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.ivanmadrid.vehiclecontrolapp.data.sample.sampleVehicles
 import com.ivanmadrid.vehiclecontrolapp.data.sample.sampleVehicleDocuments
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
@@ -54,14 +53,15 @@ private val DividerColor = Color(0xFFE4E7EC)
 
 @Composable
 fun VehicleListScreen(
+    vehicles: List<Vehicle>,
     modifier: Modifier = Modifier,
     onVehicleClick: (Vehicle) -> Unit
 ) {
-    val taxiCount = sampleVehicles.count { vehicle ->
+    val taxiCount = vehicles.count { vehicle ->
         vehicle.type == VehicleType.TAXI
     }
 
-    val privateCount = sampleVehicles.count { vehicle ->
+    val privateCount = vehicles.count { vehicle ->
         vehicle.type == VehicleType.PRIVATE
     }
 
@@ -84,7 +84,7 @@ fun VehicleListScreen(
             modifier = Modifier.fillMaxWidth(),
         ) {
             Text(
-                text = "${sampleVehicles.size} vehículos registrados",
+                text = "${vehicles.size} vehículos registrados",
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -118,6 +118,7 @@ fun VehicleListScreen(
             sortDocumentsByDueDate(sampleVehicleDocuments).take(2).forEachIndexed { index, document ->
                 DocumentReminderCard(
                     document = document,
+                    vehicles = vehicles,
                     isUrgent = index == 0,
                     modifier = Modifier.weight(1f)
                 )
@@ -130,7 +131,7 @@ fun VehicleListScreen(
 
         Spacer(modifier = Modifier.height(4.dp))
 
-        sampleVehicles.forEach { vehicle ->
+        vehicles.forEach { vehicle ->
             VehicleCard(
                 vehicle = vehicle,
                 onClick = {
@@ -184,10 +185,11 @@ fun SummaryChip(
 @Composable
 fun DocumentReminderCard(
     document: VehicleDocument,
+    vehicles: List<Vehicle>,
     isUrgent: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val vehicle = sampleVehicles.firstOrNull { vehicle ->
+    val vehicle = vehicles.firstOrNull { vehicle ->
         vehicle.id == document.vehicleId
     }
 
