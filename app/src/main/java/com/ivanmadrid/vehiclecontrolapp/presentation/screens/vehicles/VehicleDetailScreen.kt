@@ -19,35 +19,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.ivanmadrid.vehiclecontrolapp.data.sample.sampleExpenses
-import com.ivanmadrid.vehiclecontrolapp.data.sample.sampleNovelties
-import com.ivanmadrid.vehiclecontrolapp.data.sample.sampleVehicleDocuments
+import com.ivanmadrid.vehiclecontrolapp.domain.model.Expense
+import com.ivanmadrid.vehiclecontrolapp.domain.model.Novelty
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
+import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
 import com.ivanmadrid.vehiclecontrolapp.utils.sortDocumentsByDueDate
 
 @Composable
 fun VehicleDetailScreen(
     vehicle: Vehicle,
+    documents: List<VehicleDocument>,
+    expenses: List<Expense>,
+    novelties: List<Novelty>,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     onRegisterExpenseClick: () -> Unit,
     onRegisterNoveltyClick: () -> Unit,
     onRegisterDocumentClick: () -> Unit
 ) {
-    val vehicleDocuments = sortDocumentsByDueDate(
-        sampleVehicleDocuments.filter { document ->
-            document.vehicleId == vehicle.id
-        }
-    )
-
-    val vehicleExpenses = sampleExpenses.filter { expense ->
-        expense.vehicleId == vehicle.id
-    }
-
-    val vehicleNovelties = sampleNovelties.filter { novelty ->
-        novelty.vehicleId == vehicle.id
-    }
+    val vehicleDocuments = sortDocumentsByDueDate(documents)
 
     Column(
         modifier = modifier
@@ -77,7 +68,7 @@ fun VehicleDetailScreen(
             Spacer(modifier = Modifier.height(12.dp))
             TaxiBalanceSummaryCard(
                 vehicle = vehicle,
-                expenses = vehicleExpenses
+                expenses = expenses
             )
         }
 
@@ -87,11 +78,11 @@ fun VehicleDetailScreen(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        VehicleExpensesCard(expenses = vehicleExpenses)
+        VehicleExpensesCard(expenses = expenses)
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        VehicleNoveltiesCard(novelties = vehicleNovelties)
+        VehicleNoveltiesCard(novelties = novelties)
 
         Spacer(modifier = Modifier.height(12.dp))
 

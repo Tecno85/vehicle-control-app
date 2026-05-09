@@ -182,6 +182,7 @@ Estado actual:
 - Para taxis muestra información del taxi.
 - Para taxis muestra un resumen económico estimado.
 - Los particulares no muestran información de taxi ni resumen económico.
+- Ya lee documentos, gastos y novedades desde Room mediante `VehicleDetailViewModel`.
 
 El resumen económico actual es una estimación con datos de prueba:
 
@@ -287,7 +288,7 @@ La app ya permite:
 - Cargar vehículos iniciales desde Room usando seed.
 - Diferenciar taxis y particulares.
 - Consultar detalle de cualquier vehículo.
-- Ver documentos, gastos y novedades por vehículo.
+- Ver documentos, gastos y novedades por vehículo desde Room.
 - Ver próximos vencimientos ordenados.
 - Ver días restantes para vencimientos.
 - Ver resumen económico estimado para taxis.

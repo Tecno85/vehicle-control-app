@@ -20,6 +20,7 @@ import com.ivanmadrid.vehiclecontrolapp.presentation.screens.documents.DocumentF
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.expenses.ExpenseFormScreen
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.novelties.NoveltyFormScreen
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleDetailScreen
+import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleDetailViewModel
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleFormScreen
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleListScreen
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleListViewModel
@@ -89,8 +90,24 @@ class MainActivity : ComponentActivity() {
 
                         AppScreen.VEHICLE_DETAIL -> {
                             selectedVehicle?.let { vehicle ->
+                                val vehicleDetailViewModel: VehicleDetailViewModel = viewModel(
+                                    key = "vehicle-detail-${vehicle.id}",
+                                    factory = VehicleDetailViewModel.Factory(
+                                        vehicleId = vehicle.id,
+                                        expenseRepository = appContainer.expenseRepository,
+                                        noveltyRepository = appContainer.noveltyRepository,
+                                        vehicleDocumentRepository = appContainer.vehicleDocumentRepository
+                                    )
+                                )
+                                val vehicleDocuments by vehicleDetailViewModel.documents.collectAsState()
+                                val vehicleExpenses by vehicleDetailViewModel.expenses.collectAsState()
+                                val vehicleNovelties by vehicleDetailViewModel.novelties.collectAsState()
+
                                 VehicleDetailScreen(
                                     vehicle = vehicle,
+                                    documents = vehicleDocuments,
+                                    expenses = vehicleExpenses,
+                                    novelties = vehicleNovelties,
                                     modifier = Modifier.padding(innerPadding),
                                     onBackClick = {
                                         selectedVehicle = null
