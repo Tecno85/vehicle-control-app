@@ -1,6 +1,7 @@
 package com.ivanmadrid.vehiclecontrolapp.presentation.screens.expenses
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.ivanmadrid.vehiclecontrolapp.domain.model.ExpenseCategory
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleAvatar
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleTypeChip
@@ -45,7 +47,7 @@ fun ExpenseFormScreen(
     }
 
     var category by remember {
-        mutableStateOf("")
+        mutableStateOf<ExpenseCategory?>(null)
     }
 
     var amount by remember {
@@ -119,19 +121,19 @@ fun ExpenseFormScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = category,
-                    onValueChange = { newValue ->
-                        category = newValue
-                    },
-                    label = {
-                        Text(text = "Categoría")
-                    },
-                    placeholder = {
-                        Text(text = "Ej: Combustible")
-                    },
-                    singleLine = true
+                Text(
+                    text = "Categoría",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                ExpenseCategoryOptions(
+                    selectedCategory = category,
+                    onCategoryClick = { selectedCategory ->
+                        category = selectedCategory
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -196,6 +198,77 @@ fun ExpenseFormScreen(
         }
 
         Spacer(modifier = Modifier.height(80.dp))
+    }
+}
+
+@Composable
+fun ExpenseCategoryOptions(
+    selectedCategory: ExpenseCategory?,
+    onCategoryClick: (ExpenseCategory) -> Unit
+) {
+    val rows = ExpenseCategory.entries.chunked(2)
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        rows.forEach { rowCategories ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                rowCategories.forEach { category ->
+                    ExpenseCategoryButton(
+                        text = getExpenseCategoryLabel(category),
+                        selected = selectedCategory == category,
+                        modifier = Modifier.weight(1f),
+                        onClick = {
+                            onCategoryClick(category)
+                        }
+                    )
+                }
+
+                if (rowCategories.size == 1) {
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ExpenseCategoryButton(
+    text: String,
+    selected: Boolean,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    if (selected) {
+        Button(
+            modifier = modifier,
+            onClick = onClick
+        ) {
+            Text(text = text)
+        }
+    } else {
+        OutlinedButton(
+            modifier = modifier,
+            onClick = onClick
+        ) {
+            Text(text = text)
+        }
+    }
+}
+
+fun getExpenseCategoryLabel(category: ExpenseCategory): String {
+    return when (category) {
+        ExpenseCategory.FUEL -> "Combustible"
+        ExpenseCategory.WASH -> "Lavado"
+        ExpenseCategory.MAINTENANCE -> "Mantenimiento"
+        ExpenseCategory.SPARE_PARTS -> "Repuestos"
+        ExpenseCategory.INSURANCE -> "Seguro"
+        ExpenseCategory.TAXES -> "Impuestos"
+        ExpenseCategory.FINES -> "Multas"
+        ExpenseCategory.OTHER -> "Otros"
     }
 }
 
