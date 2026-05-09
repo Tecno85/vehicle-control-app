@@ -61,6 +61,10 @@ class MainActivity : ComponentActivity() {
                     mutableStateOf<Vehicle?>(null)
                 }
 
+                var vehicleToEdit by remember {
+                    mutableStateOf<Vehicle?>(null)
+                }
+
                 var currentScreen by remember {
                     mutableStateOf(AppScreen.VEHICLE_LIST)
                 }
@@ -71,6 +75,7 @@ class MainActivity : ComponentActivity() {
                         if (currentScreen == AppScreen.VEHICLE_LIST) {
                             FloatingActionButton(
                                 onClick = {
+                                    vehicleToEdit = null
                                     currentScreen = AppScreen.VEHICLE_FORM
                                 }
                             ) {
@@ -117,6 +122,10 @@ class MainActivity : ComponentActivity() {
                                         selectedVehicle = null
                                         currentScreen = AppScreen.VEHICLE_LIST
                                     },
+                                    onEditVehicleClick = {
+                                        vehicleToEdit = vehicle
+                                        currentScreen = AppScreen.VEHICLE_FORM
+                                    },
                                     onRegisterExpenseClick = {
                                         currentScreen = AppScreen.EXPENSE_FORM
                                     },
@@ -139,16 +148,29 @@ class MainActivity : ComponentActivity() {
 
                             VehicleFormScreen(
                                 modifier = Modifier.padding(innerPadding),
+                                vehicleToEdit = vehicleToEdit,
                                 onSaveVehicle = { vehicle, onValidationError ->
                                     vehicleFormViewModel.saveVehicle(
                                         vehicle = vehicle,
                                         onValidationError = onValidationError
-                                    ) {
-                                        currentScreen = AppScreen.VEHICLE_LIST
+                                    ) { savedVehicle ->
+                                        if (vehicleToEdit == null) {
+                                            selectedVehicle = null
+                                            currentScreen = AppScreen.VEHICLE_LIST
+                                        } else {
+                                            selectedVehicle = savedVehicle
+                                            vehicleToEdit = null
+                                            currentScreen = AppScreen.VEHICLE_DETAIL
+                                        }
                                     }
                                 },
                                 onBackClick = {
-                                    currentScreen = AppScreen.VEHICLE_LIST
+                                    if (vehicleToEdit == null) {
+                                        currentScreen = AppScreen.VEHICLE_LIST
+                                    } else {
+                                        vehicleToEdit = null
+                                        currentScreen = AppScreen.VEHICLE_DETAIL
+                                    }
                                 }
                             )
                         }

@@ -24,6 +24,16 @@ class VehicleLocalRepository(
         return vehicleDao.plateExists(plate)
     }
 
+    suspend fun plateExistsForOtherVehicle(
+        plate: String,
+        vehicleId: Int
+    ): Boolean {
+        return vehicleDao.plateExistsForOtherVehicle(
+            plate = plate,
+            vehicleId = vehicleId
+        )
+    }
+
     suspend fun insertVehicle(vehicle: Vehicle): Long {
         return vehicleDao.insertVehicle(vehicle.toEntity())
     }

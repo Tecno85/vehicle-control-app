@@ -19,6 +19,12 @@ interface VehicleDao {
     @Query("SELECT COUNT(*) > 0 FROM vehicles WHERE UPPER(plate) = UPPER(:plate) LIMIT 1")
     suspend fun plateExists(plate: String): Boolean
 
+    @Query("SELECT COUNT(*) > 0 FROM vehicles WHERE UPPER(plate) = UPPER(:plate) AND id != :vehicleId LIMIT 1")
+    suspend fun plateExistsForOtherVehicle(
+        plate: String,
+        vehicleId: Int
+    ): Boolean
+
     @Query("SELECT COUNT(*) FROM vehicles")
     suspend fun getVehicleCount(): Int
 

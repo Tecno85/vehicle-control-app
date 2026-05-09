@@ -13,16 +13,30 @@ class VehicleFormViewModel(
     fun saveVehicle(
         vehicle: Vehicle,
         onValidationError: (String) -> Unit,
-        onSaved: () -> Unit
+        onSaved: (Vehicle) -> Unit
     ) {
         viewModelScope.launch {
-            if (vehicleRepository.plateExists(vehicle.plate)) {
+            val duplicatedPlate = if (vehicle.id == 0) {
+                vehicleRepository.plateExists(vehicle.plate)
+            } else {
+                vehicleRepository.plateExistsForOtherVehicle(
+                    plate = vehicle.plate,
+                    vehicleId = vehicle.id
+                )
+            }
+
+            if (duplicatedPlate) {
                 onValidationError("Ya existe un vehículo registrado con esa placa.")
                 return@launch
             }
 
-            vehicleRepository.insertVehicle(vehicle)
-            onSaved()
+            if (vehicle.id == 0) {
+                vehicleRepository.insertVehicle(vehicle)
+            } else {
+                vehicleRepository.updateVehicle(vehicle)
+            }
+
+            onSaved(vehicle)
         }
     }
 

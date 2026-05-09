@@ -208,6 +208,7 @@ Los formularios:
 - Usan tarjetas para separar contenido.
 - Tienen botones `Guardar`, `Cancelar` y `Volver`.
 - El formulario de vehículo ya guarda registros reales en Room.
+- El formulario de vehículo también se reutiliza para editar vehículos existentes.
 - El formulario de gasto ya guarda registros reales en Room.
 - El formulario de novedad ya guarda registros reales en Room.
 - El formulario de documento ya guarda registros reales en Room.
@@ -245,6 +246,8 @@ Flujo actual:
 Lista de vehículos
   ├── tocar vehículo
   │     └── Detalle del vehículo
+  │           ├── Editar
+  │           │     └── Formulario de vehículo
   │           ├── Registrar gasto
   │           │     └── Formulario de gasto
   │           ├── Registrar novedad
@@ -298,6 +301,7 @@ La app ya permite:
 - Abrir formularios visuales para vehículo, gasto, novedad y documento.
 - Navegar entre lista, detalle y formularios.
 - Agregar vehículos nuevos y guardarlos en Room desde el botón flotante `+`.
+- Editar vehículos existentes desde el detalle.
 - Registrar gastos reales desde el detalle de un vehículo y guardarlos en Room.
 - Registrar novedades reales desde el detalle de un vehículo y guardarlas en Room.
 - Registrar documentos reales desde el detalle de un vehículo y guardarlos en Room.
@@ -306,7 +310,7 @@ La app ya permite:
 
 La app todavía no permite:
 
-- Editar registros existentes.
+- Editar gastos, novedades o documentos existentes.
 - Eliminar registros.
 - Consultar historial completo.
 - Sincronizar con Firebase.
@@ -322,5 +326,6 @@ La app todavía no permite:
 4. Probar el guardado real de gastos desde el detalle de un vehículo.
 5. Probar el guardado real de novedades desde el detalle de un vehículo.
 6. Probar el guardado real de documentos desde el detalle de un vehículo.
-7. Agregar cálculos reales de balance por fecha.
-8. Evaluar Navigation Compose cuando haya historial, reportes y ajustes.
+7. Probar la edición de vehículos desde el detalle.
+8. Agregar cálculos reales de balance por fecha.
+9. Evaluar Navigation Compose cuando haya historial, reportes y ajustes.

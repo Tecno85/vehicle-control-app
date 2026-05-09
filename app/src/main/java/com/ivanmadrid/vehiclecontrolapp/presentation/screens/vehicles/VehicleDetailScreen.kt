@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -34,6 +35,7 @@ fun VehicleDetailScreen(
     novelties: List<Novelty>,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
+    onEditVehicleClick: () -> Unit,
     onRegisterExpenseClick: () -> Unit,
     onRegisterNoveltyClick: () -> Unit,
     onRegisterDocumentClick: () -> Unit
@@ -47,10 +49,23 @@ fun VehicleDetailScreen(
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 16.dp, vertical = 18.dp)
     ) {
-        TextButton(
-            onClick = onBackClick
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "< Volver")
+            TextButton(
+                onClick = onBackClick
+            ) {
+                Text(text = "< Volver")
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            OutlinedButton(
+                onClick = onEditVehicleClick
+            ) {
+                Text(text = "Editar")
+            }
         }
 
         Spacer(modifier = Modifier.height(12.dp))

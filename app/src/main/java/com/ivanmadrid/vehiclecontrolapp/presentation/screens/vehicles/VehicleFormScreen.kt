@@ -34,38 +34,39 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
 @Composable
 fun VehicleFormScreen(
     modifier: Modifier = Modifier,
+    vehicleToEdit: Vehicle? = null,
     onSaveVehicle: (Vehicle, (String) -> Unit) -> Unit,
     onBackClick: () -> Unit
 ) {
-    var plate by remember {
-        mutableStateOf("")
+    var plate by remember(vehicleToEdit?.id) {
+        mutableStateOf(vehicleToEdit?.plate.orEmpty())
     }
 
-    var brand by remember {
-        mutableStateOf("")
+    var brand by remember(vehicleToEdit?.id) {
+        mutableStateOf(vehicleToEdit?.brand.orEmpty())
     }
 
-    var model by remember {
-        mutableStateOf("")
+    var model by remember(vehicleToEdit?.id) {
+        mutableStateOf(vehicleToEdit?.model.orEmpty())
     }
 
-    var vehicleType by remember {
-        mutableStateOf<VehicleType?>(null)
+    var vehicleType by remember(vehicleToEdit?.id) {
+        mutableStateOf(vehicleToEdit?.type)
     }
 
-    var status by remember {
-        mutableStateOf("Activo")
+    var status by remember(vehicleToEdit?.id) {
+        mutableStateOf(vehicleToEdit?.status ?: "Activo")
     }
 
-    var currentDriver by remember {
-        mutableStateOf("")
+    var currentDriver by remember(vehicleToEdit?.id) {
+        mutableStateOf(vehicleToEdit?.currentDriver.orEmpty())
     }
 
-    var dailyFixedIncome by remember {
-        mutableStateOf("")
+    var dailyFixedIncome by remember(vehicleToEdit?.id) {
+        mutableStateOf(vehicleToEdit?.dailyFixedIncome?.toString().orEmpty())
     }
 
-    var validationMessage by remember {
+    var validationMessage by remember(vehicleToEdit?.id) {
         mutableStateOf<String?>(null)
     }
 
@@ -85,13 +86,21 @@ fun VehicleFormScreen(
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = "Agregar vehículo",
+            text = if (vehicleToEdit == null) {
+                "Agregar vehículo"
+            } else {
+                "Editar vehículo"
+            },
             style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.Bold
         )
 
         Text(
-            text = "Registra la información básica del vehículo.",
+            text = if (vehicleToEdit == null) {
+                "Registra la información básica del vehículo."
+            } else {
+                "Actualiza la información básica del vehículo."
+            },
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -308,7 +317,7 @@ fun VehicleFormScreen(
 
                 onSaveVehicle(
                     Vehicle(
-                        id = 0,
+                        id = vehicleToEdit?.id ?: 0,
                         plate = plate.trim().uppercase(),
                         brand = brand.trim(),
                         model = model.trim(),
@@ -330,7 +339,13 @@ fun VehicleFormScreen(
                 }
             }
         ) {
-            Text(text = "Guardar vehículo")
+            Text(
+                text = if (vehicleToEdit == null) {
+                    "Guardar vehículo"
+                } else {
+                    "Actualizar vehículo"
+                }
+            )
         }
 
         validationMessage?.let { message ->
