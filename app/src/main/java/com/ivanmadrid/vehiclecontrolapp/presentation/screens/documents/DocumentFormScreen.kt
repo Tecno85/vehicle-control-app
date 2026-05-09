@@ -21,7 +21,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,15 +30,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
+import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocumentType
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleAvatar
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleTypeChip
-import kotlinx.coroutines.delay
 
 @Composable
 fun DocumentFormScreen(
     vehicle: Vehicle,
     modifier: Modifier = Modifier,
+    onSaveDocument: (VehicleDocument) -> Unit,
     onBackClick: () -> Unit
 ) {
     var documentType by remember {
@@ -54,15 +54,8 @@ fun DocumentFormScreen(
         mutableStateOf("")
     }
 
-    var showSaveMessage by remember {
-        mutableStateOf(false)
-    }
-
-    LaunchedEffect(showSaveMessage) {
-        if (showSaveMessage) {
-            delay(3500)
-            showSaveMessage = false
-        }
+    var validationMessage by remember {
+        mutableStateOf<String?>(null)
     }
 
     Column(
@@ -167,28 +160,44 @@ fun DocumentFormScreen(
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                showSaveMessage = true
-                // TODO: Guardar documento cuando implementemos almacenamiento
+                val selectedDocumentType = documentType
+
+                if (selectedDocumentType == null || dueDate.isBlank()) {
+                    validationMessage = "Selecciona el tipo de documento y completa la fecha de vencimiento."
+                    return@Button
+                }
+
+                validationMessage = null
+
+                onSaveDocument(
+                    VehicleDocument(
+                        id = 0,
+                        vehicleId = vehicle.id,
+                        type = selectedDocumentType,
+                        dueDate = dueDate.trim(),
+                        notes = notes.trim().ifBlank { null }
+                    )
+                )
             }
         ) {
             Text(text = "Guardar documento")
         }
 
-        if (showSaveMessage) {
+        validationMessage?.let { message ->
             Spacer(modifier = Modifier.height(8.dp))
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                    containerColor = MaterialTheme.colorScheme.errorContainer
                 )
             ) {
                 Text(
-                    text = "El formulario está listo visualmente. El guardado se conectará cuando implementemos almacenamiento.",
+                    text = message,
                     modifier = Modifier.padding(12.dp),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                    color = MaterialTheme.colorScheme.onErrorContainer
                 )
             }
         }

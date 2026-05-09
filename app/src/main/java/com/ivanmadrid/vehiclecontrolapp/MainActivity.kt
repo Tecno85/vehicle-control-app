@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.documents.DocumentFormScreen
+import com.ivanmadrid.vehiclecontrolapp.presentation.screens.documents.DocumentFormViewModel
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.expenses.ExpenseFormScreen
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.expenses.ExpenseFormViewModel
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.novelties.NoveltyFormScreen
@@ -197,9 +198,20 @@ class MainActivity : ComponentActivity() {
 
                         AppScreen.DOCUMENT_FORM -> {
                             selectedVehicle?.let { vehicle ->
+                                val documentFormViewModel: DocumentFormViewModel = viewModel(
+                                    factory = DocumentFormViewModel.Factory(
+                                        vehicleDocumentRepository = appContainer.vehicleDocumentRepository
+                                    )
+                                )
+
                                 DocumentFormScreen(
                                     vehicle = vehicle,
                                     modifier = Modifier.padding(innerPadding),
+                                    onSaveDocument = { document ->
+                                        documentFormViewModel.saveDocument(document) {
+                                            currentScreen = AppScreen.VEHICLE_DETAIL
+                                        }
+                                    },
                                     onBackClick = {
                                         currentScreen = AppScreen.VEHICLE_DETAIL
                                     }

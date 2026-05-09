@@ -50,7 +50,7 @@ Estado actual:
 - El formulario de agregar vehículo ya guarda registros reales en Room mediante `VehicleFormViewModel`.
 - El formulario de registrar gasto ya guarda registros reales en Room mediante `ExpenseFormViewModel`.
 - El formulario de registrar novedad ya guarda registros reales en Room mediante `NoveltyFormViewModel`.
-- El formulario de documentos todavía usa estado local y no guarda en Room.
+- El formulario de registrar documento ya guarda registros reales en Room mediante `DocumentFormViewModel`.
 
 Decisión para la integración gradual:
 
