@@ -221,7 +221,8 @@ fun VehicleNoveltyItem(novelty: Novelty) {
 @Composable
 fun VehicleQuickActionsCard(
     onRegisterExpenseClick: () -> Unit,
-    onRegisterNoveltyClick: () -> Unit
+    onRegisterNoveltyClick: () -> Unit,
+    onRegisterDocumentClick: () -> Unit
 ) {
     DetailSectionCard(
         title = "Acciones rápidas",
@@ -255,9 +256,7 @@ fun VehicleQuickActionsCard(
                 markerColor = DetailGreen,
                 backgroundColor = SoftGreen,
                 modifier = Modifier.weight(1f),
-                onClick = {
-                    // TODO: Abrir formulario para registrar documento
-                }
+                onClick = onRegisterDocumentClick
             )
         }
     }
