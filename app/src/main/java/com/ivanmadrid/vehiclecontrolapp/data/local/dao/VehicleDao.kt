@@ -16,6 +16,9 @@ interface VehicleDao {
     @Query("SELECT * FROM vehicles WHERE id = :vehicleId LIMIT 1")
     suspend fun getVehicleById(vehicleId: Int): VehicleEntity?
 
+    @Query("SELECT COUNT(*) FROM vehicles")
+    suspend fun getVehicleCount(): Int
+
     @Insert
     suspend fun insertVehicle(vehicle: VehicleEntity): Long
 

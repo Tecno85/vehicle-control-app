@@ -43,6 +43,8 @@ Estado actual:
 - Room ya está agregado como dependencia.
 - Se usa KSP para generar el código de Room.
 - Ya existe una primera capa local con entidades, DAOs, convertidores y `AppDatabase`.
+- Ya existe un contenedor manual de dependencias (`AppContainer`).
+- Ya existe un seed inicial que carga los datos de prueba en Room si la base está vacía.
 - La UI todavía no está conectada a Room.
 - Los datos visibles siguen viniendo de archivos de prueba en memoria.
 
