@@ -20,6 +20,10 @@ class VehicleLocalRepository(
         return vehicleDao.getVehicleById(vehicleId)?.toDomain()
     }
 
+    suspend fun plateExists(plate: String): Boolean {
+        return vehicleDao.plateExists(plate)
+    }
+
     suspend fun insertVehicle(vehicle: Vehicle): Long {
         return vehicleDao.insertVehicle(vehicle.toEntity())
     }

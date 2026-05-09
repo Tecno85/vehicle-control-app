@@ -302,6 +302,7 @@ La app ya permite:
 - Registrar novedades reales desde el detalle de un vehículo y guardarlas en Room.
 - Registrar documentos reales desde el detalle de un vehículo y guardarlos en Room.
 - Validar formato de fecha `yyyy-MM-dd` en gastos, novedades y documentos.
+- Evitar registrar vehículos con placas duplicadas.
 
 La app todavía no permite:
 

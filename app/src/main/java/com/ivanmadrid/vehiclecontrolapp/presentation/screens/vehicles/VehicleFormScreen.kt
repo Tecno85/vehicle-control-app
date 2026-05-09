@@ -34,7 +34,7 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
 @Composable
 fun VehicleFormScreen(
     modifier: Modifier = Modifier,
-    onSaveVehicle: (Vehicle) -> Unit,
+    onSaveVehicle: (Vehicle, (String) -> Unit) -> Unit,
     onBackClick: () -> Unit
 ) {
     var plate by remember {
@@ -325,7 +325,9 @@ fun VehicleFormScreen(
                             null
                         }
                     )
-                )
+                ) { message ->
+                    validationMessage = message
+                }
             }
         ) {
             Text(text = "Guardar vehículo")

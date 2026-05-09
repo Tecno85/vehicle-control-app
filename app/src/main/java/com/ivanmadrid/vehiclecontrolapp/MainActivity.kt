@@ -139,8 +139,11 @@ class MainActivity : ComponentActivity() {
 
                             VehicleFormScreen(
                                 modifier = Modifier.padding(innerPadding),
-                                onSaveVehicle = { vehicle ->
-                                    vehicleFormViewModel.saveVehicle(vehicle) {
+                                onSaveVehicle = { vehicle, onValidationError ->
+                                    vehicleFormViewModel.saveVehicle(
+                                        vehicle = vehicle,
+                                        onValidationError = onValidationError
+                                    ) {
                                         currentScreen = AppScreen.VEHICLE_LIST
                                     }
                                 },
