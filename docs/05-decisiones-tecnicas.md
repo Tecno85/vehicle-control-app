@@ -38,6 +38,20 @@ Para trabajar con SQLite se utilizará Room, una librería de Android que facili
 
 Esta decisión permite que la aplicación funcione sin conexión a internet.
 
+Estado actual:
+
+- Room ya está agregado como dependencia.
+- Se usa KSP para generar el código de Room.
+- Ya existe una primera capa local con entidades, DAOs, convertidores y `AppDatabase`.
+- La UI todavía no está conectada a Room.
+- Los datos visibles siguen viniendo de archivos de prueba en memoria.
+
+Decisión para la primera integración:
+
+- Crear primero la capa local aislada.
+- Validar compilación.
+- Conectar la UI en pasos posteriores, pantalla por pantalla.
+
 ---
 
 ## Firebase
