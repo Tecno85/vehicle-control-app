@@ -1,5 +1,7 @@
 package com.ivanmadrid.vehiclecontrolapp.presentation.screens.expenses
 
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -104,14 +106,19 @@ fun ExpenseFormScreen(
             modifier = Modifier.fillMaxWidth(),
             value = amount,
             onValueChange = { newValue ->
-                amount = newValue
+                if (newValue.all { character -> character.isDigit() }) {
+                    amount = newValue
+                }
             },
             label = {
                 Text(text = "Valor")
             },
             placeholder = {
                 Text(text = "Ej: 65000")
-            }
+            },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number
+            )
         )
 
         Spacer(modifier = Modifier.height(12.dp))
