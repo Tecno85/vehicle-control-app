@@ -11,11 +11,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,17 +51,17 @@ fun VehicleDetailScreen(
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 16.dp, vertical = 18.dp)
     ) {
-        OutlinedButton(
+        TextButton(
             onClick = onBackClick
         ) {
-            Text(text = "Volver")
+            Text(text = "< Volver")
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
-        VehicleDetailHeaderCard(vehicle = vehicle)
+        VehicleDetailHeader(vehicle = vehicle)
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(22.dp))
 
         VehicleGeneralInfoCard(vehicle = vehicle)
 
@@ -95,53 +93,39 @@ fun VehicleDetailScreen(
 }
 
 @Composable
-fun VehicleDetailHeaderCard(vehicle: Vehicle) {
-    Card(
+fun VehicleDetailHeader(vehicle: Vehicle) {
+    Row(
         modifier = Modifier.fillMaxWidth(),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(18.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier.weight(1f)
         ) {
-            VehicleAvatar(type = vehicle.type)
+            Text(
+                text = vehicle.plate,
+                style = MaterialTheme.typography.displaySmall,
+                fontWeight = FontWeight.Bold
+            )
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Text(
+                text = "${vehicle.brand} ${vehicle.model}",
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
 
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.Top
-                ) {
-                    Column(
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text(
-                            text = vehicle.plate,
-                            style = MaterialTheme.typography.headlineMedium,
-                            fontWeight = FontWeight.Bold
-                        )
+            Spacer(modifier = Modifier.height(12.dp))
 
-                        Text(
-                            text = "${vehicle.brand} ${vehicle.model}",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-
-                    VehicleStatusChip(status = vehicle.status)
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
+            Row {
                 VehicleTypeChip(type = vehicle.type)
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                VehicleStatusChip(status = vehicle.status)
             }
         }
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        VehicleAvatar(type = vehicle.type)
     }
 }

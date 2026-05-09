@@ -2,6 +2,7 @@ package com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,7 +21,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -48,59 +48,67 @@ private val DividerColor = Color(0xFFE4E7EC)
 
 @Composable
 fun VehicleGeneralInfoCard(vehicle: Vehicle) {
-    DetailSectionCard(title = "Información general") {
-        DetailInfoRow(label = "Tipo", value = getVehicleTypeLabel(vehicle.type))
-        DetailInfoRow(label = "Estado", value = vehicle.status)
-        DetailInfoRow(label = "Marca", value = vehicle.brand)
-        DetailInfoRow(label = "Modelo", value = vehicle.model)
-    }
-}
-
-@Composable
-fun TaxiInfoCard(vehicle: Vehicle) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(1.dp, DetailBlue.copy(alpha = 0.12f)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = SoftBlue
-        )
+    DetailSectionCard(
+        title = "Información general",
+        markerText = "i",
+        markerColor = DetailBlue,
+        markerBackground = SoftBlue
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(
-                text = "Información del taxi",
-                style = MaterialTheme.typography.titleMedium,
-                color = DetailBlue,
-                fontWeight = FontWeight.Bold
-            )
+            Column(modifier = Modifier.weight(1f)) {
+                DetailInfoTile(label = "Tipo", value = getVehicleTypeLabel(vehicle.type))
+                DetailInfoTile(label = "Marca", value = vehicle.brand)
+                DetailInfoTile(label = "Placa", value = vehicle.plate)
+            }
 
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                HighlightInfoItem(
-                    label = "Conductor",
-                    value = vehicle.currentDriver ?: "Sin asignar",
-                    modifier = Modifier.weight(1f)
-                )
-                HighlightInfoItem(
-                    label = "Ingreso diario",
-                    value = formatCurrency(vehicle.dailyFixedIncome),
-                    modifier = Modifier.weight(1f)
-                )
+            Column(modifier = Modifier.weight(1f)) {
+                DetailInfoTile(label = "Estado", value = vehicle.status)
+                DetailInfoTile(label = "Modelo", value = vehicle.model)
+                DetailInfoTile(label = "ID", value = vehicle.id.toString())
             }
         }
     }
 }
 
 @Composable
+fun TaxiInfoCard(vehicle: Vehicle) {
+    DetailSectionCard(
+        title = "Información del taxi",
+        markerText = "T",
+        markerColor = DetailOrange,
+        markerBackground = SoftYellow
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            HighlightInfoItem(
+                label = "Conductor actual",
+                value = vehicle.currentDriver ?: "Sin asignar",
+                modifier = Modifier.weight(1f)
+            )
+            HighlightInfoItem(
+                label = "Ingreso diario",
+                value = formatCurrency(vehicle.dailyFixedIncome),
+                valueColor = DetailGreen,
+                modifier = Modifier.weight(1f)
+            )
+        }
+    }
+}
+
+@Composable
 fun VehicleDocumentsCard(documents: List<VehicleDocument>) {
-    DetailSectionCard(title = "Documentos y vencimientos") {
+    DetailSectionCard(
+        title = "Documentos y vencimientos",
+        markerText = "D",
+        markerColor = DetailBlue,
+        markerBackground = SoftBlue,
+        actionText = "Ver todos"
+    ) {
         if (documents.isEmpty()) {
             EmptySectionText(text = "No hay documentos registrados para este vehículo.")
         } else {
@@ -129,7 +137,13 @@ fun VehicleDocumentItem(document: VehicleDocument) {
 
 @Composable
 fun VehicleExpensesCard(expenses: List<Expense>) {
-    DetailSectionCard(title = "Gastos recientes") {
+    DetailSectionCard(
+        title = "Gastos recientes",
+        markerText = "$",
+        markerColor = DetailBlue,
+        markerBackground = SoftBlue,
+        actionText = "Ver todos"
+    ) {
         if (expenses.isEmpty()) {
             EmptySectionText(text = "No hay gastos registrados para este vehículo.")
         } else {
@@ -151,14 +165,21 @@ fun VehicleExpenseItem(expense: Expense) {
         markerColor = DetailBlue,
         markerBackground = SoftBlue,
         title = expense.description,
-        subtitle = "${getExpenseCategoryLabel(expense.category)} - ${formatCurrency(expense.amount)}",
-        extra = expense.date
+        subtitle = getExpenseCategoryLabel(expense.category),
+        extra = expense.date,
+        trailingText = formatCurrency(expense.amount)
     )
 }
 
 @Composable
 fun VehicleNoveltiesCard(novelties: List<Novelty>) {
-    DetailSectionCard(title = "Novedades recientes") {
+    DetailSectionCard(
+        title = "Novedades recientes",
+        markerText = "N",
+        markerColor = Color(0xFF6F35D4),
+        markerBackground = Color(0xFFF0E7FF),
+        actionText = "Ver todas"
+    ) {
         if (novelties.isEmpty()) {
             EmptySectionText(text = "No hay novedades registradas para este vehículo.")
         } else {
@@ -193,7 +214,7 @@ fun VehicleNoveltyItem(novelty: Novelty) {
         markerBackground = markerBackground,
         title = novelty.type,
         subtitle = novelty.description,
-        extra = "${getNoveltyPriorityLabel(novelty.priority)} · ${novelty.date}"
+        extra = "${novelty.date} · Prioridad: ${getNoveltyPriorityLabel(novelty.priority)}"
     )
 }
 
@@ -201,34 +222,44 @@ fun VehicleNoveltyItem(novelty: Novelty) {
 fun VehicleQuickActionsCard(
     onRegisterExpenseClick: () -> Unit
 ) {
-    DetailSectionCard(title = "Acciones rápidas") {
-        Button(
+    DetailSectionCard(
+        title = "Acciones rápidas",
+        markerText = "+",
+        markerColor = DetailGreen,
+        markerBackground = SoftGreen
+    ) {
+        Row(
             modifier = Modifier.fillMaxWidth(),
-            onClick = onRegisterExpenseClick
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Text(text = "Registrar gasto")
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedButton(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                // TODO: Abrir formulario para registrar novedad
-            }
-        ) {
-            Text(text = "Registrar novedad")
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedButton(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                // TODO: Abrir formulario para registrar documento
-            }
-        ) {
-            Text(text = "Registrar documento")
+            QuickActionTile(
+                label = "Registrar gasto",
+                markerText = "$",
+                markerColor = DetailBlue,
+                backgroundColor = SoftBlue,
+                modifier = Modifier.weight(1f),
+                onClick = onRegisterExpenseClick
+            )
+            QuickActionTile(
+                label = "Registrar novedad",
+                markerText = "!",
+                markerColor = Color(0xFF6F35D4),
+                backgroundColor = Color(0xFFF0E7FF),
+                modifier = Modifier.weight(1f),
+                onClick = {
+                    // TODO: Abrir formulario para registrar novedad
+                }
+            )
+            QuickActionTile(
+                label = "Registrar documento",
+                markerText = "D",
+                markerColor = DetailGreen,
+                backgroundColor = SoftGreen,
+                modifier = Modifier.weight(1f),
+                onClick = {
+                    // TODO: Abrir formulario para registrar documento
+                }
+            )
         }
     }
 }
@@ -236,6 +267,10 @@ fun VehicleQuickActionsCard(
 @Composable
 fun DetailSectionCard(
     title: String,
+    markerText: String,
+    markerColor: Color,
+    markerBackground: Color,
+    actionText: String? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
     Card(
@@ -249,11 +284,35 @@ fun DetailSectionCard(
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                DetailMarker(
+                    text = markerText,
+                    color = markerColor,
+                    backgroundColor = markerBackground,
+                    size = 34
+                )
+
+                Spacer(modifier = Modifier.width(10.dp))
+
+                Text(
+                    text = title,
+                    modifier = Modifier.weight(1f),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+
+                if (actionText != null) {
+                    Text(
+                        text = actionText,
+                        style = MaterialTheme.typography.labelMedium,
+                        color = DetailBlue,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -263,14 +322,11 @@ fun DetailSectionCard(
 }
 
 @Composable
-fun DetailInfoRow(
+fun DetailInfoTile(
     label: String,
     value: String
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
+    Column {
         Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
@@ -284,6 +340,11 @@ fun DetailInfoRow(
         )
     }
 
+    HorizontalDivider(
+        modifier = Modifier.padding(top = 8.dp),
+        color = DividerColor
+    )
+
     Spacer(modifier = Modifier.height(8.dp))
 }
 
@@ -291,6 +352,7 @@ fun DetailInfoRow(
 fun HighlightInfoItem(
     label: String,
     value: String,
+    valueColor: Color = MaterialTheme.colorScheme.onSurface,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -306,7 +368,8 @@ fun HighlightInfoItem(
         Text(
             text = value,
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurface
+            color = valueColor,
+            fontWeight = FontWeight.SemiBold
         )
     }
 }
@@ -318,26 +381,19 @@ fun DetailListItem(
     markerBackground: Color,
     title: String,
     subtitle: String,
-    extra: String?
+    extra: String?,
+    trailingText: String? = null
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.Top
     ) {
-        Box(
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
-                .background(markerBackground),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = markerText,
-                style = MaterialTheme.typography.labelLarge,
-                color = markerColor,
-                fontWeight = FontWeight.Bold
-            )
-        }
+        DetailMarker(
+            text = markerText,
+            color = markerColor,
+            backgroundColor = markerBackground,
+            size = 46
+        )
 
         Spacer(modifier = Modifier.width(12.dp))
 
@@ -366,6 +422,81 @@ fun DetailListItem(
                 )
             }
         }
+
+        if (trailingText != null) {
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text(
+                text = trailingText,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+
+@Composable
+fun QuickActionTile(
+    label: String,
+    markerText: String,
+    markerColor: Color,
+    backgroundColor: Color,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = modifier.clickable { onClick() },
+        shape = RoundedCornerShape(14.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = backgroundColor
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 14.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            DetailMarker(
+                text = markerText,
+                color = markerColor,
+                backgroundColor = Color.White,
+                size = 38
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelMedium,
+                color = markerColor,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+
+@Composable
+fun DetailMarker(
+    text: String,
+    color: Color,
+    backgroundColor: Color,
+    size: Int
+) {
+    Box(
+        modifier = Modifier
+            .size(size.dp)
+            .clip(CircleShape)
+            .background(backgroundColor),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelLarge,
+            color = color,
+            fontWeight = FontWeight.Bold
+        )
     }
 }
 
