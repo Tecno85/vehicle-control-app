@@ -1,6 +1,7 @@
 package com.ivanmadrid.vehiclecontrolapp.presentation.screens.documents
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
+import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocumentType
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleAvatar
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleTypeChip
 
@@ -39,7 +41,7 @@ fun DocumentFormScreen(
     onBackClick: () -> Unit
 ) {
     var documentType by remember {
-        mutableStateOf("")
+        mutableStateOf<VehicleDocumentType?>(null)
     }
 
     var dueDate by remember {
@@ -96,19 +98,19 @@ fun DocumentFormScreen(
 
                 Spacer(modifier = Modifier.height(14.dp))
 
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = documentType,
-                    onValueChange = { newValue ->
-                        documentType = newValue
-                    },
-                    label = {
-                        Text(text = "Tipo de documento")
-                    },
-                    placeholder = {
-                        Text(text = "Ej: SOAT, tecnicomecánica o impuestos")
-                    },
-                    singleLine = true
+                Text(
+                    text = "Tipo de documento",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                DocumentTypeOptions(
+                    selectedType = documentType,
+                    onTypeClick = { selectedType ->
+                        documentType = selectedType
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -168,6 +170,59 @@ fun DocumentFormScreen(
         }
 
         Spacer(modifier = Modifier.height(80.dp))
+    }
+}
+
+@Composable
+fun DocumentTypeOptions(
+    selectedType: VehicleDocumentType?,
+    onTypeClick: (VehicleDocumentType) -> Unit
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        VehicleDocumentType.entries.forEach { type ->
+            DocumentTypeButton(
+                text = getDocumentTypeLabel(type),
+                selected = selectedType == type,
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    onTypeClick(type)
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun DocumentTypeButton(
+    text: String,
+    selected: Boolean,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    if (selected) {
+        Button(
+            modifier = modifier,
+            onClick = onClick
+        ) {
+            Text(text = text)
+        }
+    } else {
+        OutlinedButton(
+            modifier = modifier,
+            onClick = onClick
+        ) {
+            Text(text = text)
+        }
+    }
+}
+
+fun getDocumentTypeLabel(type: VehicleDocumentType): String {
+    return when (type) {
+        VehicleDocumentType.SOAT -> "SOAT"
+        VehicleDocumentType.TECHNICAL_MECHANICAL_REVIEW -> "Tecnicomecánica"
+        VehicleDocumentType.TAXES -> "Impuestos"
     }
 }
 
