@@ -278,6 +278,7 @@ Incluye:
 
 - `getDaysUntilLabel`: muestra texto como `Vence hoy`, `Vence mañana`, `Faltan X días` o `Vencido`.
 - `sortDocumentsByDueDate`: ordena documentos por fecha de vencimiento.
+- `isValidIsoDate`: valida que una fecha tenga formato ISO `yyyy-MM-dd`.
 
 ---
 
@@ -300,6 +301,7 @@ La app ya permite:
 - Registrar gastos reales desde el detalle de un vehículo y guardarlos en Room.
 - Registrar novedades reales desde el detalle de un vehículo y guardarlas en Room.
 - Registrar documentos reales desde el detalle de un vehículo y guardarlos en Room.
+- Validar formato de fecha `yyyy-MM-dd` en gastos, novedades y documentos.
 
 La app todavía no permite:
 

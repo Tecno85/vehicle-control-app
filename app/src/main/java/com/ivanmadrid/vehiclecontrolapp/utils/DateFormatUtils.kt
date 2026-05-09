@@ -28,6 +28,15 @@ fun sortDocumentsByDueDate(documents: List<VehicleDocument>): List<VehicleDocume
     )
 }
 
+fun isValidIsoDate(dateText: String): Boolean {
+    return try {
+        LocalDate.parse(dateText)
+        true
+    } catch (_: Exception) {
+        false
+    }
+}
+
 private fun parseDateOrMax(dateText: String): LocalDate {
     return try {
         LocalDate.parse(dateText)

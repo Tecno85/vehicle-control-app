@@ -36,6 +36,7 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.ExpenseCategory
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleAvatar
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleTypeChip
+import com.ivanmadrid.vehiclecontrolapp.utils.isValidIsoDate
 
 @Composable
 fun ExpenseFormScreen(
@@ -198,6 +199,11 @@ fun ExpenseFormScreen(
                     parsedAmount <= 0L
                 ) {
                     validationMessage = "Completa fecha, categoría y un valor mayor a cero."
+                    return@Button
+                }
+
+                if (!isValidIsoDate(date.trim())) {
+                    validationMessage = "La fecha debe tener el formato yyyy-MM-dd. Ej: 2026-05-09."
                     return@Button
                 }
 

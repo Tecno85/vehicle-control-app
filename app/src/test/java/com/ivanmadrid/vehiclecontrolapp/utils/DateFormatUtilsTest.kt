@@ -54,6 +54,20 @@ class DateFormatUtilsTest {
         assertEquals(listOf(3, 2, 1), sortedDocuments.map { document -> document.id })
     }
 
+    @Test
+    fun isValidIsoDate_returnsTrueForValidDate() {
+        val isValid = isValidIsoDate("2026-05-09")
+
+        assertEquals(true, isValid)
+    }
+
+    @Test
+    fun isValidIsoDate_returnsFalseForInvalidDate() {
+        val isValid = isValidIsoDate("09/05/2026")
+
+        assertEquals(false, isValid)
+    }
+
     private fun testDocument(
         id: Int,
         dueDate: String

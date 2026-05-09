@@ -39,6 +39,7 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleAvatar
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleTypeChip
+import com.ivanmadrid.vehiclecontrolapp.utils.isValidIsoDate
 
 @Composable
 fun NoveltyFormScreen(
@@ -294,6 +295,11 @@ fun NoveltyFormScreen(
                     selectedPriority == null
                 ) {
                     validationMessage = "Completa fecha, tipo de novedad y prioridad."
+                    return@Button
+                }
+
+                if (!isValidIsoDate(date.trim())) {
+                    validationMessage = "La fecha debe tener el formato yyyy-MM-dd. Ej: 2026-05-09."
                     return@Button
                 }
 
