@@ -48,7 +48,8 @@ Estado actual:
 - La lista de vehículos ya lee vehículos y vencimientos desde Room mediante `VehicleListViewModel`.
 - El detalle ya lee documentos, gastos y novedades desde Room mediante `VehicleDetailViewModel`.
 - El formulario de agregar vehículo ya guarda registros reales en Room mediante `VehicleFormViewModel`.
-- Los formularios de gastos, novedades y documentos todavía usan estado local y no guardan en Room.
+- El formulario de registrar gasto ya guarda registros reales en Room mediante `ExpenseFormViewModel`.
+- Los formularios de novedades y documentos todavía usan estado local y no guardan en Room.
 
 Decisión para la integración gradual:
 

@@ -208,7 +208,8 @@ Los formularios:
 - Usan tarjetas para separar contenido.
 - Tienen botones `Guardar`, `Cancelar` y `Volver`.
 - El formulario de vehículo ya guarda registros reales en Room.
-- Los formularios de gasto, novedad y documento todavía no guardan datos reales.
+- El formulario de gasto ya guarda registros reales en Room.
+- Los formularios de novedad y documento todavía no guardan datos reales.
 
 Controles guiados implementados:
 
@@ -295,10 +296,11 @@ La app ya permite:
 - Abrir formularios visuales para vehículo, gasto, novedad y documento.
 - Navegar entre lista, detalle y formularios.
 - Agregar vehículos nuevos y guardarlos en Room desde el botón flotante `+`.
+- Registrar gastos reales desde el detalle de un vehículo y guardarlos en Room.
 
 La app todavía no permite:
 
-- Guardar gastos, novedades o documentos desde sus formularios.
+- Guardar novedades o documentos desde sus formularios.
 - Editar registros existentes.
 - Eliminar registros.
 - Consultar historial completo.
@@ -312,7 +314,7 @@ La app todavía no permite:
 1. Revisar visualmente todas las pantallas en emulador.
 2. Ajustar textos, espaciados o tamaños que se vean apretados.
 3. Probar el guardado real de vehículos desde el botón flotante `+`.
-4. Conectar el guardado real de gastos a Room.
+4. Probar el guardado real de gastos desde el detalle de un vehículo.
 5. Conectar el guardado real de novedades a Room.
 6. Conectar el guardado real de documentos a Room.
 7. Agregar cálculos reales de balance por fecha.

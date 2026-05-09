@@ -19,6 +19,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.documents.DocumentFormScreen
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.expenses.ExpenseFormScreen
+import com.ivanmadrid.vehiclecontrolapp.presentation.screens.expenses.ExpenseFormViewModel
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.novelties.NoveltyFormScreen
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleDetailScreen
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleDetailViewModel
@@ -149,9 +150,20 @@ class MainActivity : ComponentActivity() {
 
                         AppScreen.EXPENSE_FORM -> {
                             selectedVehicle?.let { vehicle ->
+                                val expenseFormViewModel: ExpenseFormViewModel = viewModel(
+                                    factory = ExpenseFormViewModel.Factory(
+                                        expenseRepository = appContainer.expenseRepository
+                                    )
+                                )
+
                                 ExpenseFormScreen(
                                     vehicle = vehicle,
                                     modifier = Modifier.padding(innerPadding),
+                                    onSaveExpense = { expense ->
+                                        expenseFormViewModel.saveExpense(expense) {
+                                            currentScreen = AppScreen.VEHICLE_DETAIL
+                                        }
+                                    },
                                     onBackClick = {
                                         currentScreen = AppScreen.VEHICLE_DETAIL
                                     }

@@ -22,7 +22,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,16 +31,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.ivanmadrid.vehiclecontrolapp.domain.model.Expense
 import com.ivanmadrid.vehiclecontrolapp.domain.model.ExpenseCategory
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleAvatar
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleTypeChip
-import kotlinx.coroutines.delay
 
 @Composable
 fun ExpenseFormScreen(
     vehicle: Vehicle,
     modifier: Modifier = Modifier,
+    onSaveExpense: (Expense) -> Unit,
     onBackClick: () -> Unit
 ) {
     var date by remember {
@@ -60,15 +60,8 @@ fun ExpenseFormScreen(
         mutableStateOf("")
     }
 
-    var showSaveMessage by remember {
-        mutableStateOf(false)
-    }
-
-    LaunchedEffect(showSaveMessage) {
-        if (showSaveMessage) {
-            delay(3500)
-            showSaveMessage = false
-        }
+    var validationMessage by remember {
+        mutableStateOf<String?>(null)
     }
 
     Column(
@@ -195,28 +188,51 @@ fun ExpenseFormScreen(
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                showSaveMessage = true
-                // TODO: Guardar gasto cuando implementemos almacenamiento
+                val selectedCategory = category
+                val parsedAmount = amount.toLongOrNull()
+
+                if (
+                    date.isBlank() ||
+                    selectedCategory == null ||
+                    parsedAmount == null ||
+                    parsedAmount <= 0L
+                ) {
+                    validationMessage = "Completa fecha, categoría y un valor mayor a cero."
+                    return@Button
+                }
+
+                validationMessage = null
+
+                onSaveExpense(
+                    Expense(
+                        id = 0,
+                        vehicleId = vehicle.id,
+                        date = date.trim(),
+                        category = selectedCategory,
+                        amount = parsedAmount,
+                        description = description.trim().ifBlank { "Gasto registrado" }
+                    )
+                )
             }
         ) {
             Text(text = "Guardar gasto")
         }
 
-        if (showSaveMessage) {
+        validationMessage?.let { message ->
             Spacer(modifier = Modifier.height(8.dp))
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                    containerColor = MaterialTheme.colorScheme.errorContainer
                 )
             ) {
                 Text(
-                    text = "El formulario está listo visualmente. El guardado se conectará cuando implementemos almacenamiento.",
+                    text = message,
                     modifier = Modifier.padding(12.dp),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                    color = MaterialTheme.colorScheme.onErrorContainer
                 )
             }
         }
