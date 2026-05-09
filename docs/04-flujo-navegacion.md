@@ -1,168 +1,179 @@
 # Flujo de navegación
 
-## Pantallas principales
+## Estado actual
 
-La aplicación tendrá inicialmente las siguientes pantallas:
+La aplicación usa una navegación sencilla controlada desde `MainActivity.kt` con estado local de Compose.
 
-1. Inicio.
-2. Lista de vehículos.
-3. Detalle del vehículo.
-4. Formulario de vehículo.
-5. Registrar gasto.
-6. Registrar novedad.
-7. Registrar documento o fecha importante.
-8. Historial del vehículo.
+Todavía no se usa Navigation Compose. Esta decisión se mantiene por ahora para evitar complejidad mientras la app sigue en fase visual/prototipo funcional.
 
 ---
 
-## Flujo principal
+## Pantallas actuales
+
+Pantallas conectadas actualmente:
+
+1. Lista de vehículos.
+2. Detalle del vehículo.
+3. Formulario de vehículo.
+4. Formulario de gasto.
+5. Formulario de novedad.
+6. Formulario de documento.
+
+Pantallas planeadas para más adelante:
+
+1. Historial del vehículo.
+2. Reportes.
+3. Ajustes.
+
+---
+
+## Enum de navegación
+
+La navegación se controla con:
+
+```kotlin
+enum class AppScreen {
+    VEHICLE_LIST,
+    VEHICLE_DETAIL,
+    VEHICLE_FORM,
+    EXPENSE_FORM,
+    NOVELTY_FORM,
+    DOCUMENT_FORM,
+}
+```
+
+También se usa:
+
+```kotlin
+selectedVehicle: Vehicle?
+```
+
+Este valor permite mantener el vehículo seleccionado cuando se navega desde el detalle hacia formularios asociados.
+
+---
+
+## Flujo principal actual
 
 ```text
-Inicio
-  └── Lista de vehículos
-        ├── Detalle Taxi
-        │     ├── Registrar gasto
-        │     ├── Registrar novedad
-        │     ├── Registrar documento
-        │     └── Historial
-        │
-        └── Detalle Particular
-              ├── Registrar gasto
-              ├── Registrar novedad
-              ├── Registrar documento
-              └── Historial
+Lista de vehículos
+  ├── tocar tarjeta de vehículo
+  │     └── Detalle del vehículo
+  │           ├── Volver
+  │           │     └── Lista de vehículos
+  │           │
+  │           ├── Registrar gasto
+  │           │     └── Formulario de gasto
+  │           │           ├── Volver
+  │           │           └── Cancelar
+  │           │                 └── Detalle del mismo vehículo
+  │           │
+  │           ├── Registrar novedad
+  │           │     └── Formulario de novedad
+  │           │           ├── Volver
+  │           │           └── Cancelar
+  │           │                 └── Detalle del mismo vehículo
+  │           │
+  │           └── Registrar documento
+  │                 └── Formulario de documento
+  │                       ├── Volver
+  │                       └── Cancelar
+  │                             └── Detalle del mismo vehículo
+  │
+  └── tocar botón flotante +
+        └── Formulario de vehículo
+              ├── Volver
+              └── Cancelar
+                    └── Lista de vehículos
 ```
----
-
-## Pantalla de inicio
-
-La pantalla de inicio mostrará un resumen general de la aplicación.
-
-Información sugerida:
-
-- Total de vehículos registrados.
-- Próximos vencimientos.
-- Alertas importantes.
-- Acceso rápido a la lista de vehículos.
 
 ---
 
-## Lista de vehículos
+## Botón flotante
 
-La pantalla de lista de vehículos mostrará los vehículos registrados.
+El botón flotante `+` solo se muestra en la pantalla de lista de vehículos.
 
-Cada vehículo debe mostrar:
+No aparece en:
 
-- Placa.
-- Marca.
-- Modelo.
-- Tipo de vehículo.
-- Estado.
-- Próximo vencimiento importante.
+- Detalle del vehículo.
+- Formulario de gasto.
+- Formulario de novedad.
+- Formulario de documento.
+- Formulario de vehículo.
+
+Esto evita confusión porque el botón `+` solo aplica a crear un vehículo desde la lista.
 
 ---
 
 ## Detalle del vehículo
 
-La pantalla de detalle mostrará la información completa de un vehículo seleccionado.
+La pantalla de detalle funciona como centro de gestión de cada vehículo.
 
-Para todos los vehículos mostrará:
+Para todos los vehículos muestra:
 
-- Placa.
-- Marca.
-- Modelo.
-- Tipo.
+- Header con placa, marca y modelo.
+- Tipo de vehículo.
 - Estado.
+- Información general.
+- Documentos y vencimientos.
 - Gastos recientes.
 - Novedades recientes.
-- Documentos o fechas importantes.
+- Acciones rápidas.
 
-Para taxis también mostrará:
+Para taxis también muestra:
 
+- Información del taxi.
 - Conductor actual.
-- Ingreso fijo diario.
-- Ingreso calculado del día.
-- Balance diario.
+- Ingreso diario.
+- Resumen económico estimado.
+
+Los vehículos particulares no muestran secciones exclusivas de taxi.
 
 ---
 
-## Formulario de vehículo
+## Formularios
 
-Esta pantalla permitirá crear o editar un vehículo.
+Los formularios actuales son visuales y todavía no guardan datos reales.
 
-Campos iniciales:
+Formulario de vehículo:
 
 - Placa.
 - Marca.
 - Modelo.
 - Tipo de vehículo.
 - Estado.
-- Conductor actual.
-- Ingreso fijo diario.
+- Datos de taxi si se selecciona `Taxi`.
 
-Notas:
-
-- Conductor actual será opcional.
-- Ingreso fijo diario solo aplicará para taxis.
-
----
-
-## Registrar gasto
-
-Esta pantalla permitirá registrar un gasto asociado a un vehículo.
-
-Campos iniciales:
+Formulario de gasto:
 
 - Fecha.
 - Categoría.
 - Valor.
 - Descripción.
 
----
-
-## Registrar novedad
-
-Esta pantalla permitirá registrar una novedad asociada a un vehículo.
-
-Campos iniciales:
+Formulario de novedad:
 
 - Fecha.
 - Tipo de novedad.
 - Prioridad.
 - Descripción.
-- Afecta ingreso.
+- Ajuste de ingreso solo para taxis.
 
-Si la novedad afecta el ingreso de un taxi, se mostrará también:
+Formulario de documento:
 
-- Tipo de ajuste.
-- Valor personalizado, si aplica.
-
----
-
-## Registrar documento o fecha importante
-
-Esta pantalla permitirá registrar fechas importantes del vehículo.
-
-Campos iniciales:
-
-- Tipo de documento o pago.
+- Tipo de documento.
 - Fecha de vencimiento.
 - Notas.
 
-Tipos iniciales:
-
-- SOAT.
-- Revisión tecnicomecánica.
-- Impuestos.
-
 ---
 
-Historial del vehículo
+## Criterio para migrar a Navigation Compose
 
-Esta pantalla mostrará los registros asociados a un vehículo.
+La navegación actual puede mantenerse mientras las pantallas sean pocas y el flujo sea simple.
 
-Secciones iniciales:
+Conviene evaluar Navigation Compose cuando se implementen:
 
-- Gastos.
-- Novedades.
-- Documentos o fechas importantes.
+- Historial del vehículo.
+- Reportes.
+- Ajustes.
+- Edición de registros existentes.
+- Pantallas con parámetros más complejos.

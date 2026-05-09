@@ -34,36 +34,37 @@ Inicialmente la aplicación manejará:
 - Dos taxis.
 - Dos vehículos particulares.
 
----
+Los taxis tienen lógica especial:
 
-## Enfoque de trabajo
-
-El proyecto se desarrollará aplicando buenas prácticas de la industria, pero evitando sobreingeniería.
-
-La forma de trabajo será:
-
-1. Definir el objetivo del cambio.
-2. Implementar el cambio paso a paso.
-3. Probar en el emulador.
-4. Verificar que el cambio sea una unidad lógica completa.
-5. Hacer commit con un mensaje claro.
+- Cada taxi tiene un ingreso fijo diario.
+- Ese ingreso no se registra manualmente todos los días.
+- El ingreso puede ajustarse mediante novedades como trabajo parcial, día sin operación, conductor enfermo, falla mecánica o accidente.
 
 ---
 
-## Tecnologías definidas
+## Tecnologías y enfoque
 
 - Lenguaje: Kotlin.
 - IDE: Android Studio.
 - Interfaz: Jetpack Compose.
+- Estado actual: prototipo visual funcional con datos de prueba.
 - Base de datos futura: SQLite usando Room.
 - Firebase: posible mejora futura, no incluida en la primera versión.
-- Arquitectura inicial: separación sencilla por responsabilidades.
+- Arquitectura actual: separación sencilla por responsabilidades.
+
+El proyecto mantiene una prioridad clara:
+
+- Construir una app funcional y entendible.
+- Evitar sobreingeniería.
+- Hacer cambios pequeños.
+- Probar antes de hacer commit.
+- Documentar las decisiones importantes.
 
 ---
 
-## Estructura principal creada
+## Estructura actual
 
-Dentro del paquete principal se crearon las siguientes carpetas:
+Ruta principal:
 
 ```text
 app/src/main/java/com/ivanmadrid/vehiclecontrolapp/
@@ -77,33 +78,11 @@ app/src/main/java/com/ivanmadrid/vehiclecontrolapp/
 
 La carpeta `ui` fue creada por Android Studio para el tema de Jetpack Compose y se conserva por ahora.
 
----
-
-## Documentación creada
-
-Se creó la carpeta:
-
-```text
-docs/
-```
-
-Con los siguientes documentos:
-
-```text
-docs/
-├── 01-descripcion-proyecto.md
-├── 02-requisitos-funcionales.md
-├── 03-modelo-datos.md
-├── 04-flujo-navegacion.md
-├── 05-decisiones-tecnicas.md
-├── 06-registro-desarrollo.md
-├── 07-diseno-ui.md
-└── 09-resumen-progreso.md
-```
+La carpeta `utils` contiene utilidades simples, como cálculo de días restantes para vencimientos y ordenamiento de documentos por fecha.
 
 ---
 
-## Modelos del dominio creados
+## Modelos del dominio
 
 Ruta:
 
@@ -111,28 +90,14 @@ Ruta:
 app/src/main/java/com/ivanmadrid/vehiclecontrolapp/domain/model/
 ```
 
-Archivos creados:
-
-```text
-Vehicle.kt
-VehicleType.kt
-Expense.kt
-ExpenseCategory.kt
-Novelty.kt
-NoveltyPriority.kt
-IncomeAdjustmentType.kt
-VehicleDocument.kt
-VehicleDocumentType.kt
-```
-
-### Entidades principales
+Entidades principales:
 
 - `Vehicle`: representa un vehículo.
 - `Expense`: representa un gasto.
 - `Novelty`: representa una novedad.
 - `VehicleDocument`: representa un documento o fecha importante.
 
-### Tipos definidos
+Enums principales:
 
 - `VehicleType`: `TAXI`, `PRIVATE`.
 - `ExpenseCategory`: combustible, lavado, mantenimiento, repuestos, seguro, impuestos, multas y otros.
@@ -140,9 +105,11 @@ VehicleDocumentType.kt
 - `IncomeAdjustmentType`: sin ingreso, medio ingreso y valor personalizado.
 - `VehicleDocumentType`: SOAT, tecnicomecánica e impuestos.
 
+Por ahora las fechas siguen como texto con formato `yyyy-MM-dd`. Antes de implementar Room conviene revisar si se mantienen como texto ISO o se migra a un tipo/estrategia más formal.
+
 ---
 
-## Datos de prueba creados
+## Datos de prueba
 
 Ruta:
 
@@ -150,244 +117,162 @@ Ruta:
 app/src/main/java/com/ivanmadrid/vehiclecontrolapp/data/sample/
 ```
 
-Archivos creados:
+Archivos actuales:
 
 ```text
 SampleVehicles.kt
 SampleVehicleDocuments.kt
+SampleExpenses.kt
+SampleNovelties.kt
 ```
 
-### SampleVehicles.kt
+Los datos de prueba permiten:
 
-Contiene cuatro vehículos iniciales de prueba:
+- Mostrar cuatro vehículos iniciales.
+- Diferenciar taxis y particulares.
+- Mostrar documentos y vencimientos.
+- Mostrar gastos recientes.
+- Mostrar novedades recientes.
+- Calcular un resumen económico estimado para taxis.
 
-- Dos taxis.
-- Dos vehículos particulares.
-
-Los taxis incluyen:
-
-- Conductor actual.
-- Ingreso fijo diario.
-
-Los vehículos particulares no tienen ingreso fijo diario.
-
-### SampleVehicleDocuments.kt
-
-Contiene documentos de prueba para mostrar próximos vencimientos:
-
-- SOAT.
-- Revisión tecnicomecánica.
-- Impuestos.
-
-Se corrigieron las notas para evitar placas quemadas dentro del texto.
+Los datos todavía no se guardan de forma real. La persistencia se implementará más adelante con Room.
 
 ---
 
-## Pantallas creadas
+## Pantallas implementadas
 
-Ruta:
-
-```text
-app/src/main/java/com/ivanmadrid/vehiclecontrolapp/presentation/screens/vehicles/
-```
-
-Archivos creados:
+Pantallas principales:
 
 ```text
-VehicleListScreen.kt
-VehicleDetailScreen.kt
+presentation/screens/vehicles/VehicleListScreen.kt
+presentation/screens/vehicles/VehicleDetailScreen.kt
+presentation/screens/vehicles/VehicleDetailCards.kt
+presentation/screens/vehicles/VehicleFormScreen.kt
+presentation/screens/expenses/ExpenseFormScreen.kt
+presentation/screens/novelties/NoveltyFormScreen.kt
+presentation/screens/documents/DocumentFormScreen.kt
 ```
 
----
-
-## Pantalla lista de vehículos
-
-Archivo:
-
-```text
-VehicleListScreen.kt
-```
+### Lista de vehículos
 
 Estado actual:
 
-- Muestra el título `Control Vehicular`.
+- Muestra `Control Vehicular`.
 - Muestra cantidad total de vehículos.
-- Muestra chips de resumen:
-    - cantidad de taxis.
-    - cantidad de particulares.
-- Muestra sección de próximos vencimientos.
-- Muestra sección `Vehículos registrados`.
-- Muestra tarjetas de vehículos.
-- Las tarjetas son clicables.
-- La pantalla tiene scroll vertical.
-- Se puede acceder al detalle de taxis y particulares.
+- Muestra chips de taxis y particulares.
+- Muestra próximos vencimientos ordenados por fecha.
+- Muestra días restantes para vencimientos.
+- Muestra tarjetas visuales para cada vehículo.
+- Diferencia taxis y particulares.
+- Permite entrar al detalle de cualquier vehículo.
+- Tiene botón flotante `+` solo en esta pantalla.
 
-Componentes incluidos:
-
-- `VehicleCard`
-- `SummaryChip`
-- `DocumentReminderCard`
-- `VehicleTypeChip`
-- `VehicleStatusChip`
-- `InfoItem`
-
-Funciones auxiliares:
-
-- `getVehicleTypeLabel`
-- `getDocumentTypeLabel`
-- `formatCurrency`
-
----
-
-## Pantalla detalle de vehículo
-
-Archivo:
-
-```text
-VehicleDetailScreen.kt
-```
+### Detalle del vehículo
 
 Estado actual:
 
-- Permite mostrar el detalle de un vehículo seleccionado.
-- Tiene botón `Volver`.
-- El botón permite regresar a la lista.
-- Muestra información general del vehículo.
-- Para taxis muestra información adicional:
-    - conductor actual.
-    - ingreso diario.
+- Muestra header con placa, marca, modelo, tipo y estado.
+- Muestra información general.
+- Muestra documentos y vencimientos.
+- Muestra gastos recientes.
+- Muestra novedades recientes.
+- Muestra acciones rápidas.
+- Para taxis muestra información del taxi.
+- Para taxis muestra un resumen económico estimado.
+- Los particulares no muestran información de taxi ni resumen económico.
 
-Pendiente actual:
+El resumen económico actual es una estimación con datos de prueba:
 
-- Mejorar visualmente la pantalla de detalle.
-- Separar información en tarjetas.
-- Preparar secciones futuras:
-    - documentos.
-    - gastos recientes.
-    - novedades recientes.
-    - acciones rápidas.
+```text
+Balance estimado = ingreso diario - gastos recientes del vehículo
+```
+
+Más adelante, con Room, deberá calcularse con filtros reales por fecha.
+
+### Formularios visuales
+
+Ya existen formularios visuales para:
+
+- Agregar vehículo.
+- Registrar gasto.
+- Registrar novedad.
+- Registrar documento.
+
+Los formularios:
+
+- Tienen scroll vertical.
+- Muestran el vehículo asociado cuando aplica.
+- Usan tarjetas para separar contenido.
+- Tienen botones `Guardar`, `Cancelar` y `Volver`.
+- Muestran aviso temporal cuando se toca `Guardar`, indicando que el guardado real se implementará con almacenamiento.
+- No guardan datos todavía.
+
+Controles guiados implementados:
+
+- Tipo de vehículo: Taxi / Particular.
+- Categoría de gasto.
+- Prioridad de novedad.
+- Tipo de ajuste de ingreso.
+- Tipo de documento.
 
 ---
 
 ## Navegación actual
 
-La navegación se implementó de forma sencilla en `MainActivity.kt`, usando estado local con Compose.
+La navegación sigue implementada de forma sencilla en `MainActivity.kt`, usando estado local con Compose.
+
+Enum actual:
+
+```kotlin
+enum class AppScreen {
+    VEHICLE_LIST,
+    VEHICLE_DETAIL,
+    VEHICLE_FORM,
+    EXPENSE_FORM,
+    NOVELTY_FORM,
+    DOCUMENT_FORM,
+}
+```
 
 Flujo actual:
 
 ```text
 Lista de vehículos
-  └── tocar tarjeta
-        └── Detalle del vehículo
-              └── botón Volver
-                    └── Lista de vehículos
+  ├── tocar vehículo
+  │     └── Detalle del vehículo
+  │           ├── Registrar gasto
+  │           │     └── Formulario de gasto
+  │           ├── Registrar novedad
+  │           │     └── Formulario de novedad
+  │           └── Registrar documento
+  │                 └── Formulario de documento
+  │
+  └── tocar botón +
+        └── Formulario de vehículo
 ```
 
-Todavía no se está usando Navigation Compose.
-
-La navegación actual es suficiente para esta etapa inicial y evita complejidad innecesaria.
+Todavía no se usa Navigation Compose. La navegación actual sigue siendo suficiente para esta etapa y evita complejidad innecesaria.
 
 ---
 
-## MainActivity
+## Utilidades creadas
+
+Ruta:
+
+```text
+app/src/main/java/com/ivanmadrid/vehiclecontrolapp/utils/
+```
 
 Archivo:
 
 ```text
-app/src/main/java/com/ivanmadrid/vehiclecontrolapp/MainActivity.kt
+DateFormatUtils.kt
 ```
 
-Responsabilidades actuales:
+Incluye:
 
-- Cargar el tema de la app.
-- Mostrar el `Scaffold`.
-- Mostrar el botón flotante `+`.
-- Controlar si se muestra:
-    - `VehicleListScreen`.
-    - `VehicleDetailScreen`.
-
-El botón flotante `+` está preparado visualmente para agregar vehículos, pero todavía no abre formulario.
-
----
-
-## Decisiones importantes
-
-### Ingresos de taxis
-
-Los ingresos de taxis no se registrarán manualmente todos los días.
-
-Cada taxi tendrá un ingreso fijo diario.
-
-Ese ingreso solo cambiará cuando exista una novedad que lo afecte, por ejemplo:
-
-- Conductor enfermo.
-- Día de descanso.
-- Falla mecánica.
-- Accidente.
-- Trabajo parcial.
-
-### Documentos y vencimientos
-
-Todos los vehículos, taxis y particulares, tendrán fechas importantes:
-
-- SOAT.
-- Revisión tecnicomecánica.
-- Impuestos.
-
-La primera versión mostrará recordatorios internos dentro de la app.
-
-### Firebase
-
-Firebase no se usará en la primera versión.
-
-Puede considerarse más adelante para:
-
-- Sincronización en la nube.
-- Autenticación.
-- Copias de seguridad.
-- Acceso desde varios dispositivos.
-
----
-
-## Git y commits
-
-Se inicializó Git en el proyecto.
-
-También se ajustó el archivo `.gitignore` para excluir archivos innecesarios como:
-
-- `.idea/`
-- `.gradle/`
-- `build/`
-- `local.properties`
-- archivos generados.
-- archivos temporales.
-- keystores.
-- `google-services.json`.
-
-Método de commits definido:
-
-- Cambios pequeños.
-- Cambios coherentes.
-- Probar antes de hacer commit.
-- Mensajes claros.
-
-Ejemplos de commits realizados:
-
-```text
-feat: crear estructura inicial de VehicleControlApp
-chore: actualizar gitignore del proyecto Android
-feat: mejorar visualizacion de lista de vehiculos
-style: mejorar diseño de tarjetas de vehiculos
-docs: definir lineamientos iniciales de diseno ui
-style: mejorar tarjetas de lista de vehiculos
-feat: agregar resumen superior de vehiculos
-feat: agregar seccion de proximos vencimientos
-style: mejorar tarjetas de proximos vencimientos
-feat: agregar boton flotante para vehiculos
-style: agregar titulo a lista de vehiculos
-refactor: preparar tarjetas para navegacion a detalle
-feat: habilitar scroll y detalle para todos los vehiculos
-```
+- `getDaysUntilLabel`: muestra texto como `Vence hoy`, `Vence mañana`, `Faltan X días` o `Vencido`.
+- `sortDocumentsByDueDate`: ordena documentos por fecha de vencimiento.
 
 ---
 
@@ -395,29 +280,36 @@ feat: habilitar scroll y detalle para todos los vehiculos
 
 La app ya permite:
 
-- Ejecutarse en el emulador.
-- Mostrar una lista de vehículos.
+- Ejecutarse en Android Studio.
+- Mostrar lista de vehículos.
 - Diferenciar taxis y particulares.
-- Mostrar información especial para taxis.
-- Mostrar próximos vencimientos.
-- Hacer scroll en la lista.
-- Entrar al detalle de cualquier vehículo.
-- Volver desde el detalle a la lista.
-- Tener botón flotante visual para futura acción de agregar vehículo.
+- Consultar detalle de cualquier vehículo.
+- Ver documentos, gastos y novedades por vehículo.
+- Ver próximos vencimientos ordenados.
+- Ver días restantes para vencimientos.
+- Ver resumen económico estimado para taxis.
+- Abrir formularios visuales para vehículo, gasto, novedad y documento.
+- Navegar entre lista, detalle y formularios.
+
+La app todavía no permite:
+
+- Guardar registros reales.
+- Editar registros existentes.
+- Eliminar registros.
+- Consultar historial completo.
+- Persistir datos con Room.
+- Sincronizar con Firebase.
+- Enviar notificaciones del sistema.
 
 ---
 
 ## Próximos pasos recomendados
 
-1. Mejorar visualmente `VehicleDetailScreen.kt`.
-2. Agregar secciones futuras en detalle:
-    - documentos.
-    - gastos recientes.
-    - novedades recientes.
-    - acciones rápidas.
-3. Crear formulario visual para vehículo.
-4. Crear formulario visual para documento o fecha importante.
-5. Crear formulario visual para gasto.
-6. Crear formulario visual para novedad.
-7. Agregar Room y SQLite cuando las pantallas principales estén claras.
-8. Reemplazar datos de prueba por datos persistentes.
+1. Revisar visualmente todas las pantallas en emulador.
+2. Ajustar textos, espaciados o tamaños que se vean apretados.
+3. Considerar pequeñas validaciones visuales en formularios.
+4. Definir estrategia de fechas y dinero antes de Room.
+5. Implementar Room cuando las pantallas principales estén estables.
+6. Reemplazar datos de prueba por datos persistentes.
+7. Agregar cálculos reales de balance por fecha.
+8. Evaluar Navigation Compose cuando haya historial, reportes y ajustes.

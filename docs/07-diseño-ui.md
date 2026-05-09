@@ -2,153 +2,159 @@
 
 ## Objetivo visual
 
-La aplicación tendrá un diseño limpio, moderno y fácil de usar.  
-La prioridad será que la información importante de cada vehículo se pueda leer rápido y sin confusión.
+La aplicación debe sentirse limpia, moderna y fácil de usar.
+
+La prioridad es que la información importante de cada vehículo se pueda leer rápido:
+
+- Estado del vehículo.
+- Tipo de vehículo.
+- Próximos vencimientos.
+- Gastos recientes.
+- Novedades recientes.
+- Acciones disponibles.
 
 ---
 
 ## Estilo general
 
-La app usará un estilo:
+La app usa un estilo:
 
 - Claro.
 - Ordenado.
 - Moderno.
-- Con tarjetas para separar información.
-- Con botones visibles y fáciles de identificar.
+- Basado en tarjetas.
+- Con chips para estados y categorías.
+- Con botones visibles.
 - Con buen espacio entre secciones.
 
----
-
-## Colores iniciales
-
-La primera versión usará colores sobrios y profesionales.
-
-Propuesta inicial:
-
-- Fondo principal: gris muy claro o blanco.
-- Tarjetas: blanco.
-- Texto principal: oscuro.
-- Texto secundario: gris.
-- Color principal: azul o verde.
-- Alertas importantes: rojo o naranja.
-- Estados correctos: verde.
-
-Notas:
-
-- No definiremos todavía una paleta final compleja.
-- Primero buscaremos una interfaz clara y funcional.
-- Más adelante podemos mejorar colores, íconos y detalles visuales.
+La UI debe mantenerse simple mientras la app sigue en fase inicial. Se prefieren mejoras graduales antes que una personalización visual demasiado compleja.
 
 ---
 
-## Estructura general de las pantallas
+## Colores
 
-Cada pantalla debe tener una estructura parecida:
+La interfaz usa una paleta sencilla:
 
-1. Título principal.
-2. Descripción corta o resumen.
-3. Contenido principal en tarjetas.
-4. Botones de acción.
-5. Información secundaria al final si aplica.
+- Azul para acciones principales o información general.
+- Verde para estados activos o valores positivos.
+- Naranja para taxis o alertas moderadas.
+- Rojo para alertas urgentes.
+- Morado para novedades.
+- Fondos suaves para tarjetas internas y chips.
 
----
-
-## Componentes visuales reutilizables
-
-La app tendrá componentes que se podrán reutilizar en varias pantallas:
-
-- Tarjeta de vehículo.
-- Tarjeta de resumen.
-- Tarjeta de vencimiento.
-- Botón de acción.
-- Sección de información.
-- Campo de formulario.
-- Etiqueta de estado.
+No existe todavía una paleta final formal. Los colores actuales son una guía visual práctica para mejorar lectura y jerarquía.
 
 ---
 
-## Tarjeta de vehículo
+## Pantalla lista de vehículos
 
-La tarjeta de vehículo debe mostrar información clave:
+La lista de vehículos debe funcionar como vista rápida de la app.
 
+Debe mostrar:
+
+- Título `Control Vehicular`.
+- Total de vehículos registrados.
+- Chips de taxis y particulares.
+- Próximos vencimientos.
+- Tarjetas de vehículos.
+- Botón flotante `+` para agregar vehículo.
+
+Los próximos vencimientos:
+
+- Se ordenan por fecha más cercana.
+- Muestran los días restantes.
+- Muestran solo los primeros vencimientos en la lista principal.
+
+Las tarjetas de vehículo deben mostrar:
+
+- Avatar visual por tipo.
 - Placa.
 - Marca y modelo.
 - Tipo de vehículo.
 - Estado.
-- Próximo vencimiento importante.
-
-Para taxis también puede mostrar:
-
-- Conductor actual.
-- Ingreso fijo diario.
+- Para taxis: conductor e ingreso diario.
 
 ---
 
-## Pantalla de lista de vehículos
+## Pantalla detalle del vehículo
 
-La lista de vehículos debe mostrar todos los vehículos registrados.
+El detalle del vehículo es el centro de gestión de cada vehículo.
 
-Orden visual recomendado:
+Debe mostrar:
 
-1. Título: Control Vehicular.
-2. Texto corto de resumen.
-3. Lista de tarjetas de vehículos.
-4. Botón para agregar vehículo.
-
----
-
-## Pantalla de detalle del vehículo
-
-La pantalla de detalle debe mostrar información completa del vehículo.
-
-Orden visual recomendado:
-
-1. Placa del vehículo como título principal.
-2. Marca, modelo, tipo y estado.
-3. Sección de información general.
-4. Sección de documentos y vencimientos.
-5. Sección de gastos recientes.
-6. Sección de novedades recientes.
-7. Botones de acción.
+- Botón `Volver`.
+- Placa como título principal.
+- Marca y modelo como subtítulo.
+- Chip de tipo de vehículo.
+- Chip de estado.
+- Información general.
+- Documentos y vencimientos.
+- Gastos recientes.
+- Novedades recientes.
+- Acciones rápidas.
 
 Para taxis también debe mostrar:
 
+- Información del taxi.
 - Conductor actual.
-- Ingreso fijo diario.
-- Balance diario.
+- Ingreso diario.
+- Resumen económico estimado.
+
+Los particulares no deben mostrar información exclusiva de taxi.
 
 ---
 
 ## Formularios
 
-Los formularios deben ser simples y claros.
+Los formularios deben ser simples, claros y consistentes.
 
 Reglas:
 
-- Usar campos con etiquetas claras.
-- Mostrar solo la información necesaria.
-- Evitar formularios demasiado largos.
-- Usar botones claros como Guardar o Cancelar.
+- Usar header claro.
+- Mostrar el vehículo asociado cuando aplique.
+- Usar una tarjeta principal para los datos del formulario.
+- Mantener scroll vertical.
+- Usar botones `Guardar`, `Cancelar` y `Volver`.
+- Mostrar aviso temporal cuando el guardado todavía no está implementado.
+
+Controles guiados actuales:
+
+- Tipo de vehículo: Taxi / Particular.
+- Categoría de gasto.
+- Prioridad de novedad.
+- Tipo de ajuste de ingreso.
+- Tipo de documento.
+
+No se usan todavía:
+
+- Selector de fecha.
+- Persistencia real.
+- Validaciones completas.
+- Mensajes de error por campo.
 
 ---
 
-## Recordatorios visuales
+## Recordatorios y vencimientos
 
-Los recordatorios se mostrarán dentro de la app.
+Los recordatorios se muestran dentro de la app.
 
-Ejemplos:
+La UI debe indicar claramente:
 
-- SOAT próximo a vencer.
-- Revisión tecnicomecánica próxima a vencer.
-- Impuestos pendientes.
+- Qué documento vence.
+- A qué vehículo pertenece.
+- Cuándo vence.
+- Cuántos días faltan.
 
-Los recordatorios deben verse claramente en la pantalla de inicio y en el detalle del vehículo.
+Estados visuales sugeridos:
+
+- Vencimientos próximos: naranja.
+- Vencimientos muy urgentes o vencidos: rojo.
+- Vencimientos con más margen: verde o color neutro.
 
 ---
 
 ## Principio principal
 
-La app debe ser fácil de usar para registrar y consultar información rápidamente.
+La app debe ayudar a registrar y consultar información rápidamente.
 
-Se aplicarán buenas prácticas visuales, pero sin crear una interfaz demasiado compleja en la primera versión.
+Se prioriza una experiencia clara y práctica sobre una interfaz demasiado compleja.
