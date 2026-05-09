@@ -39,6 +39,7 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocumentType
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
 import com.ivanmadrid.vehiclecontrolapp.utils.getDaysUntilLabel
+import com.ivanmadrid.vehiclecontrolapp.utils.sortDocumentsByDueDate
 import java.util.Locale
 
 private val TaxiBlue = Color(0xFF0B63CE)
@@ -114,10 +115,10 @@ fun VehicleListScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            sampleVehicleDocuments.take(2).forEachIndexed { index, document ->
+            sortDocumentsByDueDate(sampleVehicleDocuments).take(2).forEachIndexed { index, document ->
                 DocumentReminderCard(
                     document = document,
-                    isUrgent = index == 1,
+                    isUrgent = index == 0,
                     modifier = Modifier.weight(1f)
                 )
             }

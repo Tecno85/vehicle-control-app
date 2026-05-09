@@ -1,5 +1,6 @@
 package com.ivanmadrid.vehiclecontrolapp.utils
 
+import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
@@ -16,5 +17,21 @@ fun getDaysUntilLabel(dateText: String): String {
         }
     } catch (_: Exception) {
         "Fecha por revisar"
+    }
+}
+
+fun sortDocumentsByDueDate(documents: List<VehicleDocument>): List<VehicleDocument> {
+    return documents.sortedWith(
+        compareBy { document ->
+            parseDateOrMax(document.dueDate)
+        }
+    )
+}
+
+private fun parseDateOrMax(dateText: String): LocalDate {
+    return try {
+        LocalDate.parse(dateText)
+    } catch (_: Exception) {
+        LocalDate.MAX
     }
 }

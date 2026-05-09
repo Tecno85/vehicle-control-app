@@ -24,6 +24,7 @@ import com.ivanmadrid.vehiclecontrolapp.data.sample.sampleNovelties
 import com.ivanmadrid.vehiclecontrolapp.data.sample.sampleVehicleDocuments
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
+import com.ivanmadrid.vehiclecontrolapp.utils.sortDocumentsByDueDate
 
 @Composable
 fun VehicleDetailScreen(
@@ -34,9 +35,11 @@ fun VehicleDetailScreen(
     onRegisterNoveltyClick: () -> Unit,
     onRegisterDocumentClick: () -> Unit
 ) {
-    val vehicleDocuments = sampleVehicleDocuments.filter { document ->
-        document.vehicleId == vehicle.id
-    }
+    val vehicleDocuments = sortDocumentsByDueDate(
+        sampleVehicleDocuments.filter { document ->
+            document.vehicleId == vehicle.id
+        }
+    )
 
     val vehicleExpenses = sampleExpenses.filter { expense ->
         expense.vehicleId == vehicle.id
