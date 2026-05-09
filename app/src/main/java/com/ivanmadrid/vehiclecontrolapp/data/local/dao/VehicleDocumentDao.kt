@@ -24,4 +24,7 @@ interface VehicleDocumentDao {
 
     @Delete
     suspend fun deleteDocument(document: VehicleDocumentEntity)
+
+    @Query("DELETE FROM vehicle_documents WHERE vehicleId = :vehicleId")
+    suspend fun deleteDocumentsByVehicle(vehicleId: Int)
 }

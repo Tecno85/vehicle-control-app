@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.ivanmadrid.vehiclecontrolapp.data.local.repository.ExpenseLocalRepository
 import com.ivanmadrid.vehiclecontrolapp.data.local.repository.NoveltyLocalRepository
+import com.ivanmadrid.vehiclecontrolapp.data.local.repository.VehicleDeletionRepository
 import com.ivanmadrid.vehiclecontrolapp.data.local.repository.VehicleDocumentLocalRepository
 import com.ivanmadrid.vehiclecontrolapp.data.local.repository.VehicleLocalRepository
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Expense
@@ -14,10 +15,12 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 class VehicleDetailViewModel(
     vehicleId: Int,
     vehicleRepository: VehicleLocalRepository,
+    private val vehicleDeletionRepository: VehicleDeletionRepository,
     expenseRepository: ExpenseLocalRepository,
     noveltyRepository: NoveltyLocalRepository,
     vehicleDocumentRepository: VehicleDocumentLocalRepository
@@ -50,9 +53,20 @@ class VehicleDetailViewModel(
             initialValue = emptyList()
         )
 
+    fun deleteVehicle(
+        vehicle: Vehicle,
+        onDeleted: () -> Unit
+    ) {
+        viewModelScope.launch {
+            vehicleDeletionRepository.deleteVehicleWithRelatedData(vehicle)
+            onDeleted()
+        }
+    }
+
     class Factory(
         private val vehicleId: Int,
         private val vehicleRepository: VehicleLocalRepository,
+        private val vehicleDeletionRepository: VehicleDeletionRepository,
         private val expenseRepository: ExpenseLocalRepository,
         private val noveltyRepository: NoveltyLocalRepository,
         private val vehicleDocumentRepository: VehicleDocumentLocalRepository
@@ -63,6 +77,7 @@ class VehicleDetailViewModel(
                 return VehicleDetailViewModel(
                     vehicleId = vehicleId,
                     vehicleRepository = vehicleRepository,
+                    vehicleDeletionRepository = vehicleDeletionRepository,
                     expenseRepository = expenseRepository,
                     noveltyRepository = noveltyRepository,
                     vehicleDocumentRepository = vehicleDocumentRepository

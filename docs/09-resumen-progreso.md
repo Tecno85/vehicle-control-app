@@ -303,6 +303,7 @@ La app ya permite:
 - Navegar entre lista, detalle y formularios.
 - Agregar vehículos nuevos y guardarlos en Room desde el botón flotante `+`.
 - Editar vehículos existentes desde el detalle.
+- Eliminar vehículos desde el detalle con confirmación.
 - Registrar gastos reales desde el detalle de un vehículo y guardarlos en Room.
 - Registrar novedades reales desde el detalle de un vehículo y guardarlas en Room.
 - Registrar documentos reales desde el detalle de un vehículo y guardarlos en Room.
@@ -312,7 +313,7 @@ La app ya permite:
 La app todavía no permite:
 
 - Editar gastos, novedades o documentos existentes.
-- Eliminar registros.
+- Eliminar gastos, novedades o documentos individualmente.
 - Consultar historial completo.
 - Sincronizar con Firebase.
 - Enviar notificaciones del sistema.

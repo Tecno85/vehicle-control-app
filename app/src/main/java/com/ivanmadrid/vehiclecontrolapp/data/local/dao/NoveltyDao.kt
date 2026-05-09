@@ -21,4 +21,7 @@ interface NoveltyDao {
 
     @Delete
     suspend fun deleteNovelty(novelty: NoveltyEntity)
+
+    @Query("DELETE FROM novelties WHERE vehicleId = :vehicleId")
+    suspend fun deleteNoveltiesByVehicle(vehicleId: Int)
 }

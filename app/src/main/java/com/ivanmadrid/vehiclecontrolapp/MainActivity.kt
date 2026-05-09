@@ -104,6 +104,7 @@ class MainActivity : ComponentActivity() {
                                     factory = VehicleDetailViewModel.Factory(
                                         vehicleId = vehicle.id,
                                         vehicleRepository = appContainer.vehicleRepository,
+                                        vehicleDeletionRepository = appContainer.vehicleDeletionRepository,
                                         expenseRepository = appContainer.expenseRepository,
                                         noveltyRepository = appContainer.noveltyRepository,
                                         vehicleDocumentRepository = appContainer.vehicleDocumentRepository
@@ -128,6 +129,13 @@ class MainActivity : ComponentActivity() {
                                     onEditVehicleClick = {
                                         vehicleToEdit = detailVehicle
                                         currentScreen = AppScreen.VEHICLE_FORM
+                                    },
+                                    onDeleteVehicleClick = {
+                                        vehicleDetailViewModel.deleteVehicle(detailVehicle) {
+                                            selectedVehicle = null
+                                            vehicleToEdit = null
+                                            currentScreen = AppScreen.VEHICLE_LIST
+                                        }
                                     },
                                     onRegisterExpenseClick = {
                                         currentScreen = AppScreen.EXPENSE_FORM
