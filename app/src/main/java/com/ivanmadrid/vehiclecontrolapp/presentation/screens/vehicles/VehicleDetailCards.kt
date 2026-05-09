@@ -35,6 +35,7 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.Novelty
 import com.ivanmadrid.vehiclecontrolapp.domain.model.NoveltyPriority
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
+import com.ivanmadrid.vehiclecontrolapp.utils.getDaysUntilLabel
 
 private val DetailBlue = Color(0xFF0B63CE)
 private val DetailGreen = Color(0xFF188038)
@@ -185,7 +186,7 @@ fun VehicleDocumentItem(document: VehicleDocument) {
         markerColor = DetailOrange,
         markerBackground = SoftYellow,
         title = getDocumentTypeLabel(document.type),
-        subtitle = "Vence el ${document.dueDate}",
+        subtitle = getDaysUntilLabel(document.dueDate),
         extra = document.notes
     )
 }

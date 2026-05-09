@@ -38,6 +38,7 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocumentType
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
+import com.ivanmadrid.vehiclecontrolapp.utils.getDaysUntilLabel
 import java.util.Locale
 
 private val TaxiBlue = Color(0xFF0B63CE)
@@ -238,7 +239,7 @@ fun DocumentReminderCard(
                 Spacer(modifier = Modifier.height(2.dp))
 
                 Text(
-                    text = "Vence el ${document.dueDate}",
+                    text = "${getDaysUntilLabel(document.dueDate)} · ${document.dueDate}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
