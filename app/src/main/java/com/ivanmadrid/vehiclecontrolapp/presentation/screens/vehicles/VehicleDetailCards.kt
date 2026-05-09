@@ -101,6 +101,61 @@ fun TaxiInfoCard(vehicle: Vehicle) {
 }
 
 @Composable
+fun TaxiBalanceSummaryCard(
+    vehicle: Vehicle,
+    expenses: List<Expense>
+) {
+    val expectedIncome = vehicle.dailyFixedIncome ?: 0.0
+    val totalExpenses = expenses.sumOf { expense ->
+        expense.amount
+    }
+    val estimatedBalance = expectedIncome - totalExpenses
+
+    DetailSectionCard(
+        title = "Resumen económico",
+        markerText = "$",
+        markerColor = DetailGreen,
+        markerBackground = SoftGreen
+    ) {
+        Text(
+            text = "Estimación con los gastos recientes mostrados para este vehículo.",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            BalanceMetricItem(
+                label = "Ingreso esperado",
+                value = formatCurrency(expectedIncome),
+                valueColor = DetailGreen,
+                modifier = Modifier.weight(1f)
+            )
+
+            BalanceMetricItem(
+                label = "Gastos",
+                value = formatCurrency(totalExpenses),
+                valueColor = DetailRed,
+                modifier = Modifier.weight(1f)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        BalanceMetricItem(
+            label = "Balance estimado",
+            value = formatCurrency(estimatedBalance),
+            valueColor = if (estimatedBalance >= 0) DetailGreen else DetailRed,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Composable
 fun VehicleDocumentsCard(documents: List<VehicleDocument>) {
     DetailSectionCard(
         title = "Documentos y vencimientos",
@@ -369,6 +424,42 @@ fun HighlightInfoItem(
             color = valueColor,
             fontWeight = FontWeight.SemiBold
         )
+    }
+}
+
+@Composable
+fun BalanceMetricItem(
+    label: String,
+    value: String,
+    valueColor: Color,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier,
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f)
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(12.dp)
+        ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = value,
+                style = MaterialTheme.typography.titleMedium,
+                color = valueColor,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 }
 

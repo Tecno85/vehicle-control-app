@@ -70,6 +70,12 @@ fun VehicleDetailScreen(
         if (vehicle.type == VehicleType.TAXI) {
             Spacer(modifier = Modifier.height(12.dp))
             TaxiInfoCard(vehicle = vehicle)
+
+            Spacer(modifier = Modifier.height(12.dp))
+            TaxiBalanceSummaryCard(
+                vehicle = vehicle,
+                expenses = vehicleExpenses
+            )
         }
 
         Spacer(modifier = Modifier.height(12.dp))
