@@ -9,5 +9,5 @@ data class Novelty(
     val priority: NoveltyPriority,
     val affectsIncome: Boolean,
     val incomeAdjustmentType: IncomeAdjustmentType?,
-    val adjustedIncomeAmount: Double?,
+    val adjustedIncomeAmount: Long?,
 )

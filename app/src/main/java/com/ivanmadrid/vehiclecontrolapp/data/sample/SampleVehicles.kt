@@ -12,7 +12,7 @@ val sampleVehicles = listOf(
         type = VehicleType.TAXI,
         status = "Activo",
         currentDriver = "Jean Carlos Gámez",
-        dailyFixedIncome = 180000.0,
+        dailyFixedIncome = 180000L,
     ),
     Vehicle(
         id = 2,
@@ -22,7 +22,7 @@ val sampleVehicles = listOf(
         type = VehicleType.TAXI,
         status = "Activo",
         currentDriver = "Ider Jimenez",
-        dailyFixedIncome = 180000.0,
+        dailyFixedIncome = 180000L,
     ),
     Vehicle(
         id = 3,

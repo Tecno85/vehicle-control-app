@@ -457,9 +457,9 @@ fun getDocumentTypeLabel(type: VehicleDocumentType): String {
     }
 }
 
-fun formatCurrency(value: Double?): String {
-    val amount = value ?: 0.0
-    return "$" + "%,.0f".format(Locale.US, amount).replace(",", ".")
+fun formatCurrency(value: Long?): String {
+    val amount = value ?: 0L
+    return "$" + "%,d".format(Locale.US, amount).replace(",", ".")
 }
 
 fun VehicleDocumentType.shortLabel(): String {

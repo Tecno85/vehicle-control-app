@@ -25,6 +25,7 @@ Notas:
 - `dailyFixedIncome` solo aplica para taxis.
 - `currentDriver` puede aplicar principalmente para taxis.
 - Los carros particulares no necesitan ingreso fijo diario.
+- Los valores de dinero se representan como enteros (`Long`) para manejar pesos sin decimales.
 
 ---
 
@@ -51,6 +52,10 @@ Campos iniciales:
 - category
 - amount
 - description
+
+Notas:
+
+- `amount` se representa como `Long` para guardar pesos enteros.
 
 Categorías iniciales:
 
@@ -86,6 +91,7 @@ Notas:
 - `affectsIncome` indica si la novedad afecta el ingreso del taxi.
 - `incomeAdjustmentType` solo aplica cuando la novedad afecta el ingreso.
 - `adjustedIncomeAmount` se usa cuando el ajuste es por valor personalizado.
+- `adjustedIncomeAmount`, cuando existe, se representa como `Long`.
 
 ---
 

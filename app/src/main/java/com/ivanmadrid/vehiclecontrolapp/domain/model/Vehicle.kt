@@ -8,5 +8,5 @@ data class Vehicle(
     val type: VehicleType,
     val status: String,
     val currentDriver: String?,
-    val dailyFixedIncome: Double?,
+    val dailyFixedIncome: Long?,
 )

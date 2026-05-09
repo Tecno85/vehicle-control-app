@@ -106,7 +106,7 @@ fun TaxiBalanceSummaryCard(
     vehicle: Vehicle,
     expenses: List<Expense>
 ) {
-    val expectedIncome = vehicle.dailyFixedIncome ?: 0.0
+    val expectedIncome = vehicle.dailyFixedIncome ?: 0L
     val totalExpenses = expenses.sumOf { expense ->
         expense.amount
     }

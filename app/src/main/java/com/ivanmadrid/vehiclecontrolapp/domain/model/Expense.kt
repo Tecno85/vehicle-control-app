@@ -5,6 +5,6 @@ data class Expense(
     val vehicleId: Int,
     val date: String,
     val category: ExpenseCategory,
-    val amount: Double,
+    val amount: Long,
     val description: String,
 )
