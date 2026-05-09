@@ -19,12 +19,14 @@ import com.ivanmadrid.vehiclecontrolapp.presentation.screens.documents.DocumentF
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.expenses.ExpenseFormScreen
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.novelties.NoveltyFormScreen
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleDetailScreen
+import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleFormScreen
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleListScreen
 import com.ivanmadrid.vehiclecontrolapp.ui.theme.VehicleControlAppTheme
 
 enum class AppScreen {
     VEHICLE_LIST,
     VEHICLE_DETAIL,
+    VEHICLE_FORM,
     EXPENSE_FORM,
     NOVELTY_FORM,
     DOCUMENT_FORM,
@@ -51,7 +53,7 @@ class MainActivity : ComponentActivity() {
                         if (currentScreen == AppScreen.VEHICLE_LIST) {
                             FloatingActionButton(
                                 onClick = {
-                                    // TODO: Abrir formulario para agregar vehículo
+                                    currentScreen = AppScreen.VEHICLE_FORM
                                 }
                             ) {
                                 Text(text = "+")
@@ -90,6 +92,15 @@ class MainActivity : ComponentActivity() {
                                     }
                                 )
                             }
+                        }
+
+                        AppScreen.VEHICLE_FORM -> {
+                            VehicleFormScreen(
+                                modifier = Modifier.padding(innerPadding),
+                                onBackClick = {
+                                    currentScreen = AppScreen.VEHICLE_LIST
+                                }
+                            )
                         }
 
                         AppScreen.EXPENSE_FORM -> {
