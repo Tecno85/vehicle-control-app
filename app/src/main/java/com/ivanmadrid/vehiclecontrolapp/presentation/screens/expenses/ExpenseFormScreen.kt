@@ -1,28 +1,38 @@
 package com.ivanmadrid.vehiclecontrolapp.presentation.screens.expenses
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
+import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleAvatar
+import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleTypeChip
 
 @Composable
 fun ExpenseFormScreen(
@@ -50,97 +60,122 @@ fun ExpenseFormScreen(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp)
+            .background(MaterialTheme.colorScheme.background)
+            .padding(horizontal = 16.dp, vertical = 18.dp)
     ) {
-        Button(
+        TextButton(
             onClick = onBackClick
         ) {
-            Text(text = "Volver")
+            Text(text = "< Volver")
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         Text(
             text = "Registrar gasto",
-            style = MaterialTheme.typography.headlineMedium
+            style = MaterialTheme.typography.headlineLarge,
+            fontWeight = FontWeight.Bold
         )
 
-        Text(
-            text = "${vehicle.plate} - ${vehicle.brand} ${vehicle.model}",
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        Spacer(modifier = Modifier.height(14.dp))
+
+        ExpenseVehicleHeader(vehicle = vehicle)
+
+        Spacer(modifier = Modifier.height(18.dp))
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            )
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(
+                    text = "Datos del gasto",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Spacer(modifier = Modifier.height(14.dp))
+
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = date,
+                    onValueChange = { newValue ->
+                        date = newValue
+                    },
+                    label = {
+                        Text(text = "Fecha")
+                    },
+                    placeholder = {
+                        Text(text = "Ej: 2026-05-07")
+                    },
+                    singleLine = true
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = category,
+                    onValueChange = { newValue ->
+                        category = newValue
+                    },
+                    label = {
+                        Text(text = "Categoría")
+                    },
+                    placeholder = {
+                        Text(text = "Ej: Combustible")
+                    },
+                    singleLine = true
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = amount,
+                    onValueChange = { newValue ->
+                        if (newValue.all { character -> character.isDigit() }) {
+                            amount = newValue
+                        }
+                    },
+                    label = {
+                        Text(text = "Valor")
+                    },
+                    placeholder = {
+                        Text(text = "Ej: 65000")
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number
+                    ),
+                    singleLine = true
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = description,
+                    onValueChange = { newValue ->
+                        description = newValue
+                    },
+                    label = {
+                        Text(text = "Descripción")
+                    },
+                    placeholder = {
+                        Text(text = "Ej: Tanqueo diario")
+                    },
+                    minLines = 2
+                )
+            }
+        }
 
         Spacer(modifier = Modifier.height(20.dp))
-
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = date,
-            onValueChange = { newValue ->
-                date = newValue
-            },
-            label = {
-                Text(text = "Fecha")
-            },
-            placeholder = {
-                Text(text = "Ej: 2026-05-07")
-            }
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = category,
-            onValueChange = { newValue ->
-                category = newValue
-            },
-            label = {
-                Text(text = "Categoría")
-            },
-            placeholder = {
-                Text(text = "Ej: Combustible")
-            }
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = amount,
-            onValueChange = { newValue ->
-                if (newValue.all { character -> character.isDigit() }) {
-                    amount = newValue
-                }
-            },
-            label = {
-                Text(text = "Valor")
-            },
-            placeholder = {
-                Text(text = "Ej: 65000")
-            },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number
-            )
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = description,
-            onValueChange = { newValue ->
-                description = newValue
-            },
-            label = {
-                Text(text = "Descripción")
-            },
-            placeholder = {
-                Text(text = "Ej: Tanqueo diario")
-            }
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
 
         Button(
             modifier = Modifier.fillMaxWidth(),
@@ -158,6 +193,49 @@ fun ExpenseFormScreen(
             onClick = onBackClick
         ) {
             Text(text = "Cancelar")
+        }
+
+        Spacer(modifier = Modifier.height(80.dp))
+    }
+}
+
+@Composable
+fun ExpenseVehicleHeader(vehicle: Vehicle) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            VehicleAvatar(type = vehicle.type)
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = vehicle.plate,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Text(
+                    text = "${vehicle.brand} ${vehicle.model}",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                VehicleTypeChip(type = vehicle.type)
+            }
         }
     }
 }

@@ -44,12 +44,14 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     floatingActionButton = {
-                        FloatingActionButton(
-                            onClick = {
-                                // TODO: Abrir formulario para agregar vehículo
+                        if (currentScreen == AppScreen.VEHICLE_LIST) {
+                            FloatingActionButton(
+                                onClick = {
+                                    // TODO: Abrir formulario para agregar vehículo
+                                }
+                            ) {
+                                Text(text = "+")
                             }
-                        ) {
-                            Text(text = "+")
                         }
                     }
                 ) { innerPadding ->
