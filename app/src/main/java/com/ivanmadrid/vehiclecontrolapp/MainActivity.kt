@@ -45,10 +45,12 @@ class MainActivity : ComponentActivity() {
             VehicleControlAppTheme {
                 val vehicleListViewModel: VehicleListViewModel = viewModel(
                     factory = VehicleListViewModel.Factory(
-                        vehicleRepository = appContainer.vehicleRepository
+                        vehicleRepository = appContainer.vehicleRepository,
+                        vehicleDocumentRepository = appContainer.vehicleDocumentRepository
                     )
                 )
                 val vehicles by vehicleListViewModel.vehicles.collectAsState()
+                val documents by vehicleListViewModel.documents.collectAsState()
 
                 var selectedVehicle by remember {
                     mutableStateOf<Vehicle?>(null)
@@ -76,6 +78,7 @@ class MainActivity : ComponentActivity() {
                         AppScreen.VEHICLE_LIST -> {
                             VehicleListScreen(
                                 vehicles = vehicles,
+                                documents = documents,
                                 modifier = Modifier.padding(innerPadding),
                                 onVehicleClick = { vehicle ->
                                     selectedVehicle = vehicle

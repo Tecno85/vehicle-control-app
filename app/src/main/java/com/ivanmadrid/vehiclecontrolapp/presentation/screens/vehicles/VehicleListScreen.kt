@@ -32,7 +32,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.ivanmadrid.vehiclecontrolapp.data.sample.sampleVehicleDocuments
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocumentType
@@ -54,6 +53,7 @@ private val DividerColor = Color(0xFFE4E7EC)
 @Composable
 fun VehicleListScreen(
     vehicles: List<Vehicle>,
+    documents: List<VehicleDocument>,
     modifier: Modifier = Modifier,
     onVehicleClick: (Vehicle) -> Unit
 ) {
@@ -115,7 +115,7 @@ fun VehicleListScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            sortDocumentsByDueDate(sampleVehicleDocuments).take(2).forEachIndexed { index, document ->
+            sortDocumentsByDueDate(documents).take(2).forEachIndexed { index, document ->
                 DocumentReminderCard(
                     document = document,
                     vehicles = vehicles,

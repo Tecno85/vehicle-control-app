@@ -45,8 +45,8 @@ Estado actual:
 - Ya existe una primera capa local con entidades, DAOs, convertidores y `AppDatabase`.
 - Ya existe un contenedor manual de dependencias (`AppContainer`).
 - Ya existe un seed inicial que carga los datos de prueba en Room si la base está vacía.
-- La lista de vehículos ya lee desde Room mediante `VehicleListViewModel`.
-- El detalle, formularios y vencimientos todavía usan datos de prueba o estado local mientras se migran gradualmente.
+- La lista de vehículos ya lee vehículos y vencimientos desde Room mediante `VehicleListViewModel`.
+- El detalle y formularios todavía usan datos de prueba o estado local mientras se migran gradualmente.
 
 Decisión para la primera integración:
 

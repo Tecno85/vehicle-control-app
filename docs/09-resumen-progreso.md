@@ -167,7 +167,7 @@ Estado actual:
 - Permite entrar al detalle de cualquier vehículo.
 - Tiene botón flotante `+` solo en esta pantalla.
 - Ya lee los vehículos desde Room mediante `VehicleListViewModel`.
-- Los vencimientos de la lista todavía usan documentos de prueba.
+- Ya lee los vencimientos de la lista desde Room mediante `VehicleListViewModel`.
 
 ### Detalle del vehículo
 
