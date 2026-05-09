@@ -49,7 +49,8 @@ Estado actual:
 - El detalle ya lee documentos, gastos y novedades desde Room mediante `VehicleDetailViewModel`.
 - El formulario de agregar vehículo ya guarda registros reales en Room mediante `VehicleFormViewModel`.
 - El formulario de registrar gasto ya guarda registros reales en Room mediante `ExpenseFormViewModel`.
-- Los formularios de novedades y documentos todavía usan estado local y no guardan en Room.
+- El formulario de registrar novedad ya guarda registros reales en Room mediante `NoveltyFormViewModel`.
+- El formulario de documentos todavía usa estado local y no guarda en Room.
 
 Decisión para la integración gradual:
 

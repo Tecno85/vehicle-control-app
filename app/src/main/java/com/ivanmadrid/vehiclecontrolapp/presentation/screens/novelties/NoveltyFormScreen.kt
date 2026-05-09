@@ -23,7 +23,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,17 +33,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.ivanmadrid.vehiclecontrolapp.domain.model.IncomeAdjustmentType
+import com.ivanmadrid.vehiclecontrolapp.domain.model.Novelty
 import com.ivanmadrid.vehiclecontrolapp.domain.model.NoveltyPriority
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleAvatar
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleTypeChip
-import kotlinx.coroutines.delay
 
 @Composable
 fun NoveltyFormScreen(
     vehicle: Vehicle,
     modifier: Modifier = Modifier,
+    onSaveNovelty: (Novelty) -> Unit,
     onBackClick: () -> Unit
 ) {
     var date by remember {
@@ -75,15 +75,8 @@ fun NoveltyFormScreen(
         mutableStateOf("")
     }
 
-    var showSaveMessage by remember {
-        mutableStateOf(false)
-    }
-
-    LaunchedEffect(showSaveMessage) {
-        if (showSaveMessage) {
-            delay(3500)
-            showSaveMessage = false
-        }
+    var validationMessage by remember {
+        mutableStateOf<String?>(null)
     }
 
     Column(
@@ -290,28 +283,80 @@ fun NoveltyFormScreen(
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                showSaveMessage = true
-                // TODO: Guardar novedad cuando implementemos almacenamiento
+                val selectedPriority = priority
+                val selectedAdjustmentType = incomeAdjustmentType
+                val parsedAdjustedIncome = adjustedIncomeAmount.toLongOrNull()
+                val shouldAffectIncome = vehicle.type == VehicleType.TAXI && affectsIncome
+
+                if (
+                    date.isBlank() ||
+                    noveltyType.isBlank() ||
+                    selectedPriority == null
+                ) {
+                    validationMessage = "Completa fecha, tipo de novedad y prioridad."
+                    return@Button
+                }
+
+                if (shouldAffectIncome && selectedAdjustmentType == null) {
+                    validationMessage = "Selecciona el tipo de ajuste de ingreso."
+                    return@Button
+                }
+
+                if (
+                    shouldAffectIncome &&
+                    selectedAdjustmentType == IncomeAdjustmentType.CUSTOM_AMOUNT &&
+                    (parsedAdjustedIncome == null || parsedAdjustedIncome <= 0L)
+                ) {
+                    validationMessage = "Ingresa un valor personalizado mayor a cero."
+                    return@Button
+                }
+
+                validationMessage = null
+
+                onSaveNovelty(
+                    Novelty(
+                        id = 0,
+                        vehicleId = vehicle.id,
+                        date = date.trim(),
+                        type = noveltyType.trim(),
+                        description = description.trim().ifBlank { noveltyType.trim() },
+                        priority = selectedPriority,
+                        affectsIncome = shouldAffectIncome,
+                        incomeAdjustmentType = if (shouldAffectIncome) {
+                            selectedAdjustmentType
+                        } else {
+                            null
+                        },
+                        adjustedIncomeAmount = if (
+                            shouldAffectIncome &&
+                            selectedAdjustmentType == IncomeAdjustmentType.CUSTOM_AMOUNT
+                        ) {
+                            parsedAdjustedIncome
+                        } else {
+                            null
+                        }
+                    )
+                )
             }
         ) {
             Text(text = "Guardar novedad")
         }
 
-        if (showSaveMessage) {
+        validationMessage?.let { message ->
             Spacer(modifier = Modifier.height(8.dp))
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                    containerColor = MaterialTheme.colorScheme.errorContainer
                 )
             ) {
                 Text(
-                    text = "El formulario está listo visualmente. El guardado se conectará cuando implementemos almacenamiento.",
+                    text = message,
                     modifier = Modifier.padding(12.dp),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                    color = MaterialTheme.colorScheme.onErrorContainer
                 )
             }
         }

@@ -21,6 +21,7 @@ import com.ivanmadrid.vehiclecontrolapp.presentation.screens.documents.DocumentF
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.expenses.ExpenseFormScreen
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.expenses.ExpenseFormViewModel
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.novelties.NoveltyFormScreen
+import com.ivanmadrid.vehiclecontrolapp.presentation.screens.novelties.NoveltyFormViewModel
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleDetailScreen
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleDetailViewModel
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleFormScreen
@@ -173,9 +174,20 @@ class MainActivity : ComponentActivity() {
 
                         AppScreen.NOVELTY_FORM -> {
                             selectedVehicle?.let { vehicle ->
+                                val noveltyFormViewModel: NoveltyFormViewModel = viewModel(
+                                    factory = NoveltyFormViewModel.Factory(
+                                        noveltyRepository = appContainer.noveltyRepository
+                                    )
+                                )
+
                                 NoveltyFormScreen(
                                     vehicle = vehicle,
                                     modifier = Modifier.padding(innerPadding),
+                                    onSaveNovelty = { novelty ->
+                                        noveltyFormViewModel.saveNovelty(novelty) {
+                                            currentScreen = AppScreen.VEHICLE_DETAIL
+                                        }
+                                    },
                                     onBackClick = {
                                         currentScreen = AppScreen.VEHICLE_DETAIL
                                     }
