@@ -23,6 +23,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,6 +39,7 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleAvatar
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleTypeChip
+import kotlinx.coroutines.delay
 
 @Composable
 fun NoveltyFormScreen(
@@ -71,6 +73,17 @@ fun NoveltyFormScreen(
 
     var adjustedIncomeAmount by remember {
         mutableStateOf("")
+    }
+
+    var showSaveMessage by remember {
+        mutableStateOf(false)
+    }
+
+    LaunchedEffect(showSaveMessage) {
+        if (showSaveMessage) {
+            delay(3500)
+            showSaveMessage = false
+        }
     }
 
     Column(
@@ -277,10 +290,30 @@ fun NoveltyFormScreen(
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
+                showSaveMessage = true
                 // TODO: Guardar novedad cuando implementemos almacenamiento
             }
         ) {
             Text(text = "Guardar novedad")
+        }
+
+        if (showSaveMessage) {
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                )
+            ) {
+                Text(
+                    text = "El formulario está listo visualmente. El guardado se conectará cuando implementemos almacenamiento.",
+                    modifier = Modifier.padding(12.dp),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
