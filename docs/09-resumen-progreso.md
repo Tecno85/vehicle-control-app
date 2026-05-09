@@ -47,8 +47,8 @@ Los taxis tienen lógica especial:
 - Lenguaje: Kotlin.
 - IDE: Android Studio.
 - Interfaz: Jetpack Compose.
-- Estado actual: prototipo visual funcional con datos de prueba.
-- Base de datos futura: SQLite usando Room.
+- Estado actual: app funcional inicial con Room para lecturas principales y primer guardado real.
+- Base de datos local: SQLite usando Room.
 - Firebase: posible mejora futura, no incluida en la primera versión.
 - Arquitectura actual: separación sencilla por responsabilidades.
 
@@ -105,7 +105,7 @@ Enums principales:
 - `IncomeAdjustmentType`: sin ingreso, medio ingreso y valor personalizado.
 - `VehicleDocumentType`: SOAT, tecnicomecánica e impuestos.
 
-Por ahora las fechas siguen como texto con formato `yyyy-MM-dd`. Antes de implementar Room conviene revisar si se mantienen como texto ISO o se migra a un tipo/estrategia más formal.
+Por ahora las fechas siguen como texto con formato `yyyy-MM-dd`. En Room se mantienen como texto ISO para conservar simplicidad y facilitar el ordenamiento básico.
 
 ---
 
@@ -135,7 +135,7 @@ Los datos de prueba permiten:
 - Mostrar novedades recientes.
 - Calcular un resumen económico estimado para taxis.
 
-Los datos todavía no se guardan de forma real. La persistencia se implementará más adelante con Room.
+Los datos de prueba se cargan como seed inicial en Room si la base de datos está vacía.
 
 ---
 
@@ -207,8 +207,8 @@ Los formularios:
 - Muestran el vehículo asociado cuando aplica.
 - Usan tarjetas para separar contenido.
 - Tienen botones `Guardar`, `Cancelar` y `Volver`.
-- Muestran aviso temporal cuando se toca `Guardar`, indicando que el guardado real se implementará con almacenamiento.
-- No guardan datos todavía.
+- El formulario de vehículo ya guarda registros reales en Room.
+- Los formularios de gasto, novedad y documento todavía no guardan datos reales.
 
 Controles guiados implementados:
 
@@ -294,14 +294,14 @@ La app ya permite:
 - Ver resumen económico estimado para taxis.
 - Abrir formularios visuales para vehículo, gasto, novedad y documento.
 - Navegar entre lista, detalle y formularios.
+- Agregar vehículos nuevos y guardarlos en Room desde el botón flotante `+`.
 
 La app todavía no permite:
 
-- Guardar registros reales.
+- Guardar gastos, novedades o documentos desde sus formularios.
 - Editar registros existentes.
 - Eliminar registros.
 - Consultar historial completo.
-- Persistir cambios reales desde formularios hacia Room.
 - Sincronizar con Firebase.
 - Enviar notificaciones del sistema.
 
@@ -311,9 +311,9 @@ La app todavía no permite:
 
 1. Revisar visualmente todas las pantallas en emulador.
 2. Ajustar textos, espaciados o tamaños que se vean apretados.
-3. Considerar pequeñas validaciones visuales en formularios.
-4. Definir estrategia de fechas y dinero antes de Room.
-5. Implementar Room cuando las pantallas principales estén estables.
-6. Reemplazar datos de prueba por datos persistentes.
+3. Probar el guardado real de vehículos desde el botón flotante `+`.
+4. Conectar el guardado real de gastos a Room.
+5. Conectar el guardado real de novedades a Room.
+6. Conectar el guardado real de documentos a Room.
 7. Agregar cálculos reales de balance por fecha.
 8. Evaluar Navigation Compose cuando haya historial, reportes y ajustes.

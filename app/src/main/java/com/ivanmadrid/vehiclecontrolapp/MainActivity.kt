@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.documents.DocumentFormScreen
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.expenses.ExpenseFormScreen
@@ -22,10 +23,10 @@ import com.ivanmadrid.vehiclecontrolapp.presentation.screens.novelties.NoveltyFo
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleDetailScreen
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleDetailViewModel
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleFormScreen
+import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleFormViewModel
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleListScreen
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleListViewModel
 import com.ivanmadrid.vehiclecontrolapp.ui.theme.VehicleControlAppTheme
-import androidx.lifecycle.viewmodel.compose.viewModel
 
 enum class AppScreen {
     VEHICLE_LIST,
@@ -127,8 +128,19 @@ class MainActivity : ComponentActivity() {
                         }
 
                         AppScreen.VEHICLE_FORM -> {
+                            val vehicleFormViewModel: VehicleFormViewModel = viewModel(
+                                factory = VehicleFormViewModel.Factory(
+                                    vehicleRepository = appContainer.vehicleRepository
+                                )
+                            )
+
                             VehicleFormScreen(
                                 modifier = Modifier.padding(innerPadding),
+                                onSaveVehicle = { vehicle ->
+                                    vehicleFormViewModel.saveVehicle(vehicle) {
+                                        currentScreen = AppScreen.VEHICLE_LIST
+                                    }
+                                },
                                 onBackClick = {
                                     currentScreen = AppScreen.VEHICLE_LIST
                                 }

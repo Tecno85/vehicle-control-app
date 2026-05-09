@@ -47,13 +47,14 @@ Estado actual:
 - Ya existe un seed inicial que carga los datos de prueba en Room si la base está vacía.
 - La lista de vehículos ya lee vehículos y vencimientos desde Room mediante `VehicleListViewModel`.
 - El detalle ya lee documentos, gastos y novedades desde Room mediante `VehicleDetailViewModel`.
-- Los formularios todavía usan estado local y no guardan en Room.
+- El formulario de agregar vehículo ya guarda registros reales en Room mediante `VehicleFormViewModel`.
+- Los formularios de gastos, novedades y documentos todavía usan estado local y no guardan en Room.
 
-Decisión para la primera integración:
+Decisión para la integración gradual:
 
-- Crear primero la capa local aislada.
-- Validar compilación.
-- Conectar la UI en pasos posteriores, pantalla por pantalla.
+- Conectar primero las lecturas desde Room.
+- Luego conectar los guardados pantalla por pantalla.
+- Mantener la navegación simple mientras la app siga siendo pequeña.
 
 ---
 

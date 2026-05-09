@@ -20,7 +20,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,12 +28,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
-import kotlinx.coroutines.delay
 
 @Composable
 fun VehicleFormScreen(
     modifier: Modifier = Modifier,
+    onSaveVehicle: (Vehicle) -> Unit,
     onBackClick: () -> Unit
 ) {
     var plate by remember {
@@ -65,15 +65,8 @@ fun VehicleFormScreen(
         mutableStateOf("")
     }
 
-    var showSaveMessage by remember {
-        mutableStateOf(false)
-    }
-
-    LaunchedEffect(showSaveMessage) {
-        if (showSaveMessage) {
-            delay(3500)
-            showSaveMessage = false
-        }
+    var validationMessage by remember {
+        mutableStateOf<String?>(null)
     }
 
     Column(
@@ -299,28 +292,60 @@ fun VehicleFormScreen(
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                showSaveMessage = true
-                // TODO: Guardar vehículo cuando implementemos almacenamiento
+                val selectedType = vehicleType
+
+                if (
+                    plate.isBlank() ||
+                    brand.isBlank() ||
+                    model.isBlank() ||
+                    selectedType == null
+                ) {
+                    validationMessage = "Completa placa, marca, modelo y tipo de vehículo."
+                    return@Button
+                }
+
+                validationMessage = null
+
+                onSaveVehicle(
+                    Vehicle(
+                        id = 0,
+                        plate = plate.trim().uppercase(),
+                        brand = brand.trim(),
+                        model = model.trim(),
+                        type = selectedType,
+                        status = status.trim().ifBlank { "Activo" },
+                        currentDriver = if (selectedType == VehicleType.TAXI) {
+                            currentDriver.trim().ifBlank { null }
+                        } else {
+                            null
+                        },
+                        dailyFixedIncome = if (selectedType == VehicleType.TAXI) {
+                            dailyFixedIncome.toLongOrNull()
+                        } else {
+                            null
+                        }
+                    )
+                )
             }
         ) {
             Text(text = "Guardar vehículo")
         }
 
-        if (showSaveMessage) {
+        validationMessage?.let { message ->
             Spacer(modifier = Modifier.height(8.dp))
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                    containerColor = MaterialTheme.colorScheme.errorContainer
                 )
             ) {
                 Text(
-                    text = "El formulario está listo visualmente. El guardado se conectará cuando implementemos almacenamiento.",
+                    text = message,
                     modifier = Modifier.padding(12.dp),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                    color = MaterialTheme.colorScheme.onErrorContainer
                 )
             }
         }
