@@ -309,7 +309,7 @@ fun NoveltyFormScreen(
                 }
 
                 if (shouldAffectIncome && selectedAdjustmentType == null) {
-                    validationMessage = "Selecciona el tipo de ajuste de ingreso."
+                    validationMessage = "Selecciona el resultado del día."
                     return@Button
                 }
 
@@ -318,7 +318,7 @@ fun NoveltyFormScreen(
                     selectedAdjustmentType == IncomeAdjustmentType.CUSTOM_AMOUNT &&
                     (parsedAdjustedIncome == null || parsedAdjustedIncome <= 0L)
                 ) {
-                    validationMessage = "Ingresa un valor personalizado mayor a cero."
+                    validationMessage = "Ingresa un ingreso real del día mayor a cero."
                     return@Button
                 }
 

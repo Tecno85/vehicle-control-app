@@ -138,7 +138,7 @@ fun TaxiBalanceSummaryCard(
     ) {
         Text(
             text = if (balanceSummary.referenceDate != null) {
-                "Solo usa gastos y novedades del día seleccionado."
+                "Día seleccionado: ${balanceSummary.referenceDate}. Solo usa gastos y novedades de ese día."
             } else {
                 "Sin gastos ni novedades con fecha válida para calcular un día de referencia."
             },
@@ -219,16 +219,26 @@ fun BalanceDateButton(
             modifier = modifier,
             onClick = onClick
         ) {
-            Text(text = date)
+            Text(text = getShortDateLabel(date))
         }
     } else {
         OutlinedButton(
             modifier = modifier,
             onClick = onClick
         ) {
-            Text(text = date)
+            Text(text = getShortDateLabel(date))
         }
     }
+}
+
+fun getShortDateLabel(date: String): String {
+    val parts = date.split("-")
+
+    if (parts.size != 3) {
+        return date
+    }
+
+    return "${parts[1]}/${parts[2]}"
 }
 
 @Composable
