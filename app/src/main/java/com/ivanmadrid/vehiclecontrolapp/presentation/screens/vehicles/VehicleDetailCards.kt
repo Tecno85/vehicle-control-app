@@ -22,6 +22,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -204,7 +205,10 @@ fun VehicleDocumentItem(document: VehicleDocument) {
 }
 
 @Composable
-fun VehicleExpensesCard(expenses: List<Expense>) {
+fun VehicleExpensesCard(
+    expenses: List<Expense>,
+    onDeleteExpenseClick: (Expense) -> Unit
+) {
     DetailSectionCard(
         title = "Gastos recientes",
         markerText = "$",
@@ -216,7 +220,12 @@ fun VehicleExpensesCard(expenses: List<Expense>) {
             EmptySectionText(text = "No hay gastos registrados para este vehículo.")
         } else {
             expenses.forEachIndexed { index, expense ->
-                VehicleExpenseItem(expense = expense)
+                VehicleExpenseItem(
+                    expense = expense,
+                    onDeleteClick = {
+                        onDeleteExpenseClick(expense)
+                    }
+                )
 
                 if (index < expenses.lastIndex) {
                     DetailDivider()
@@ -227,7 +236,10 @@ fun VehicleExpensesCard(expenses: List<Expense>) {
 }
 
 @Composable
-fun VehicleExpenseItem(expense: Expense) {
+fun VehicleExpenseItem(
+    expense: Expense,
+    onDeleteClick: () -> Unit
+) {
     DetailListItem(
         markerText = "$",
         markerColor = DetailBlue,
@@ -235,7 +247,9 @@ fun VehicleExpenseItem(expense: Expense) {
         title = expense.description,
         subtitle = getExpenseCategoryLabel(expense.category),
         extra = expense.date,
-        trailingText = formatCurrency(expense.amount)
+        trailingText = formatCurrency(expense.amount),
+        actionText = "Eliminar",
+        onActionClick = onDeleteClick
     )
 }
 
@@ -503,7 +517,9 @@ fun DetailListItem(
     title: String,
     subtitle: String,
     extra: String?,
-    trailingText: String? = null
+    trailingText: String? = null,
+    actionText: String? = null,
+    onActionClick: (() -> Unit)? = null
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -547,11 +563,23 @@ fun DetailListItem(
         if (trailingText != null) {
             Spacer(modifier = Modifier.width(8.dp))
 
-            Text(
-                text = trailingText,
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Bold
-            )
+            Column(
+                horizontalAlignment = Alignment.End
+            ) {
+                Text(
+                    text = trailingText,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold
+                )
+
+                if (actionText != null && onActionClick != null) {
+                    TextButton(
+                        onClick = onActionClick
+                    ) {
+                        Text(text = actionText)
+                    }
+                }
+            }
         }
     }
 }

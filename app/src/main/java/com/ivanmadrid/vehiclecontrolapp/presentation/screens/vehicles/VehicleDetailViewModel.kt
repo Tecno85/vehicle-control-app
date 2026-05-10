@@ -21,7 +21,7 @@ class VehicleDetailViewModel(
     vehicleId: Int,
     vehicleRepository: VehicleLocalRepository,
     private val vehicleDeletionRepository: VehicleDeletionRepository,
-    expenseRepository: ExpenseLocalRepository,
+    private val expenseRepository: ExpenseLocalRepository,
     noveltyRepository: NoveltyLocalRepository,
     vehicleDocumentRepository: VehicleDocumentLocalRepository
 ) : ViewModel() {
@@ -60,6 +60,12 @@ class VehicleDetailViewModel(
         viewModelScope.launch {
             vehicleDeletionRepository.deleteVehicleWithRelatedData(vehicle)
             onDeleted()
+        }
+    }
+
+    fun deleteExpense(expense: Expense) {
+        viewModelScope.launch {
+            expenseRepository.deleteExpense(expense)
         }
     }
 

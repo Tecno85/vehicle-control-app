@@ -43,6 +43,7 @@ fun VehicleDetailScreen(
     onBackClick: () -> Unit,
     onEditVehicleClick: () -> Unit,
     onDeleteVehicleClick: () -> Unit,
+    onDeleteExpenseClick: (Expense) -> Unit,
     onRegisterExpenseClick: () -> Unit,
     onRegisterNoveltyClick: () -> Unit,
     onRegisterDocumentClick: () -> Unit
@@ -50,6 +51,9 @@ fun VehicleDetailScreen(
     val vehicleDocuments = sortDocumentsByDueDate(documents)
     var showDeleteDialog by remember {
         mutableStateOf(false)
+    }
+    var expenseToDelete by remember {
+        mutableStateOf<Expense?>(null)
     }
 
     Column(
@@ -97,7 +101,12 @@ fun VehicleDetailScreen(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        VehicleExpensesCard(expenses = expenses)
+        VehicleExpensesCard(
+            expenses = expenses,
+            onDeleteExpenseClick = { expense ->
+                expenseToDelete = expense
+            }
+        )
 
         if (vehicle.type == VehicleType.TAXI) {
             Spacer(modifier = Modifier.height(12.dp))
@@ -161,6 +170,39 @@ fun VehicleDetailScreen(
                 TextButton(
                     onClick = {
                         showDeleteDialog = false
+                    }
+                ) {
+                    Text(text = "Cancelar")
+                }
+            }
+        )
+    }
+
+    expenseToDelete?.let { expense ->
+        AlertDialog(
+            onDismissRequest = {
+                expenseToDelete = null
+            },
+            title = {
+                Text(text = "Eliminar gasto")
+            },
+            text = {
+                Text(text = "¿Seguro que quieres eliminar este gasto de ${formatCurrency(expense.amount)}?")
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        expenseToDelete = null
+                        onDeleteExpenseClick(expense)
+                    }
+                ) {
+                    Text(text = "Eliminar")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        expenseToDelete = null
                     }
                 ) {
                     Text(text = "Cancelar")
