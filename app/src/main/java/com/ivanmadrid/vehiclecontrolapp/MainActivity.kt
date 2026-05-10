@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.ivanmadrid.vehiclecontrolapp.domain.model.Expense
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.documents.DocumentFormScreen
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.documents.DocumentFormViewModel
@@ -63,6 +64,10 @@ class MainActivity : ComponentActivity() {
 
                 var vehicleToEdit by remember {
                     mutableStateOf<Vehicle?>(null)
+                }
+
+                var expenseToEdit by remember {
+                    mutableStateOf<Expense?>(null)
                 }
 
                 var currentScreen by remember {
@@ -134,8 +139,13 @@ class MainActivity : ComponentActivity() {
                                         vehicleDetailViewModel.deleteVehicle(detailVehicle) {
                                             selectedVehicle = null
                                             vehicleToEdit = null
+                                            expenseToEdit = null
                                             currentScreen = AppScreen.VEHICLE_LIST
                                         }
+                                    },
+                                    onEditExpenseClick = { expense ->
+                                        expenseToEdit = expense
+                                        currentScreen = AppScreen.EXPENSE_FORM
                                     },
                                     onDeleteExpenseClick = { expense ->
                                         vehicleDetailViewModel.deleteExpense(expense)
@@ -147,6 +157,7 @@ class MainActivity : ComponentActivity() {
                                         vehicleDetailViewModel.deleteDocument(document)
                                     },
                                     onRegisterExpenseClick = {
+                                        expenseToEdit = null
                                         currentScreen = AppScreen.EXPENSE_FORM
                                     },
                                     onRegisterNoveltyClick = {
@@ -206,12 +217,15 @@ class MainActivity : ComponentActivity() {
                                 ExpenseFormScreen(
                                     vehicle = vehicle,
                                     modifier = Modifier.padding(innerPadding),
+                                    expenseToEdit = expenseToEdit,
                                     onSaveExpense = { expense ->
                                         expenseFormViewModel.saveExpense(expense) {
+                                            expenseToEdit = null
                                             currentScreen = AppScreen.VEHICLE_DETAIL
                                         }
                                     },
                                     onBackClick = {
+                                        expenseToEdit = null
                                         currentScreen = AppScreen.VEHICLE_DETAIL
                                     }
                                 )

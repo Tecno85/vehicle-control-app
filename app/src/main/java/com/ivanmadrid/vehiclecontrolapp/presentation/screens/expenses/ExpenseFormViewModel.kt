@@ -15,7 +15,12 @@ class ExpenseFormViewModel(
         onSaved: () -> Unit
     ) {
         viewModelScope.launch {
-            expenseRepository.insertExpense(expense)
+            if (expense.id == 0) {
+                expenseRepository.insertExpense(expense)
+            } else {
+                expenseRepository.updateExpense(expense)
+            }
+
             onSaved()
         }
     }

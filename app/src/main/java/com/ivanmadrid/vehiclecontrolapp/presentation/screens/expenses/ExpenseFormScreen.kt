@@ -42,26 +42,27 @@ import com.ivanmadrid.vehiclecontrolapp.utils.isValidIsoDate
 fun ExpenseFormScreen(
     vehicle: Vehicle,
     modifier: Modifier = Modifier,
+    expenseToEdit: Expense? = null,
     onSaveExpense: (Expense) -> Unit,
     onBackClick: () -> Unit
 ) {
-    var date by remember {
-        mutableStateOf("")
+    var date by remember(expenseToEdit?.id) {
+        mutableStateOf(expenseToEdit?.date.orEmpty())
     }
 
-    var category by remember {
-        mutableStateOf<ExpenseCategory?>(null)
+    var category by remember(expenseToEdit?.id) {
+        mutableStateOf(expenseToEdit?.category)
     }
 
-    var amount by remember {
-        mutableStateOf("")
+    var amount by remember(expenseToEdit?.id) {
+        mutableStateOf(expenseToEdit?.amount?.toString().orEmpty())
     }
 
-    var description by remember {
-        mutableStateOf("")
+    var description by remember(expenseToEdit?.id) {
+        mutableStateOf(expenseToEdit?.description.orEmpty())
     }
 
-    var validationMessage by remember {
+    var validationMessage by remember(expenseToEdit?.id) {
         mutableStateOf<String?>(null)
     }
 
@@ -81,7 +82,11 @@ fun ExpenseFormScreen(
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = "Registrar gasto",
+            text = if (expenseToEdit == null) {
+                "Registrar gasto"
+            } else {
+                "Editar gasto"
+            },
             style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.Bold
         )
@@ -211,7 +216,7 @@ fun ExpenseFormScreen(
 
                 onSaveExpense(
                     Expense(
-                        id = 0,
+                        id = expenseToEdit?.id ?: 0,
                         vehicleId = vehicle.id,
                         date = date.trim(),
                         category = selectedCategory,
@@ -221,7 +226,13 @@ fun ExpenseFormScreen(
                 )
             }
         ) {
-            Text(text = "Guardar gasto")
+            Text(
+                text = if (expenseToEdit == null) {
+                    "Guardar gasto"
+                } else {
+                    "Actualizar gasto"
+                }
+            )
         }
 
         validationMessage?.let { message ->

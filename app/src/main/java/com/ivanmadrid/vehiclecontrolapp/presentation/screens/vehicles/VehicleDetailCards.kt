@@ -224,6 +224,7 @@ fun VehicleDocumentItem(
 @Composable
 fun VehicleExpensesCard(
     expenses: List<Expense>,
+    onEditExpenseClick: (Expense) -> Unit,
     onDeleteExpenseClick: (Expense) -> Unit
 ) {
     DetailSectionCard(
@@ -239,6 +240,9 @@ fun VehicleExpensesCard(
             expenses.forEachIndexed { index, expense ->
                 VehicleExpenseItem(
                     expense = expense,
+                    onEditClick = {
+                        onEditExpenseClick(expense)
+                    },
                     onDeleteClick = {
                         onDeleteExpenseClick(expense)
                     }
@@ -255,6 +259,7 @@ fun VehicleExpensesCard(
 @Composable
 fun VehicleExpenseItem(
     expense: Expense,
+    onEditClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
     DetailListItem(
@@ -265,8 +270,10 @@ fun VehicleExpenseItem(
         subtitle = getExpenseCategoryLabel(expense.category),
         extra = expense.date,
         trailingText = formatCurrency(expense.amount),
-        actionText = "Eliminar",
-        onActionClick = onDeleteClick
+        actionText = "Editar",
+        onActionClick = onEditClick,
+        secondaryActionText = "Eliminar",
+        onSecondaryActionClick = onDeleteClick
     )
 }
 
@@ -549,8 +556,13 @@ fun DetailListItem(
     extra: String?,
     trailingText: String? = null,
     actionText: String? = null,
-    onActionClick: (() -> Unit)? = null
+    onActionClick: (() -> Unit)? = null,
+    secondaryActionText: String? = null,
+    onSecondaryActionClick: (() -> Unit)? = null
 ) {
+    val hasActions = (actionText != null && onActionClick != null) ||
+        (secondaryActionText != null && onSecondaryActionClick != null)
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.Top
@@ -590,7 +602,7 @@ fun DetailListItem(
             }
         }
 
-        if (trailingText != null || (actionText != null && onActionClick != null)) {
+        if (trailingText != null || hasActions) {
             Spacer(modifier = Modifier.width(8.dp))
 
             Column(
@@ -609,6 +621,14 @@ fun DetailListItem(
                         onClick = onActionClick
                     ) {
                         Text(text = actionText)
+                    }
+                }
+
+                if (secondaryActionText != null && onSecondaryActionClick != null) {
+                    TextButton(
+                        onClick = onSecondaryActionClick
+                    ) {
+                        Text(text = secondaryActionText)
                     }
                 }
             }
