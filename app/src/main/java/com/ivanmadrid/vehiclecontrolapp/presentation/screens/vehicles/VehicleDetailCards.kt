@@ -35,6 +35,7 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.Novelty
 import com.ivanmadrid.vehiclecontrolapp.domain.model.NoveltyPriority
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
+import com.ivanmadrid.vehiclecontrolapp.utils.calculateTaxiBalanceSummary
 import com.ivanmadrid.vehiclecontrolapp.utils.getDaysUntilLabel
 
 private val DetailBlue = Color(0xFF0B63CE)
@@ -104,13 +105,14 @@ fun TaxiInfoCard(vehicle: Vehicle) {
 @Composable
 fun TaxiBalanceSummaryCard(
     vehicle: Vehicle,
-    expenses: List<Expense>
+    expenses: List<Expense>,
+    novelties: List<Novelty>
 ) {
-    val expectedIncome = vehicle.dailyFixedIncome ?: 0L
-    val totalExpenses = expenses.sumOf { expense ->
-        expense.amount
-    }
-    val estimatedBalance = expectedIncome - totalExpenses
+    val balanceSummary = calculateTaxiBalanceSummary(
+        vehicle = vehicle,
+        expenses = expenses,
+        novelties = novelties
+    )
 
     DetailSectionCard(
         title = "Resumen económico",
@@ -119,7 +121,7 @@ fun TaxiBalanceSummaryCard(
         markerBackground = SoftGreen
     ) {
         Text(
-            text = "Estimación con los gastos recientes mostrados para este vehículo.",
+            text = "Estimación con ingreso diario, gastos y novedades que afectan ingreso.",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -132,15 +134,15 @@ fun TaxiBalanceSummaryCard(
         ) {
             BalanceMetricItem(
                 label = "Ingreso esperado",
-                value = formatCurrency(expectedIncome),
+                value = formatCurrency(balanceSummary.baseIncome),
                 valueColor = DetailGreen,
                 modifier = Modifier.weight(1f)
             )
 
             BalanceMetricItem(
-                label = "Gastos",
-                value = formatCurrency(totalExpenses),
-                valueColor = DetailRed,
+                label = "Ingreso ajustado",
+                value = formatCurrency(balanceSummary.adjustedIncome),
+                valueColor = DetailGreen,
                 modifier = Modifier.weight(1f)
             )
         }
@@ -148,9 +150,18 @@ fun TaxiBalanceSummaryCard(
         Spacer(modifier = Modifier.height(12.dp))
 
         BalanceMetricItem(
+            label = "Gastos",
+            value = formatCurrency(balanceSummary.totalExpenses),
+            valueColor = DetailRed,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        BalanceMetricItem(
             label = "Balance estimado",
-            value = formatCurrency(estimatedBalance),
-            valueColor = if (estimatedBalance >= 0) DetailGreen else DetailRed,
+            value = formatCurrency(balanceSummary.estimatedBalance),
+            valueColor = if (balanceSummary.estimatedBalance >= 0) DetailGreen else DetailRed,
             modifier = Modifier.fillMaxWidth()
         )
     }
