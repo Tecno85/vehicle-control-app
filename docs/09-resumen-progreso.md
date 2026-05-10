@@ -315,6 +315,7 @@ La app ya permite:
 - Editar gastos individuales desde el detalle.
 - Eliminar gastos individuales desde el detalle con confirmación.
 - Registrar novedades reales desde el detalle de un vehículo y guardarlas en Room.
+- Editar novedades individuales desde el detalle.
 - Eliminar novedades individuales desde el detalle con confirmación.
 - Registrar documentos reales desde el detalle de un vehículo y guardarlos en Room.
 - Eliminar documentos individuales desde el detalle con confirmación.
@@ -325,7 +326,7 @@ La app ya permite:
 
 La app todavía no permite:
 
-- Editar novedades o documentos existentes.
+- Editar documentos existentes.
 - Consultar historial completo.
 - Sincronizar con Firebase.
 - Enviar notificaciones del sistema.

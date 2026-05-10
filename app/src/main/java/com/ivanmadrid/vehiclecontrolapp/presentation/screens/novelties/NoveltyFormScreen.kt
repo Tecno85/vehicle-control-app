@@ -45,38 +45,39 @@ import com.ivanmadrid.vehiclecontrolapp.utils.isValidIsoDate
 fun NoveltyFormScreen(
     vehicle: Vehicle,
     modifier: Modifier = Modifier,
+    noveltyToEdit: Novelty? = null,
     onSaveNovelty: (Novelty) -> Unit,
     onBackClick: () -> Unit
 ) {
-    var date by remember {
-        mutableStateOf("")
+    var date by remember(noveltyToEdit?.id) {
+        mutableStateOf(noveltyToEdit?.date.orEmpty())
     }
 
-    var noveltyType by remember {
-        mutableStateOf("")
+    var noveltyType by remember(noveltyToEdit?.id) {
+        mutableStateOf(noveltyToEdit?.type.orEmpty())
     }
 
-    var priority by remember {
-        mutableStateOf<NoveltyPriority?>(null)
+    var priority by remember(noveltyToEdit?.id) {
+        mutableStateOf(noveltyToEdit?.priority)
     }
 
-    var description by remember {
-        mutableStateOf("")
+    var description by remember(noveltyToEdit?.id) {
+        mutableStateOf(noveltyToEdit?.description.orEmpty())
     }
 
-    var affectsIncome by remember {
-        mutableStateOf(false)
+    var affectsIncome by remember(noveltyToEdit?.id) {
+        mutableStateOf(noveltyToEdit?.affectsIncome ?: false)
     }
 
-    var incomeAdjustmentType by remember {
-        mutableStateOf<IncomeAdjustmentType?>(null)
+    var incomeAdjustmentType by remember(noveltyToEdit?.id) {
+        mutableStateOf(noveltyToEdit?.incomeAdjustmentType)
     }
 
-    var adjustedIncomeAmount by remember {
-        mutableStateOf("")
+    var adjustedIncomeAmount by remember(noveltyToEdit?.id) {
+        mutableStateOf(noveltyToEdit?.adjustedIncomeAmount?.toString().orEmpty())
     }
 
-    var validationMessage by remember {
+    var validationMessage by remember(noveltyToEdit?.id) {
         mutableStateOf<String?>(null)
     }
 
@@ -96,7 +97,11 @@ fun NoveltyFormScreen(
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = "Registrar novedad",
+            text = if (noveltyToEdit == null) {
+                "Registrar novedad"
+            } else {
+                "Editar novedad"
+            },
             style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.Bold
         )
@@ -321,7 +326,7 @@ fun NoveltyFormScreen(
 
                 onSaveNovelty(
                     Novelty(
-                        id = 0,
+                        id = noveltyToEdit?.id ?: 0,
                         vehicleId = vehicle.id,
                         date = date.trim(),
                         type = noveltyType.trim(),
@@ -345,7 +350,13 @@ fun NoveltyFormScreen(
                 )
             }
         ) {
-            Text(text = "Guardar novedad")
+            Text(
+                text = if (noveltyToEdit == null) {
+                    "Guardar novedad"
+                } else {
+                    "Actualizar novedad"
+                }
+            )
         }
 
         validationMessage?.let { message ->

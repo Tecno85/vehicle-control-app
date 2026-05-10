@@ -45,6 +45,7 @@ fun VehicleDetailScreen(
     onDeleteVehicleClick: () -> Unit,
     onEditExpenseClick: (Expense) -> Unit,
     onDeleteExpenseClick: (Expense) -> Unit,
+    onEditNoveltyClick: (Novelty) -> Unit,
     onDeleteNoveltyClick: (Novelty) -> Unit,
     onDeleteDocumentClick: (VehicleDocument) -> Unit,
     onRegisterExpenseClick: () -> Unit,
@@ -138,6 +139,9 @@ fun VehicleDetailScreen(
 
         VehicleNoveltiesCard(
             novelties = novelties,
+            onEditNoveltyClick = { novelty ->
+                onEditNoveltyClick(novelty)
+            },
             onDeleteNoveltyClick = { novelty ->
                 noveltyToDelete = novelty
             }

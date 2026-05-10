@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Expense
+import com.ivanmadrid.vehiclecontrolapp.domain.model.Novelty
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.documents.DocumentFormScreen
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.documents.DocumentFormViewModel
@@ -68,6 +69,10 @@ class MainActivity : ComponentActivity() {
 
                 var expenseToEdit by remember {
                     mutableStateOf<Expense?>(null)
+                }
+
+                var noveltyToEdit by remember {
+                    mutableStateOf<Novelty?>(null)
                 }
 
                 var currentScreen by remember {
@@ -140,6 +145,7 @@ class MainActivity : ComponentActivity() {
                                             selectedVehicle = null
                                             vehicleToEdit = null
                                             expenseToEdit = null
+                                            noveltyToEdit = null
                                             currentScreen = AppScreen.VEHICLE_LIST
                                         }
                                     },
@@ -149,6 +155,10 @@ class MainActivity : ComponentActivity() {
                                     },
                                     onDeleteExpenseClick = { expense ->
                                         vehicleDetailViewModel.deleteExpense(expense)
+                                    },
+                                    onEditNoveltyClick = { novelty ->
+                                        noveltyToEdit = novelty
+                                        currentScreen = AppScreen.NOVELTY_FORM
                                     },
                                     onDeleteNoveltyClick = { novelty ->
                                         vehicleDetailViewModel.deleteNovelty(novelty)
@@ -161,6 +171,7 @@ class MainActivity : ComponentActivity() {
                                         currentScreen = AppScreen.EXPENSE_FORM
                                     },
                                     onRegisterNoveltyClick = {
+                                        noveltyToEdit = null
                                         currentScreen = AppScreen.NOVELTY_FORM
                                     },
                                     onRegisterDocumentClick = {
@@ -243,12 +254,15 @@ class MainActivity : ComponentActivity() {
                                 NoveltyFormScreen(
                                     vehicle = vehicle,
                                     modifier = Modifier.padding(innerPadding),
+                                    noveltyToEdit = noveltyToEdit,
                                     onSaveNovelty = { novelty ->
                                         noveltyFormViewModel.saveNovelty(novelty) {
+                                            noveltyToEdit = null
                                             currentScreen = AppScreen.VEHICLE_DETAIL
                                         }
                                     },
                                     onBackClick = {
+                                        noveltyToEdit = null
                                         currentScreen = AppScreen.VEHICLE_DETAIL
                                     }
                                 )

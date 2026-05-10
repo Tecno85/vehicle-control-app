@@ -15,7 +15,12 @@ class NoveltyFormViewModel(
         onSaved: () -> Unit
     ) {
         viewModelScope.launch {
-            noveltyRepository.insertNovelty(novelty)
+            if (novelty.id == 0) {
+                noveltyRepository.insertNovelty(novelty)
+            } else {
+                noveltyRepository.updateNovelty(novelty)
+            }
+
             onSaved()
         }
     }

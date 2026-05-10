@@ -280,6 +280,7 @@ fun VehicleExpenseItem(
 @Composable
 fun VehicleNoveltiesCard(
     novelties: List<Novelty>,
+    onEditNoveltyClick: (Novelty) -> Unit,
     onDeleteNoveltyClick: (Novelty) -> Unit
 ) {
     DetailSectionCard(
@@ -295,6 +296,9 @@ fun VehicleNoveltiesCard(
             novelties.forEachIndexed { index, novelty ->
                 VehicleNoveltyItem(
                     novelty = novelty,
+                    onEditClick = {
+                        onEditNoveltyClick(novelty)
+                    },
                     onDeleteClick = {
                         onDeleteNoveltyClick(novelty)
                     }
@@ -311,6 +315,7 @@ fun VehicleNoveltiesCard(
 @Composable
 fun VehicleNoveltyItem(
     novelty: Novelty,
+    onEditClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
     val markerColor = when (novelty.priority) {
@@ -332,8 +337,10 @@ fun VehicleNoveltyItem(
         title = novelty.type,
         subtitle = novelty.description,
         extra = getNoveltyExtraLabel(novelty),
-        actionText = "Eliminar",
-        onActionClick = onDeleteClick
+        actionText = "Editar",
+        onActionClick = onEditClick,
+        secondaryActionText = "Eliminar",
+        onSecondaryActionClick = onDeleteClick
     )
 }
 
