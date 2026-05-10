@@ -321,6 +321,7 @@ La app ya permite:
 - Registrar documentos reales desde el detalle de un vehículo y guardarlos en Room.
 - Editar documentos individuales desde el detalle.
 - Eliminar documentos individuales desde el detalle con confirmación.
+- Acciones de edición y eliminación más claras en el detalle.
 - Validar formato de fecha `yyyy-MM-dd` en gastos, novedades y documentos.
 - Evitar registrar vehículos con placas duplicadas.
 - Calcular resumen económico diario de taxis usando gastos y novedades del mismo día.

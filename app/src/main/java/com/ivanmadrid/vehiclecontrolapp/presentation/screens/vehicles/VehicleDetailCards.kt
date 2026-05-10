@@ -241,8 +241,7 @@ fun VehicleDocumentsCard(
         title = "Documentos y vencimientos",
         markerText = "D",
         markerColor = DetailBlue,
-        markerBackground = SoftBlue,
-        actionText = "Ver todos"
+        markerBackground = SoftBlue
     ) {
         if (documents.isEmpty()) {
             EmptySectionText(text = "No hay documentos registrados para este vehículo.")
@@ -296,8 +295,7 @@ fun VehicleExpensesCard(
         title = "Gastos recientes",
         markerText = "$",
         markerColor = DetailBlue,
-        markerBackground = SoftBlue,
-        actionText = "Ver todos"
+        markerBackground = SoftBlue
     ) {
         if (expenses.isEmpty()) {
             EmptySectionText(text = "No hay gastos registrados para este vehículo.")
@@ -352,8 +350,7 @@ fun VehicleNoveltiesCard(
         title = "Novedades recientes",
         markerText = "N",
         markerColor = Color(0xFF6F35D4),
-        markerBackground = Color(0xFFF0E7FF),
-        actionText = "Ver todas"
+        markerBackground = Color(0xFFF0E7FF)
     ) {
         if (novelties.isEmpty()) {
             EmptySectionText(text = "No hay novedades registradas para este vehículo.")
@@ -688,19 +685,27 @@ fun DetailListItem(
                     )
                 }
 
-                if (actionText != null && onActionClick != null) {
-                    TextButton(
-                        onClick = onActionClick
-                    ) {
-                        Text(text = actionText)
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (actionText != null && onActionClick != null) {
+                        TextButton(
+                            onClick = onActionClick
+                        ) {
+                            Text(text = actionText)
+                        }
                     }
-                }
 
-                if (secondaryActionText != null && onSecondaryActionClick != null) {
-                    TextButton(
-                        onClick = onSecondaryActionClick
-                    ) {
-                        Text(text = secondaryActionText)
+                    if (secondaryActionText != null && onSecondaryActionClick != null) {
+                        TextButton(
+                            onClick = onSecondaryActionClick
+                        ) {
+                            Text(
+                                text = secondaryActionText,
+                                color = DetailRed
+                            )
+                        }
                     }
                 }
             }
