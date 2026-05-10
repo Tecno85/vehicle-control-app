@@ -40,22 +40,23 @@ import com.ivanmadrid.vehiclecontrolapp.utils.isValidIsoDate
 fun DocumentFormScreen(
     vehicle: Vehicle,
     modifier: Modifier = Modifier,
+    documentToEdit: VehicleDocument? = null,
     onSaveDocument: (VehicleDocument) -> Unit,
     onBackClick: () -> Unit
 ) {
-    var documentType by remember {
-        mutableStateOf<VehicleDocumentType?>(null)
+    var documentType by remember(documentToEdit?.id) {
+        mutableStateOf(documentToEdit?.type)
     }
 
-    var dueDate by remember {
-        mutableStateOf("")
+    var dueDate by remember(documentToEdit?.id) {
+        mutableStateOf(documentToEdit?.dueDate.orEmpty())
     }
 
-    var notes by remember {
-        mutableStateOf("")
+    var notes by remember(documentToEdit?.id) {
+        mutableStateOf(documentToEdit?.notes.orEmpty())
     }
 
-    var validationMessage by remember {
+    var validationMessage by remember(documentToEdit?.id) {
         mutableStateOf<String?>(null)
     }
 
@@ -75,7 +76,11 @@ fun DocumentFormScreen(
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = "Registrar documento",
+            text = if (documentToEdit == null) {
+                "Registrar documento"
+            } else {
+                "Editar documento"
+            },
             style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.Bold
         )
@@ -177,7 +182,7 @@ fun DocumentFormScreen(
 
                 onSaveDocument(
                     VehicleDocument(
-                        id = 0,
+                        id = documentToEdit?.id ?: 0,
                         vehicleId = vehicle.id,
                         type = selectedDocumentType,
                         dueDate = dueDate.trim(),
@@ -186,7 +191,13 @@ fun DocumentFormScreen(
                 )
             }
         ) {
-            Text(text = "Guardar documento")
+            Text(
+                text = if (documentToEdit == null) {
+                    "Guardar documento"
+                } else {
+                    "Actualizar documento"
+                }
+            )
         }
 
         validationMessage?.let { message ->

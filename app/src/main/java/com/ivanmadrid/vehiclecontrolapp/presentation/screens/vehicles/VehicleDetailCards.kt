@@ -176,6 +176,7 @@ fun TaxiBalanceSummaryCard(
 @Composable
 fun VehicleDocumentsCard(
     documents: List<VehicleDocument>,
+    onEditDocumentClick: (VehicleDocument) -> Unit,
     onDeleteDocumentClick: (VehicleDocument) -> Unit
 ) {
     DetailSectionCard(
@@ -191,6 +192,9 @@ fun VehicleDocumentsCard(
             documents.forEachIndexed { index, document ->
                 VehicleDocumentItem(
                     document = document,
+                    onEditClick = {
+                        onEditDocumentClick(document)
+                    },
                     onDeleteClick = {
                         onDeleteDocumentClick(document)
                     }
@@ -207,6 +211,7 @@ fun VehicleDocumentsCard(
 @Composable
 fun VehicleDocumentItem(
     document: VehicleDocument,
+    onEditClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
     DetailListItem(
@@ -216,8 +221,10 @@ fun VehicleDocumentItem(
         title = getDocumentTypeLabel(document.type),
         subtitle = getDaysUntilLabel(document.dueDate),
         extra = document.notes,
-        actionText = "Eliminar",
-        onActionClick = onDeleteClick
+        actionText = "Editar",
+        onActionClick = onEditClick,
+        secondaryActionText = "Eliminar",
+        onSecondaryActionClick = onDeleteClick
     )
 }
 

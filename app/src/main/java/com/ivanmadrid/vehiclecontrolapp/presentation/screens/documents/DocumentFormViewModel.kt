@@ -15,7 +15,12 @@ class DocumentFormViewModel(
         onSaved: () -> Unit
     ) {
         viewModelScope.launch {
-            vehicleDocumentRepository.insertDocument(document)
+            if (document.id == 0) {
+                vehicleDocumentRepository.insertDocument(document)
+            } else {
+                vehicleDocumentRepository.updateDocument(document)
+            }
+
             onSaved()
         }
     }

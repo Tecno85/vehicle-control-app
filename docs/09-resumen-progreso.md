@@ -318,6 +318,7 @@ La app ya permite:
 - Editar novedades individuales desde el detalle.
 - Eliminar novedades individuales desde el detalle con confirmación.
 - Registrar documentos reales desde el detalle de un vehículo y guardarlos en Room.
+- Editar documentos individuales desde el detalle.
 - Eliminar documentos individuales desde el detalle con confirmación.
 - Validar formato de fecha `yyyy-MM-dd` en gastos, novedades y documentos.
 - Evitar registrar vehículos con placas duplicadas.
@@ -326,7 +327,6 @@ La app ya permite:
 
 La app todavía no permite:
 
-- Editar documentos existentes.
 - Consultar historial completo.
 - Sincronizar con Firebase.
 - Enviar notificaciones del sistema.
