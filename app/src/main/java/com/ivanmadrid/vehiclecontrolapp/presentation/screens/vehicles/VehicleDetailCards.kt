@@ -123,7 +123,11 @@ fun TaxiBalanceSummaryCard(
         markerBackground = SoftGreen
     ) {
         Text(
-            text = "Estimación con ingreso diario, gastos y novedades que afectan ingreso.",
+            text = if (balanceSummary.referenceDate != null) {
+                "Día de referencia: ${balanceSummary.referenceDate}. Solo usa gastos y novedades de ese día."
+            } else {
+                "Sin gastos ni novedades con fecha válida para calcular un día de referencia."
+            },
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -170,7 +174,10 @@ fun TaxiBalanceSummaryCard(
 }
 
 @Composable
-fun VehicleDocumentsCard(documents: List<VehicleDocument>) {
+fun VehicleDocumentsCard(
+    documents: List<VehicleDocument>,
+    onDeleteDocumentClick: (VehicleDocument) -> Unit
+) {
     DetailSectionCard(
         title = "Documentos y vencimientos",
         markerText = "D",
@@ -182,7 +189,12 @@ fun VehicleDocumentsCard(documents: List<VehicleDocument>) {
             EmptySectionText(text = "No hay documentos registrados para este vehículo.")
         } else {
             documents.forEachIndexed { index, document ->
-                VehicleDocumentItem(document = document)
+                VehicleDocumentItem(
+                    document = document,
+                    onDeleteClick = {
+                        onDeleteDocumentClick(document)
+                    }
+                )
 
                 if (index < documents.lastIndex) {
                     DetailDivider()
@@ -193,14 +205,19 @@ fun VehicleDocumentsCard(documents: List<VehicleDocument>) {
 }
 
 @Composable
-fun VehicleDocumentItem(document: VehicleDocument) {
+fun VehicleDocumentItem(
+    document: VehicleDocument,
+    onDeleteClick: () -> Unit
+) {
     DetailListItem(
         markerText = document.type.shortLabel(),
         markerColor = DetailOrange,
         markerBackground = SoftYellow,
         title = getDocumentTypeLabel(document.type),
         subtitle = getDaysUntilLabel(document.dueDate),
-        extra = document.notes
+        extra = document.notes,
+        actionText = "Eliminar",
+        onActionClick = onDeleteClick
     )
 }
 
@@ -254,7 +271,10 @@ fun VehicleExpenseItem(
 }
 
 @Composable
-fun VehicleNoveltiesCard(novelties: List<Novelty>) {
+fun VehicleNoveltiesCard(
+    novelties: List<Novelty>,
+    onDeleteNoveltyClick: (Novelty) -> Unit
+) {
     DetailSectionCard(
         title = "Novedades recientes",
         markerText = "N",
@@ -266,7 +286,12 @@ fun VehicleNoveltiesCard(novelties: List<Novelty>) {
             EmptySectionText(text = "No hay novedades registradas para este vehículo.")
         } else {
             novelties.forEachIndexed { index, novelty ->
-                VehicleNoveltyItem(novelty = novelty)
+                VehicleNoveltyItem(
+                    novelty = novelty,
+                    onDeleteClick = {
+                        onDeleteNoveltyClick(novelty)
+                    }
+                )
 
                 if (index < novelties.lastIndex) {
                     DetailDivider()
@@ -277,7 +302,10 @@ fun VehicleNoveltiesCard(novelties: List<Novelty>) {
 }
 
 @Composable
-fun VehicleNoveltyItem(novelty: Novelty) {
+fun VehicleNoveltyItem(
+    novelty: Novelty,
+    onDeleteClick: () -> Unit
+) {
     val markerColor = when (novelty.priority) {
         NoveltyPriority.LOW -> DetailGreen
         NoveltyPriority.MEDIUM -> DetailOrange
@@ -296,7 +324,9 @@ fun VehicleNoveltyItem(novelty: Novelty) {
         markerBackground = markerBackground,
         title = novelty.type,
         subtitle = novelty.description,
-        extra = getNoveltyExtraLabel(novelty)
+        extra = getNoveltyExtraLabel(novelty),
+        actionText = "Eliminar",
+        onActionClick = onDeleteClick
     )
 }
 
@@ -311,12 +341,12 @@ fun getNoveltyExtraLabel(novelty: Novelty): String {
         IncomeAdjustmentType.NO_INCOME -> "Sin ingreso"
         IncomeAdjustmentType.HALF_INCOME -> "Medio ingreso"
         IncomeAdjustmentType.CUSTOM_AMOUNT -> {
-            "Valor personalizado ${formatCurrency(novelty.adjustedIncomeAmount)}"
+            "Ingreso diferente ${formatCurrency(novelty.adjustedIncomeAmount)}"
         }
         null -> "Por revisar"
     }
 
-    return "$baseLabel · Ajuste: $incomeAdjustmentLabel"
+    return "$baseLabel · Operación: $incomeAdjustmentLabel"
 }
 
 @Composable
@@ -560,17 +590,19 @@ fun DetailListItem(
             }
         }
 
-        if (trailingText != null) {
+        if (trailingText != null || (actionText != null && onActionClick != null)) {
             Spacer(modifier = Modifier.width(8.dp))
 
             Column(
                 horizontalAlignment = Alignment.End
             ) {
-                Text(
-                    text = trailingText,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold
-                )
+                if (trailingText != null) {
+                    Text(
+                        text = trailingText,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
 
                 if (actionText != null && onActionClick != null) {
                     TextButton(

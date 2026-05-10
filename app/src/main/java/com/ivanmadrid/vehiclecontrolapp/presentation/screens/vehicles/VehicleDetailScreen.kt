@@ -44,6 +44,8 @@ fun VehicleDetailScreen(
     onEditVehicleClick: () -> Unit,
     onDeleteVehicleClick: () -> Unit,
     onDeleteExpenseClick: (Expense) -> Unit,
+    onDeleteNoveltyClick: (Novelty) -> Unit,
+    onDeleteDocumentClick: (VehicleDocument) -> Unit,
     onRegisterExpenseClick: () -> Unit,
     onRegisterNoveltyClick: () -> Unit,
     onRegisterDocumentClick: () -> Unit
@@ -54,6 +56,12 @@ fun VehicleDetailScreen(
     }
     var expenseToDelete by remember {
         mutableStateOf<Expense?>(null)
+    }
+    var noveltyToDelete by remember {
+        mutableStateOf<Novelty?>(null)
+    }
+    var documentToDelete by remember {
+        mutableStateOf<VehicleDocument?>(null)
     }
 
     Column(
@@ -97,7 +105,12 @@ fun VehicleDetailScreen(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        VehicleDocumentsCard(documents = vehicleDocuments)
+        VehicleDocumentsCard(
+            documents = vehicleDocuments,
+            onDeleteDocumentClick = { document ->
+                documentToDelete = document
+            }
+        )
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -119,7 +132,12 @@ fun VehicleDetailScreen(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        VehicleNoveltiesCard(novelties = novelties)
+        VehicleNoveltiesCard(
+            novelties = novelties,
+            onDeleteNoveltyClick = { novelty ->
+                noveltyToDelete = novelty
+            }
+        )
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -203,6 +221,72 @@ fun VehicleDetailScreen(
                 TextButton(
                     onClick = {
                         expenseToDelete = null
+                    }
+                ) {
+                    Text(text = "Cancelar")
+                }
+            }
+        )
+    }
+
+    noveltyToDelete?.let { novelty ->
+        AlertDialog(
+            onDismissRequest = {
+                noveltyToDelete = null
+            },
+            title = {
+                Text(text = "Eliminar novedad")
+            },
+            text = {
+                Text(text = "¿Seguro que quieres eliminar la novedad \"${novelty.type}\"?")
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        noveltyToDelete = null
+                        onDeleteNoveltyClick(novelty)
+                    }
+                ) {
+                    Text(text = "Eliminar")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        noveltyToDelete = null
+                    }
+                ) {
+                    Text(text = "Cancelar")
+                }
+            }
+        )
+    }
+
+    documentToDelete?.let { document ->
+        AlertDialog(
+            onDismissRequest = {
+                documentToDelete = null
+            },
+            title = {
+                Text(text = "Eliminar documento")
+            },
+            text = {
+                Text(text = "¿Seguro que quieres eliminar este documento?")
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        documentToDelete = null
+                        onDeleteDocumentClick(document)
+                    }
+                ) {
+                    Text(text = "Eliminar")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        documentToDelete = null
                     }
                 ) {
                     Text(text = "Cancelar")

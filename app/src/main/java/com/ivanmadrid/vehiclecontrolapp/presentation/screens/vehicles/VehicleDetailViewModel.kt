@@ -22,8 +22,8 @@ class VehicleDetailViewModel(
     vehicleRepository: VehicleLocalRepository,
     private val vehicleDeletionRepository: VehicleDeletionRepository,
     private val expenseRepository: ExpenseLocalRepository,
-    noveltyRepository: NoveltyLocalRepository,
-    vehicleDocumentRepository: VehicleDocumentLocalRepository
+    private val noveltyRepository: NoveltyLocalRepository,
+    private val vehicleDocumentRepository: VehicleDocumentLocalRepository
 ) : ViewModel() {
     val vehicle: StateFlow<Vehicle?> = vehicleRepository.getVehicleById(vehicleId)
         .stateIn(
@@ -66,6 +66,18 @@ class VehicleDetailViewModel(
     fun deleteExpense(expense: Expense) {
         viewModelScope.launch {
             expenseRepository.deleteExpense(expense)
+        }
+    }
+
+    fun deleteNovelty(novelty: Novelty) {
+        viewModelScope.launch {
+            noveltyRepository.deleteNovelty(novelty)
+        }
+    }
+
+    fun deleteDocument(document: VehicleDocument) {
+        viewModelScope.launch {
+            vehicleDocumentRepository.deleteDocument(document)
         }
     }
 

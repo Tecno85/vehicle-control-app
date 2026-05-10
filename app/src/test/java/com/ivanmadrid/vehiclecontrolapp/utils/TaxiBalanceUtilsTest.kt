@@ -19,6 +19,7 @@ class TaxiBalanceUtilsTest {
             novelties = emptyList()
         )
 
+        assertEquals("2026-05-09", summary.referenceDate)
         assertEquals(180_000, summary.baseIncome)
         assertEquals(180_000, summary.adjustedIncome)
         assertEquals(50_000, summary.totalExpenses)
@@ -74,6 +75,32 @@ class TaxiBalanceUtilsTest {
         assertEquals(105_000, summary.estimatedBalance)
     }
 
+    @Test
+    fun calculateTaxiBalanceSummary_usesOnlyMostRecentDay() {
+        val summary = calculateTaxiBalanceSummary(
+            vehicle = testTaxi(dailyFixedIncome = 180_000),
+            expenses = listOf(
+                testExpense(amount = 20_000, date = "2026-05-08"),
+                testExpense(amount = 50_000, date = "2026-05-09")
+            ),
+            novelties = listOf(
+                testNovelty(
+                    date = "2026-05-08",
+                    incomeAdjustmentType = IncomeAdjustmentType.NO_INCOME
+                ),
+                testNovelty(
+                    date = "2026-05-09",
+                    incomeAdjustmentType = IncomeAdjustmentType.HALF_INCOME
+                )
+            )
+        )
+
+        assertEquals("2026-05-09", summary.referenceDate)
+        assertEquals(90_000, summary.adjustedIncome)
+        assertEquals(50_000, summary.totalExpenses)
+        assertEquals(40_000, summary.estimatedBalance)
+    }
+
     private fun testTaxi(dailyFixedIncome: Long): Vehicle {
         return Vehicle(
             id = 1,
@@ -87,11 +114,14 @@ class TaxiBalanceUtilsTest {
         )
     }
 
-    private fun testExpense(amount: Long): Expense {
+    private fun testExpense(
+        amount: Long,
+        date: String = "2026-05-09"
+    ): Expense {
         return Expense(
             id = 1,
             vehicleId = 1,
-            date = "2026-05-09",
+            date = date,
             category = ExpenseCategory.FUEL,
             amount = amount,
             description = "Tanqueo",
@@ -100,12 +130,13 @@ class TaxiBalanceUtilsTest {
 
     private fun testNovelty(
         incomeAdjustmentType: IncomeAdjustmentType,
-        adjustedIncomeAmount: Long? = null
+        adjustedIncomeAmount: Long? = null,
+        date: String = "2026-05-09"
     ): Novelty {
         return Novelty(
             id = 1,
             vehicleId = 1,
-            date = "2026-05-09",
+            date = date,
             type = "Trabajo parcial",
             description = "Afecta el ingreso",
             priority = NoveltyPriority.MEDIUM,

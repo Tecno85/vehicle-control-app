@@ -209,7 +209,7 @@ fun NoveltyFormScreen(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = "Ajuste de ingreso",
+                        text = "Impacto en la operación",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
@@ -228,7 +228,7 @@ fun NoveltyFormScreen(
                         )
 
                         Text(
-                            text = "Esta novedad afecta el ingreso del taxi",
+                            text = "Esta novedad cambió el día de trabajo del taxi",
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
@@ -237,7 +237,7 @@ fun NoveltyFormScreen(
                         Spacer(modifier = Modifier.height(12.dp))
 
                         Text(
-                            text = "Tipo de ajuste",
+                            text = "Resultado del día",
                             style = MaterialTheme.typography.labelLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -263,7 +263,7 @@ fun NoveltyFormScreen(
                                     }
                                 },
                                 label = {
-                                    Text(text = "Valor personalizado")
+                                    Text(text = "Ingreso real del día")
                                 },
                                 placeholder = {
                                     Text(text = "Ej: 90000")
@@ -457,9 +457,9 @@ fun getPriorityLabel(priority: NoveltyPriority): String {
 
 fun getIncomeAdjustmentLabel(type: IncomeAdjustmentType): String {
     return when (type) {
-        IncomeAdjustmentType.NO_INCOME -> "Sin ingreso"
-        IncomeAdjustmentType.HALF_INCOME -> "Medio ingreso"
-        IncomeAdjustmentType.CUSTOM_AMOUNT -> "Valor personalizado"
+        IncomeAdjustmentType.NO_INCOME -> "No trabajó"
+        IncomeAdjustmentType.HALF_INCOME -> "Trabajó medio día"
+        IncomeAdjustmentType.CUSTOM_AMOUNT -> "Trabajó con ingreso diferente"
     }
 }
 

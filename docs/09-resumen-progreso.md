@@ -188,16 +188,17 @@ Estado actual:
 El resumen económico actual es una estimación con datos guardados en Room:
 
 ```text
-Balance estimado = ingreso ajustado por novedades - gastos recientes del vehículo
+Balance estimado del día = ingreso ajustado por novedades del día - gastos del día
 ```
 
-Las novedades de taxi pueden ajustar el ingreso como:
+Las novedades de taxi pueden describir el impacto operativo del día como:
 
-- Sin ingreso.
-- Medio ingreso.
-- Valor personalizado.
+- No trabajó.
+- Trabajó medio día.
+- Trabajó con ingreso diferente.
 
-Más adelante deberá calcularse con filtros reales por fecha o periodo.
+Por ahora el día de referencia se toma automáticamente como la fecha más reciente entre gastos y novedades del vehículo.
+Más adelante puede agregarse un selector de fecha o periodo.
 
 ### Formularios visuales
 
@@ -225,7 +226,7 @@ Controles guiados implementados:
 - Tipo de vehículo: Taxi / Particular.
 - Categoría de gasto.
 - Prioridad de novedad.
-- Tipo de ajuste de ingreso.
+- Impacto operativo del día para taxis.
 - Tipo de documento.
 
 ---
@@ -313,16 +314,17 @@ La app ya permite:
 - Registrar gastos reales desde el detalle de un vehículo y guardarlos en Room.
 - Eliminar gastos individuales desde el detalle con confirmación.
 - Registrar novedades reales desde el detalle de un vehículo y guardarlas en Room.
+- Eliminar novedades individuales desde el detalle con confirmación.
 - Registrar documentos reales desde el detalle de un vehículo y guardarlos en Room.
+- Eliminar documentos individuales desde el detalle con confirmación.
 - Validar formato de fecha `yyyy-MM-dd` en gastos, novedades y documentos.
 - Evitar registrar vehículos con placas duplicadas.
-- Calcular resumen económico de taxis usando gastos y novedades que afectan ingreso.
-- Mostrar en novedades recientes cuándo una novedad afecta el ingreso del taxi.
+- Calcular resumen económico diario de taxis usando gastos y novedades del mismo día.
+- Mostrar en novedades recientes cuándo una novedad cambió la operación del taxi.
 
 La app todavía no permite:
 
 - Editar gastos, novedades o documentos existentes.
-- Eliminar novedades o documentos individualmente.
 - Consultar historial completo.
 - Sincronizar con Firebase.
 - Enviar notificaciones del sistema.
@@ -338,5 +340,5 @@ La app todavía no permite:
 5. Probar el guardado real de novedades desde el detalle de un vehículo.
 6. Probar el guardado real de documentos desde el detalle de un vehículo.
 7. Probar la edición de vehículos desde el detalle.
-8. Agregar filtros reales por fecha o periodo para el resumen económico.
+8. Agregar selector de fecha o periodo para el resumen económico.
 9. Evaluar Navigation Compose cuando haya historial, reportes y ajustes.

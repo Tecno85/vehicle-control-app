@@ -140,6 +140,12 @@ class MainActivity : ComponentActivity() {
                                     onDeleteExpenseClick = { expense ->
                                         vehicleDetailViewModel.deleteExpense(expense)
                                     },
+                                    onDeleteNoveltyClick = { novelty ->
+                                        vehicleDetailViewModel.deleteNovelty(novelty)
+                                    },
+                                    onDeleteDocumentClick = { document ->
+                                        vehicleDetailViewModel.deleteDocument(document)
+                                    },
                                     onRegisterExpenseClick = {
                                         currentScreen = AppScreen.EXPENSE_FORM
                                     },
