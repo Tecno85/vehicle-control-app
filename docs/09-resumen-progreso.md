@@ -197,8 +197,9 @@ Las novedades de taxi pueden describir el impacto operativo del día como:
 - Trabajó medio día.
 - Trabajó con ingreso diferente.
 
-Por ahora el día de referencia se toma automáticamente como la fecha más reciente entre gastos y novedades del vehículo.
-Más adelante puede agregarse un selector de fecha o periodo.
+El resumen toma por defecto la fecha más reciente entre gastos y novedades del vehículo.
+También permite elegir entre las fechas recientes disponibles para revisar otros días registrados.
+Más adelante puede agregarse un selector de periodo más completo.
 
 ### Formularios visuales
 
@@ -323,6 +324,7 @@ La app ya permite:
 - Validar formato de fecha `yyyy-MM-dd` en gastos, novedades y documentos.
 - Evitar registrar vehículos con placas duplicadas.
 - Calcular resumen económico diario de taxis usando gastos y novedades del mismo día.
+- Cambiar el día del resumen económico entre fechas recientes disponibles.
 - Mostrar en novedades recientes cuándo una novedad cambió la operación del taxi.
 
 La app todavía no permite:
@@ -342,5 +344,5 @@ La app todavía no permite:
 5. Probar el guardado real de novedades desde el detalle de un vehículo.
 6. Probar el guardado real de documentos desde el detalle de un vehículo.
 7. Probar la edición de vehículos desde el detalle.
-8. Agregar selector de fecha o periodo para el resumen económico.
+8. Agregar selector de periodo más completo para reportes.
 9. Evaluar Navigation Compose cuando haya historial, reportes y ajustes.

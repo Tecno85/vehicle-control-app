@@ -21,9 +21,14 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,6 +43,7 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.NoveltyPriority
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
 import com.ivanmadrid.vehiclecontrolapp.utils.calculateTaxiBalanceSummary
+import com.ivanmadrid.vehiclecontrolapp.utils.getTaxiBalanceReferenceDates
 import com.ivanmadrid.vehiclecontrolapp.utils.getDaysUntilLabel
 
 private val DetailBlue = Color(0xFF0B63CE)
@@ -110,10 +116,18 @@ fun TaxiBalanceSummaryCard(
     expenses: List<Expense>,
     novelties: List<Novelty>
 ) {
+    val referenceDates = getTaxiBalanceReferenceDates(
+        expenses = expenses,
+        novelties = novelties
+    )
+    var selectedReferenceDate by remember(referenceDates) {
+        mutableStateOf(referenceDates.firstOrNull())
+    }
     val balanceSummary = calculateTaxiBalanceSummary(
         vehicle = vehicle,
         expenses = expenses,
-        novelties = novelties
+        novelties = novelties,
+        referenceDate = selectedReferenceDate
     )
 
     DetailSectionCard(
@@ -124,13 +138,33 @@ fun TaxiBalanceSummaryCard(
     ) {
         Text(
             text = if (balanceSummary.referenceDate != null) {
-                "Día de referencia: ${balanceSummary.referenceDate}. Solo usa gastos y novedades de ese día."
+                "Solo usa gastos y novedades del día seleccionado."
             } else {
                 "Sin gastos ni novedades con fecha válida para calcular un día de referencia."
             },
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
+
+        if (referenceDates.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                referenceDates.take(3).forEach { date ->
+                    BalanceDateButton(
+                        date = date,
+                        selected = selectedReferenceDate == date,
+                        modifier = Modifier.weight(1f),
+                        onClick = {
+                            selectedReferenceDate = date
+                        }
+                    )
+                }
+            }
+        }
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -170,6 +204,30 @@ fun TaxiBalanceSummaryCard(
             valueColor = if (balanceSummary.estimatedBalance >= 0) DetailGreen else DetailRed,
             modifier = Modifier.fillMaxWidth()
         )
+    }
+}
+
+@Composable
+fun BalanceDateButton(
+    date: String,
+    selected: Boolean,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    if (selected) {
+        Button(
+            modifier = modifier,
+            onClick = onClick
+        ) {
+            Text(text = date)
+        }
+    } else {
+        OutlinedButton(
+            modifier = modifier,
+            onClick = onClick
+        ) {
+            Text(text = date)
+        }
     }
 }
 

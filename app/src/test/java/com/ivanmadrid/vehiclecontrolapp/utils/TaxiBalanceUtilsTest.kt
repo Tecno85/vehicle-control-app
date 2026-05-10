@@ -101,6 +101,51 @@ class TaxiBalanceUtilsTest {
         assertEquals(40_000, summary.estimatedBalance)
     }
 
+    @Test
+    fun calculateTaxiBalanceSummary_usesSelectedReferenceDate() {
+        val summary = calculateTaxiBalanceSummary(
+            vehicle = testTaxi(dailyFixedIncome = 180_000),
+            expenses = listOf(
+                testExpense(amount = 20_000, date = "2026-05-08"),
+                testExpense(amount = 50_000, date = "2026-05-09")
+            ),
+            novelties = listOf(
+                testNovelty(
+                    date = "2026-05-08",
+                    incomeAdjustmentType = IncomeAdjustmentType.NO_INCOME
+                ),
+                testNovelty(
+                    date = "2026-05-09",
+                    incomeAdjustmentType = IncomeAdjustmentType.HALF_INCOME
+                )
+            ),
+            referenceDate = "2026-05-08"
+        )
+
+        assertEquals("2026-05-08", summary.referenceDate)
+        assertEquals(0, summary.adjustedIncome)
+        assertEquals(20_000, summary.totalExpenses)
+        assertEquals(-20_000, summary.estimatedBalance)
+    }
+
+    @Test
+    fun getTaxiBalanceReferenceDates_returnsValidDatesDescending() {
+        val dates = getTaxiBalanceReferenceDates(
+            expenses = listOf(
+                testExpense(amount = 20_000, date = "fecha-invalida"),
+                testExpense(amount = 50_000, date = "2026-05-09")
+            ),
+            novelties = listOf(
+                testNovelty(
+                    date = "2026-05-08",
+                    incomeAdjustmentType = IncomeAdjustmentType.NO_INCOME
+                )
+            )
+        )
+
+        assertEquals(listOf("2026-05-09", "2026-05-08"), dates)
+    }
+
     private fun testTaxi(dailyFixedIncome: Long): Vehicle {
         return Vehicle(
             id = 1,

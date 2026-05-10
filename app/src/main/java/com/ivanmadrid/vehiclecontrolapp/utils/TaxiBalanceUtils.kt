@@ -17,17 +17,18 @@ data class TaxiBalanceSummary(
 fun calculateTaxiBalanceSummary(
     vehicle: Vehicle,
     expenses: List<Expense>,
-    novelties: List<Novelty>
+    novelties: List<Novelty>,
+    referenceDate: String? = null
 ): TaxiBalanceSummary {
-    val referenceDate = findMostRecentDate(
+    val selectedReferenceDate = referenceDate ?: findMostRecentDate(
         expenses = expenses,
         novelties = novelties
     )
     val dailyExpenses = expenses.filter { expense ->
-        expense.date == referenceDate
+        expense.date == selectedReferenceDate
     }
     val dailyNovelties = novelties.filter { novelty ->
-        novelty.date == referenceDate
+        novelty.date == selectedReferenceDate
     }
     val baseIncome = vehicle.dailyFixedIncome ?: 0L
     val adjustedIncome = calculateAdjustedIncome(
@@ -39,12 +40,23 @@ fun calculateTaxiBalanceSummary(
     }
 
     return TaxiBalanceSummary(
-        referenceDate = referenceDate,
+        referenceDate = selectedReferenceDate,
         baseIncome = baseIncome,
         adjustedIncome = adjustedIncome,
         totalExpenses = totalExpenses,
         estimatedBalance = adjustedIncome - totalExpenses
     )
+}
+
+fun getTaxiBalanceReferenceDates(
+    expenses: List<Expense>,
+    novelties: List<Novelty>
+): List<String> {
+    return (expenses.map { expense -> expense.date } + novelties.map { novelty -> novelty.date })
+        .mapNotNull { dateText -> parseLocalDateOrNull(dateText) }
+        .distinct()
+        .sortedDescending()
+        .map { date -> date.toString() }
 }
 
 private fun calculateAdjustedIncome(
@@ -73,10 +85,10 @@ private fun findMostRecentDate(
     expenses: List<Expense>,
     novelties: List<Novelty>
 ): String? {
-    return (expenses.map { expense -> expense.date } + novelties.map { novelty -> novelty.date })
-        .mapNotNull { dateText -> parseLocalDateOrNull(dateText) }
-        .maxOrNull()
-        ?.toString()
+    return getTaxiBalanceReferenceDates(
+        expenses = expenses,
+        novelties = novelties
+    ).firstOrNull()
 }
 
 private fun parseLocalDateOrNull(dateText: String): LocalDate? {
