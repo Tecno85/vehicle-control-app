@@ -316,6 +316,7 @@ La app ya permite:
 - Validar formato de fecha `yyyy-MM-dd` en gastos, novedades y documentos.
 - Evitar registrar vehículos con placas duplicadas.
 - Calcular resumen económico de taxis usando gastos y novedades que afectan ingreso.
+- Mostrar en novedades recientes cuándo una novedad afecta el ingreso del taxi.
 
 La app todavía no permite:
 

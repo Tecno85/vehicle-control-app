@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Expense
 import com.ivanmadrid.vehiclecontrolapp.domain.model.ExpenseCategory
+import com.ivanmadrid.vehiclecontrolapp.domain.model.IncomeAdjustmentType
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Novelty
 import com.ivanmadrid.vehiclecontrolapp.domain.model.NoveltyPriority
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
@@ -281,8 +282,27 @@ fun VehicleNoveltyItem(novelty: Novelty) {
         markerBackground = markerBackground,
         title = novelty.type,
         subtitle = novelty.description,
-        extra = "${novelty.date} · Prioridad: ${getNoveltyPriorityLabel(novelty.priority)}"
+        extra = getNoveltyExtraLabel(novelty)
     )
+}
+
+fun getNoveltyExtraLabel(novelty: Novelty): String {
+    val baseLabel = "${novelty.date} · Prioridad: ${getNoveltyPriorityLabel(novelty.priority)}"
+
+    if (!novelty.affectsIncome) {
+        return baseLabel
+    }
+
+    val incomeAdjustmentLabel = when (novelty.incomeAdjustmentType) {
+        IncomeAdjustmentType.NO_INCOME -> "Sin ingreso"
+        IncomeAdjustmentType.HALF_INCOME -> "Medio ingreso"
+        IncomeAdjustmentType.CUSTOM_AMOUNT -> {
+            "Valor personalizado ${formatCurrency(novelty.adjustedIncomeAmount)}"
+        }
+        null -> "Por revisar"
+    }
+
+    return "$baseLabel · Ajuste: $incomeAdjustmentLabel"
 }
 
 @Composable
