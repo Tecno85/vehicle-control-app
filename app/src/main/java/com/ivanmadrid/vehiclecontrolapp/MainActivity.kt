@@ -84,13 +84,31 @@ class MainActivity : ComponentActivity() {
                     mutableStateOf(AppScreen.VEHICLE_LIST)
                 }
 
+                val clearEditingState = {
+                    vehicleToEdit = null
+                    expenseToEdit = null
+                    noveltyToEdit = null
+                    documentToEdit = null
+                }
+
+                val goToVehicleList = {
+                    selectedVehicle = null
+                    clearEditingState()
+                    currentScreen = AppScreen.VEHICLE_LIST
+                }
+
+                val goToVehicleDetail = {
+                    clearEditingState()
+                    currentScreen = AppScreen.VEHICLE_DETAIL
+                }
+
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     floatingActionButton = {
                         if (currentScreen == AppScreen.VEHICLE_LIST) {
                             FloatingActionButton(
                                 onClick = {
-                                    vehicleToEdit = null
+                                    clearEditingState()
                                     currentScreen = AppScreen.VEHICLE_FORM
                                 }
                             ) {
@@ -106,6 +124,7 @@ class MainActivity : ComponentActivity() {
                                 documents = documents,
                                 modifier = Modifier.padding(innerPadding),
                                 onVehicleClick = { vehicle ->
+                                    clearEditingState()
                                     selectedVehicle = vehicle
                                     currentScreen = AppScreen.VEHICLE_DETAIL
                                 }
@@ -137,25 +156,19 @@ class MainActivity : ComponentActivity() {
                                     expenses = vehicleExpenses,
                                     novelties = vehicleNovelties,
                                     modifier = Modifier.padding(innerPadding),
-                                    onBackClick = {
-                                        selectedVehicle = null
-                                        currentScreen = AppScreen.VEHICLE_LIST
-                                    },
+                                    onBackClick = goToVehicleList,
                                     onEditVehicleClick = {
+                                        clearEditingState()
                                         vehicleToEdit = detailVehicle
                                         currentScreen = AppScreen.VEHICLE_FORM
                                     },
                                     onDeleteVehicleClick = {
                                         vehicleDetailViewModel.deleteVehicle(detailVehicle) {
-                                            selectedVehicle = null
-                                            vehicleToEdit = null
-                                            expenseToEdit = null
-                                            noveltyToEdit = null
-                                            documentToEdit = null
-                                            currentScreen = AppScreen.VEHICLE_LIST
+                                            goToVehicleList()
                                         }
                                     },
                                     onEditExpenseClick = { expense ->
+                                        clearEditingState()
                                         expenseToEdit = expense
                                         currentScreen = AppScreen.EXPENSE_FORM
                                     },
@@ -163,6 +176,7 @@ class MainActivity : ComponentActivity() {
                                         vehicleDetailViewModel.deleteExpense(expense)
                                     },
                                     onEditNoveltyClick = { novelty ->
+                                        clearEditingState()
                                         noveltyToEdit = novelty
                                         currentScreen = AppScreen.NOVELTY_FORM
                                     },
@@ -170,6 +184,7 @@ class MainActivity : ComponentActivity() {
                                         vehicleDetailViewModel.deleteNovelty(novelty)
                                     },
                                     onEditDocumentClick = { document ->
+                                        clearEditingState()
                                         documentToEdit = document
                                         currentScreen = AppScreen.DOCUMENT_FORM
                                     },
@@ -177,15 +192,15 @@ class MainActivity : ComponentActivity() {
                                         vehicleDetailViewModel.deleteDocument(document)
                                     },
                                     onRegisterExpenseClick = {
-                                        expenseToEdit = null
+                                        clearEditingState()
                                         currentScreen = AppScreen.EXPENSE_FORM
                                     },
                                     onRegisterNoveltyClick = {
-                                        noveltyToEdit = null
+                                        clearEditingState()
                                         currentScreen = AppScreen.NOVELTY_FORM
                                     },
                                     onRegisterDocumentClick = {
-                                        documentToEdit = null
+                                        clearEditingState()
                                         currentScreen = AppScreen.DOCUMENT_FORM
                                     }
                                 )
@@ -208,21 +223,18 @@ class MainActivity : ComponentActivity() {
                                         onValidationError = onValidationError
                                     ) { savedVehicle ->
                                         if (vehicleToEdit == null) {
-                                            selectedVehicle = null
-                                            currentScreen = AppScreen.VEHICLE_LIST
+                                            goToVehicleList()
                                         } else {
                                             selectedVehicle = savedVehicle
-                                            vehicleToEdit = null
-                                            currentScreen = AppScreen.VEHICLE_DETAIL
+                                            goToVehicleDetail()
                                         }
                                     }
                                 },
                                 onBackClick = {
                                     if (vehicleToEdit == null) {
-                                        currentScreen = AppScreen.VEHICLE_LIST
+                                        goToVehicleList()
                                     } else {
-                                        vehicleToEdit = null
-                                        currentScreen = AppScreen.VEHICLE_DETAIL
+                                        goToVehicleDetail()
                                     }
                                 }
                             )
@@ -242,14 +254,10 @@ class MainActivity : ComponentActivity() {
                                     expenseToEdit = expenseToEdit,
                                     onSaveExpense = { expense ->
                                         expenseFormViewModel.saveExpense(expense) {
-                                            expenseToEdit = null
-                                            currentScreen = AppScreen.VEHICLE_DETAIL
+                                            goToVehicleDetail()
                                         }
                                     },
-                                    onBackClick = {
-                                        expenseToEdit = null
-                                        currentScreen = AppScreen.VEHICLE_DETAIL
-                                    }
+                                    onBackClick = goToVehicleDetail
                                 )
                             }
                         }
@@ -268,14 +276,10 @@ class MainActivity : ComponentActivity() {
                                     noveltyToEdit = noveltyToEdit,
                                     onSaveNovelty = { novelty ->
                                         noveltyFormViewModel.saveNovelty(novelty) {
-                                            noveltyToEdit = null
-                                            currentScreen = AppScreen.VEHICLE_DETAIL
+                                            goToVehicleDetail()
                                         }
                                     },
-                                    onBackClick = {
-                                        noveltyToEdit = null
-                                        currentScreen = AppScreen.VEHICLE_DETAIL
-                                    }
+                                    onBackClick = goToVehicleDetail
                                 )
                             }
                         }
@@ -294,14 +298,10 @@ class MainActivity : ComponentActivity() {
                                     documentToEdit = documentToEdit,
                                     onSaveDocument = { document ->
                                         documentFormViewModel.saveDocument(document) {
-                                            documentToEdit = null
-                                            currentScreen = AppScreen.VEHICLE_DETAIL
+                                            goToVehicleDetail()
                                         }
                                     },
-                                    onBackClick = {
-                                        documentToEdit = null
-                                        currentScreen = AppScreen.VEHICLE_DETAIL
-                                    }
+                                    onBackClick = goToVehicleDetail
                                 )
                             }
                         }
