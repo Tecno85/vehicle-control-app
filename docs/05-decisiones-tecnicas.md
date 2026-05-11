@@ -90,3 +90,26 @@ Esta decisión reduce la complejidad inicial y permite enfocarse primero en la l
 El proyecto aplicará buenas prácticas de desarrollo, pero evitando sobreingeniería.
 
 La prioridad será construir una aplicación clara, funcional y fácil de mantener.
+
+---
+
+## Skills locales de apoyo
+
+Se crearon dos skills locales de Codex para guiar el desarrollo del proyecto:
+
+```text
+~/.codex/skills/design-system-skill/SKILL.md
+~/.codex/skills/ui-ux-pro-max/SKILL.md
+```
+
+Uso esperado:
+
+- `design-system-skill`: mantener consistencia visual, tokens, colores, espaciado, iconos y componentes compartidos.
+- `ui-ux-pro-max`: revisar experiencia de usuario, accesibilidad, Material Design 3, formularios, navegación y acciones destructivas.
+
+Decisión:
+
+- Las skills no reemplazan el criterio del proyecto.
+- Deben proteger la identidad visual ya lograda.
+- No deben impulsar rediseños grandes ni sobreingeniería sin aprobación.
+- Se usan como guía antes de cambios visuales o de UX importantes.

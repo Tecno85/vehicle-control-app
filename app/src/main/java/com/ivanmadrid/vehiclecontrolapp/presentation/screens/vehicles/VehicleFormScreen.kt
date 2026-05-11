@@ -1,14 +1,19 @@
 package com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -23,13 +28,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
 import com.ivanmadrid.vehiclecontrolapp.presentation.components.AppBackButton
+import com.ivanmadrid.vehiclecontrolapp.ui.theme.vehicleColors
 
 @Composable
 fun VehicleFormScreen(
@@ -185,10 +193,11 @@ fun VehicleFormScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Row(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     VehicleTypeOptionButton(
-                        text = "Taxi",
+                        type = VehicleType.TAXI,
                         selected = vehicleType == VehicleType.TAXI,
                         modifier = Modifier.weight(1f),
                         onClick = {
@@ -196,10 +205,8 @@ fun VehicleFormScreen(
                         }
                     )
 
-                    Spacer(modifier = Modifier.padding(4.dp))
-
                     VehicleTypeOptionButton(
-                        text = "Particular",
+                        type = VehicleType.PRIVATE,
                         selected = vehicleType == VehicleType.PRIVATE,
                         modifier = Modifier.weight(1f),
                         onClick = {
@@ -395,24 +402,75 @@ fun VehicleFormScreen(
 
 @Composable
 fun VehicleTypeOptionButton(
-    text: String,
+    type: VehicleType,
     selected: Boolean,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    if (selected) {
-        Button(
-            modifier = modifier,
-            onClick = onClick
-        ) {
-            Text(text = text)
-        }
+    val colors = MaterialTheme.vehicleColors
+    val label = getVehicleTypeLabel(type)
+    val accentColor = when (type) {
+        VehicleType.TAXI -> colors.orange
+        VehicleType.PRIVATE -> colors.green
+    }
+    val selectedContainerColor = when (type) {
+        VehicleType.TAXI -> colors.softYellow
+        VehicleType.PRIVATE -> colors.softGreen
+    }
+    val containerColor = if (selected) {
+        selectedContainerColor
     } else {
-        OutlinedButton(
-            modifier = modifier,
-            onClick = onClick
+        MaterialTheme.colorScheme.surface
+    }
+    val borderColor = if (selected) {
+        accentColor.copy(alpha = 0.55f)
+    } else {
+        MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)
+    }
+
+    Card(
+        modifier = modifier
+            .heightIn(min = 112.dp)
+            .clickable { onClick() },
+        shape = RoundedCornerShape(14.dp),
+        border = BorderStroke(width = 1.dp, color = borderColor),
+        colors = CardDefaults.cardColors(
+            containerColor = containerColor
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = if (selected) 1.dp else 0.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp, vertical = 12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = text)
+            VehicleAvatar(type = type, size = 58)
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelLarge,
+                color = accentColor,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                maxLines = 2
+            )
+
+            Spacer(modifier = Modifier.height(2.dp))
+
+            Text(
+                text = if (type == VehicleType.TAXI) {
+                    "Con ingreso diario"
+                } else {
+                    "Uso particular"
+                },
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                maxLines = 2
+            )
         }
     }
 }

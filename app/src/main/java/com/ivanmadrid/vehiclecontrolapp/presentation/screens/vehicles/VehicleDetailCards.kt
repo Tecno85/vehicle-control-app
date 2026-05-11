@@ -19,12 +19,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -49,6 +47,8 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.Novelty
 import com.ivanmadrid.vehiclecontrolapp.domain.model.NoveltyPriority
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
+import com.ivanmadrid.vehiclecontrolapp.presentation.components.getExpenseCategoryIcon
+import com.ivanmadrid.vehiclecontrolapp.presentation.components.getVehicleDocumentIcon
 import com.ivanmadrid.vehiclecontrolapp.ui.theme.vehicleColors
 import com.ivanmadrid.vehiclecontrolapp.utils.DocumentUrgency
 import com.ivanmadrid.vehiclecontrolapp.utils.calculateTaxiBalanceSummary
@@ -221,19 +221,48 @@ fun BalanceDateButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    if (selected) {
-        Button(
-            modifier = modifier,
-            onClick = onClick
-        ) {
-            Text(text = getShortDateLabel(date))
-        }
+    val colors = MaterialTheme.vehicleColors
+    val contentColor = if (selected) {
+        colors.green
     } else {
-        OutlinedButton(
-            modifier = modifier,
-            onClick = onClick
+        MaterialTheme.colorScheme.onSurfaceVariant
+    }
+    val containerColor = if (selected) {
+        colors.softGreen
+    } else {
+        MaterialTheme.colorScheme.surface
+    }
+    val borderColor = if (selected) {
+        colors.green.copy(alpha = 0.45f)
+    } else {
+        colors.divider
+    }
+
+    Card(
+        modifier = modifier
+            .height(34.dp)
+            .clickable { onClick() },
+        shape = RoundedCornerShape(50.dp),
+        border = BorderStroke(width = 1.dp, color = borderColor),
+        colors = CardDefaults.cardColors(
+            containerColor = containerColor
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(34.dp)
+                .padding(horizontal = 8.dp),
+            contentAlignment = Alignment.Center
         ) {
-            Text(text = getShortDateLabel(date))
+            Text(
+                text = getShortDateLabel(date),
+                style = MaterialTheme.typography.labelMedium,
+                color = contentColor,
+                fontWeight = FontWeight.SemiBold,
+                textAlign = TextAlign.Center
+            )
         }
     }
 }
@@ -263,7 +292,14 @@ fun VehicleDocumentsCard(
         markerBackground = colors.softBlue
     ) {
         if (documents.isEmpty()) {
-            EmptySectionText(text = "No hay documentos registrados para este vehículo.")
+            EmptySectionMessage(
+                title = "Sin documentos registrados",
+                description = "Cuando registres SOAT, tecnicomecánica o impuestos, aparecerán aquí.",
+                markerText = "D",
+                markerIconRes = R.drawable.ic_detail_document,
+                markerColor = colors.blue,
+                markerBackground = colors.softBlue
+            )
         } else {
             documents.forEachIndexed { index, document ->
                 VehicleDocumentItem(
@@ -309,7 +345,7 @@ fun VehicleDocumentItem(
 
     DetailListItem(
         markerText = document.type.shortLabel(),
-        markerIconRes = R.drawable.ic_detail_document,
+        markerIconRes = getVehicleDocumentIcon(document.type),
         markerColor = markerColor,
         markerBackground = markerBackground,
         title = getDocumentTypeLabel(document.type),
@@ -337,7 +373,14 @@ fun VehicleExpensesCard(
         markerBackground = colors.softBlue
     ) {
         if (expenses.isEmpty()) {
-            EmptySectionText(text = "No hay gastos registrados para este vehículo.")
+            EmptySectionMessage(
+                title = "Sin gastos recientes",
+                description = "Los gastos registrados para este vehículo se mostrarán en esta sección.",
+                markerText = "$",
+                markerIconRes = R.drawable.ic_detail_expense,
+                markerColor = colors.blue,
+                markerBackground = colors.softBlue
+            )
         } else {
             expenses.forEachIndexed { index, expense ->
                 VehicleExpenseItem(
@@ -367,7 +410,7 @@ fun VehicleExpenseItem(
     val colors = MaterialTheme.vehicleColors
     DetailListItem(
         markerText = "$",
-        markerIconRes = R.drawable.ic_detail_expense,
+        markerIconRes = getExpenseCategoryIcon(expense.category),
         markerColor = colors.blue,
         markerBackground = colors.softBlue,
         title = expense.description,
@@ -396,7 +439,14 @@ fun VehicleNoveltiesCard(
         markerBackground = colors.softPurple
     ) {
         if (novelties.isEmpty()) {
-            EmptySectionText(text = "No hay novedades registradas para este vehículo.")
+            EmptySectionMessage(
+                title = "Sin novedades recientes",
+                description = "Las novedades operativas o económicas del vehículo aparecerán aquí.",
+                markerText = "N",
+                markerIconRes = R.drawable.ic_detail_novelty,
+                markerColor = colors.purple,
+                markerBackground = colors.softPurple
+            )
         } else {
             novelties.forEachIndexed { index, novelty ->
                 VehicleNoveltyItem(
@@ -759,21 +809,46 @@ fun DetailListItem(
                     }
 
                     if (secondaryActionText != null && onSecondaryActionClick != null) {
-                        val colors = MaterialTheme.vehicleColors
-                        TextButton(
-                            contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp),
+                        InlineDeleteButton(
+                            text = secondaryActionText,
                             onClick = onSecondaryActionClick
-                        ) {
-                            Text(
-                                text = secondaryActionText,
-                                style = MaterialTheme.typography.labelMedium,
-                                color = colors.red
-                            )
-                        }
+                        )
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun InlineDeleteButton(
+    text: String,
+    onClick: () -> Unit
+) {
+    val colors = MaterialTheme.vehicleColors
+
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(50.dp))
+            .background(colors.softRed.copy(alpha = 0.72f))
+            .clickable { onClick() }
+            .padding(horizontal = 8.dp, vertical = 5.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_delete),
+            contentDescription = null,
+            modifier = Modifier.size(13.dp),
+            colorFilter = ColorFilter.tint(colors.red)
+        )
+
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelSmall,
+            color = colors.red,
+            fontWeight = FontWeight.SemiBold
+        )
     }
 }
 
@@ -860,12 +935,51 @@ fun DetailMarker(
 }
 
 @Composable
-fun EmptySectionText(text: String) {
-    Text(
-        text = text,
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onSurfaceVariant
-    )
+fun EmptySectionMessage(
+    title: String,
+    description: String,
+    markerText: String,
+    markerIconRes: Int,
+    markerColor: Color,
+    markerBackground: Color
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(14.dp))
+            .background(markerBackground.copy(alpha = 0.55f))
+            .padding(14.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        DetailMarker(
+            text = markerText,
+            iconRes = markerIconRes,
+            color = markerColor,
+            backgroundColor = MaterialTheme.colorScheme.surface,
+            size = 38
+        )
+
+        Spacer(modifier = Modifier.width(12.dp))
+
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(modifier = Modifier.height(2.dp))
+
+            Text(
+                text = description,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
 }
 
 @Composable

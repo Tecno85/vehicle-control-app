@@ -1,6 +1,7 @@
 package com.ivanmadrid.vehiclecontrolapp.presentation.screens.expenses
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,13 +29,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Expense
 import com.ivanmadrid.vehiclecontrolapp.domain.model.ExpenseCategory
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.presentation.components.AppBackButton
+import com.ivanmadrid.vehiclecontrolapp.presentation.components.getExpenseCategoryIcon
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleAvatar
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleTypeChip
 import com.ivanmadrid.vehiclecontrolapp.utils.getTodayIsoDate
@@ -295,6 +300,7 @@ fun ExpenseCategoryOptions(
                 rowCategories.forEach { category ->
                     ExpenseCategoryButton(
                         text = getExpenseCategoryLabel(category),
+                        iconRes = getExpenseCategoryIcon(category),
                         selected = selectedCategory == category,
                         modifier = Modifier.weight(1f),
                         onClick = {
@@ -314,6 +320,7 @@ fun ExpenseCategoryOptions(
 @Composable
 fun ExpenseCategoryButton(
     text: String,
+    iconRes: Int,
     selected: Boolean,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
@@ -323,15 +330,49 @@ fun ExpenseCategoryButton(
             modifier = modifier,
             onClick = onClick
         ) {
-            Text(text = text)
+            CategoryButtonContent(
+                text = text,
+                iconRes = iconRes,
+                tint = MaterialTheme.colorScheme.onPrimary
+            )
         }
     } else {
         OutlinedButton(
             modifier = modifier,
             onClick = onClick
         ) {
-            Text(text = text)
+            CategoryButtonContent(
+                text = text,
+                iconRes = iconRes,
+                tint = MaterialTheme.colorScheme.primary
+            )
         }
+    }
+}
+
+@Composable
+fun CategoryButtonContent(
+    text: String,
+    iconRes: Int,
+    tint: androidx.compose.ui.graphics.Color
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            painter = painterResource(id = iconRes),
+            contentDescription = null,
+            modifier = Modifier.height(18.dp).width(18.dp),
+            colorFilter = ColorFilter.tint(tint)
+        )
+
+        Text(
+            text = text,
+            textAlign = TextAlign.Center,
+            maxLines = 2
+        )
     }
 }
 

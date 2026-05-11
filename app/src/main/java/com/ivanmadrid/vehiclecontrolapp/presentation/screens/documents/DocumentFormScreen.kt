@@ -1,6 +1,7 @@
 package com.ivanmadrid.vehiclecontrolapp.presentation.screens.documents
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,12 +27,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocumentType
 import com.ivanmadrid.vehiclecontrolapp.presentation.components.AppBackButton
+import com.ivanmadrid.vehiclecontrolapp.presentation.components.getVehicleDocumentIcon
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleAvatar
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleTypeChip
 import com.ivanmadrid.vehiclecontrolapp.utils.isValidIsoDate
@@ -242,6 +247,7 @@ fun DocumentTypeOptions(
         VehicleDocumentType.entries.forEach { type ->
             DocumentTypeButton(
                 text = getDocumentTypeLabel(type),
+                iconRes = getVehicleDocumentIcon(type),
                 selected = selectedType == type,
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
@@ -255,6 +261,7 @@ fun DocumentTypeOptions(
 @Composable
 fun DocumentTypeButton(
     text: String,
+    iconRes: Int,
     selected: Boolean,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
@@ -264,15 +271,49 @@ fun DocumentTypeButton(
             modifier = modifier,
             onClick = onClick
         ) {
-            Text(text = text)
+            DocumentTypeButtonContent(
+                text = text,
+                iconRes = iconRes,
+                tint = MaterialTheme.colorScheme.onPrimary
+            )
         }
     } else {
         OutlinedButton(
             modifier = modifier,
             onClick = onClick
         ) {
-            Text(text = text)
+            DocumentTypeButtonContent(
+                text = text,
+                iconRes = iconRes,
+                tint = MaterialTheme.colorScheme.primary
+            )
         }
+    }
+}
+
+@Composable
+fun DocumentTypeButtonContent(
+    text: String,
+    iconRes: Int,
+    tint: androidx.compose.ui.graphics.Color
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            painter = painterResource(id = iconRes),
+            contentDescription = null,
+            modifier = Modifier.height(18.dp).width(18.dp),
+            colorFilter = ColorFilter.tint(tint)
+        )
+
+        Text(
+            text = text,
+            textAlign = TextAlign.Center,
+            maxLines = 2
+        )
     }
 }
 

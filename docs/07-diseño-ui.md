@@ -53,7 +53,7 @@ La paleta debe mantener:
 - Colores consistentes por tipo de información.
 - Legibilidad correcta en formularios y detalle.
 
-La preferencia de tema se puede alternar desde la pantalla principal durante la sesión. Más adelante se puede guardar la preferencia del usuario.
+La preferencia de tema se puede alternar desde la pantalla principal y se recuerda localmente en el dispositivo.
 
 ---
 
@@ -69,6 +69,8 @@ Uso actual:
 - Información del taxi.
 - Documentos.
 - Gastos.
+- Categorías específicas de gastos.
+- Tipos específicos de documentos.
 - Novedades.
 - Acciones rápidas.
 - Modo claro / modo oscuro.
@@ -147,6 +149,8 @@ Las acciones rápidas deben mantener:
 - Icono superior.
 - Colores consistentes por acción.
 
+Los documentos y gastos dentro del detalle deben usar iconos relacionados con su tipo o categoría para mejorar el reconocimiento visual sin depender solo del texto.
+
 ---
 
 ## Formularios
@@ -169,6 +173,8 @@ Controles guiados actuales:
 - Prioridad de novedad.
 - Tipo de ajuste de ingreso.
 - Tipo de documento.
+
+Las opciones de categoría de gasto y tipo de documento usan iconos vectoriales para mantener consistencia con el detalle del vehículo.
 
 No se usan todavía:
 

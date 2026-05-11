@@ -148,6 +148,7 @@ presentation/screens/vehicles/VehicleListScreen.kt
 presentation/screens/vehicles/VehicleDetailScreen.kt
 presentation/screens/vehicles/VehicleDetailCards.kt
 presentation/screens/vehicles/VehicleFormScreen.kt
+presentation/screens/reports/ReportsScreen.kt
 presentation/screens/expenses/ExpenseFormScreen.kt
 presentation/screens/novelties/NoveltyFormScreen.kt
 presentation/screens/documents/DocumentFormScreen.kt
@@ -162,9 +163,11 @@ Estado actual:
 - Muestra chips de taxis y particulares.
 - Muestra próximos vencimientos ordenados por fecha.
 - Muestra días restantes para vencimientos.
+- Muestra colores de vencimiento según urgencia real.
 - Muestra tarjetas visuales para cada vehículo.
 - Muestra iconos vectoriales por tipo de vehículo.
-- Permite alternar modo claro/oscuro durante la sesión.
+- Permite alternar modo claro/oscuro y recuerda la preferencia localmente.
+- Tiene menú tipo sánduche para acceder a secciones como Reportes.
 - Diferencia taxis y particulares.
 - Permite entrar al detalle de cualquier vehículo.
 - Tiene botón flotante `+` solo en esta pantalla.
@@ -180,6 +183,7 @@ Estado actual:
 - Muestra header con placa, marca, modelo, tipo y estado.
 - Muestra información general.
 - Muestra documentos y vencimientos.
+- Colorea documentos según urgencia real del vencimiento.
 - Muestra gastos recientes.
 - Muestra novedades recientes.
 - Muestra acciones rápidas.
@@ -206,6 +210,21 @@ Las novedades de taxi pueden describir el impacto operativo del día como:
 El resumen toma por defecto la fecha más reciente entre gastos y novedades del vehículo.
 También permite elegir entre las fechas recientes disponibles para revisar otros días registrados.
 Más adelante puede agregarse un selector de periodo más completo.
+
+### Reportes
+
+Estado actual:
+
+- Existe pantalla `Reportes`.
+- Se accede desde el menú tipo sánduche de la pantalla principal.
+- Muestra total de vehículos.
+- Muestra cantidad de taxis y particulares.
+- Muestra suma de ingreso diario fijo de taxis.
+- Muestra cantidad de documentos vencidos o con 15 días o menos.
+- Muestra próximos vencimientos.
+- Usa el mismo criterio de colores por urgencia que lista y detalle.
+
+La pantalla es intencionalmente simple para evitar convertirla todavía en un dashboard complejo.
 
 ### Formularios visuales
 
@@ -253,6 +272,7 @@ enum class AppScreen {
     EXPENSE_FORM,
     NOVELTY_FORM,
     DOCUMENT_FORM,
+    REPORTS,
 }
 ```
 
@@ -270,6 +290,9 @@ Lista de vehículos
   │           │     └── Formulario de novedad
   │           └── Registrar documento
   │                 └── Formulario de documento
+  │
+  ├── menú principal
+  │     └── Reportes
   │
   └── tocar botón +
         └── Formulario de vehículo
@@ -296,6 +319,8 @@ DateFormatUtils.kt
 Incluye:
 
 - `getDaysUntilLabel`: muestra texto como `Vence hoy`, `Vence mañana`, `Faltan X días` o `Vencido`.
+- `getDaysUntilCount`: calcula días hasta una fecha.
+- `getDocumentUrgency`: clasifica vencimientos como vencido, urgente, atención, normal o fecha por revisar.
 - `sortDocumentsByDueDate`: ordena documentos por fecha de vencimiento.
 - `isValidIsoDate`: valida que una fecha tenga formato ISO `yyyy-MM-dd`.
 
@@ -335,15 +360,17 @@ La app ya permite:
 - Cambiar el día del resumen económico entre fechas recientes disponibles.
 - Mostrar en novedades recientes cuándo una novedad cambió la operación del taxi.
 - Usar una paleta visual propia en modo claro y modo oscuro.
-- Alternar el tema claro/oscuro desde la pantalla principal durante la sesión.
+- Alternar el tema claro/oscuro desde la pantalla principal y recordar la preferencia localmente.
 - Mostrar iconos vectoriales para vehículos y secciones internas.
+- Mostrar iconos vectoriales específicos para categorías de gasto y tipos de documento.
+- Consultar una pantalla inicial de reportes.
+- Ver colores de vencimiento consistentes en lista, detalle y reportes.
 
 La app todavía no permite:
 
 - Consultar historial completo.
 - Sincronizar con Firebase.
 - Enviar notificaciones del sistema.
-- Recordar de forma persistente la preferencia de modo claro/oscuro.
 
 ---
 
@@ -351,11 +378,11 @@ La app todavía no permite:
 
 1. Revisar visualmente todas las pantallas en emulador.
 2. Ajustar textos, espaciados o tamaños que se vean apretados.
-3. Evaluar si conviene guardar la preferencia de modo claro/oscuro.
-4. Probar el guardado real de vehículos desde el botón flotante `+`.
-5. Probar el guardado real de gastos desde el detalle de un vehículo.
-6. Probar el guardado real de novedades desde el detalle de un vehículo.
-7. Probar el guardado real de documentos desde el detalle de un vehículo.
-8. Probar la edición de vehículos desde el detalle.
+3. Probar el guardado real de vehículos desde el botón flotante `+`.
+4. Probar el guardado real de gastos desde el detalle de un vehículo.
+5. Probar el guardado real de novedades desde el detalle de un vehículo.
+6. Probar el guardado real de documentos desde el detalle de un vehículo.
+7. Probar la edición de vehículos desde el detalle.
+8. Evaluar fotos reales por vehículo solo si aportan más claridad que los iconos vectoriales actuales.
 9. Agregar selector de periodo más completo para reportes.
 10. Evaluar Navigation Compose cuando haya historial, reportes y ajustes.
