@@ -1,5 +1,6 @@
 package com.ivanmadrid.vehiclecontrolapp.presentation.screens.reports
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,7 +28,10 @@ import com.ivanmadrid.vehiclecontrolapp.presentation.components.AppBackButton
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.formatCurrency
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.getDocumentTypeLabel
 import com.ivanmadrid.vehiclecontrolapp.ui.theme.vehicleColors
+import com.ivanmadrid.vehiclecontrolapp.utils.DocumentUrgency
 import com.ivanmadrid.vehiclecontrolapp.utils.getDaysUntilCount
+import com.ivanmadrid.vehiclecontrolapp.utils.getDaysUntilLabel
+import com.ivanmadrid.vehiclecontrolapp.utils.getDocumentUrgency
 import com.ivanmadrid.vehiclecontrolapp.utils.sortDocumentsByDueDate
 
 @Composable
@@ -122,13 +126,15 @@ fun ReportsScreen(
             )
         } else {
             nextDocuments.forEach { document ->
+                val urgency = getDocumentUrgency(getDaysUntilCount(document.dueDate))
                 val vehiclePlate = vehicles.firstOrNull { vehicle ->
                     vehicle.id == document.vehicleId
                 }?.plate ?: "Vehículo"
 
                 ReportListCard(
                     title = vehiclePlate,
-                    detail = "${getDocumentTypeLabel(document.type)} · ${document.dueDate}"
+                    detail = "${getDocumentTypeLabel(document.type)} · ${getDaysUntilLabel(document.dueDate)} · ${document.dueDate}",
+                    urgency = urgency
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -189,13 +195,34 @@ fun ReportMetricCard(
 @Composable
 fun ReportListCard(
     title: String,
-    detail: String
+    detail: String,
+    urgency: DocumentUrgency = DocumentUrgency.UNKNOWN
 ) {
+    val colors = MaterialTheme.vehicleColors
+    val accentColor = when (urgency) {
+        DocumentUrgency.OVERDUE,
+        DocumentUrgency.URGENT -> colors.red
+        DocumentUrgency.WARNING -> colors.orange
+        DocumentUrgency.NORMAL,
+        DocumentUrgency.UNKNOWN -> colors.green
+    }
+    val containerColor = when (urgency) {
+        DocumentUrgency.OVERDUE,
+        DocumentUrgency.URGENT -> colors.softRed
+        DocumentUrgency.WARNING -> colors.softYellow
+        DocumentUrgency.NORMAL,
+        DocumentUrgency.UNKNOWN -> MaterialTheme.colorScheme.surface
+    }
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
+        border = BorderStroke(
+            width = 1.dp,
+            color = accentColor.copy(alpha = 0.25f)
+        ),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = containerColor
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {

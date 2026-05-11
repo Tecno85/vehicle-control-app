@@ -50,9 +50,12 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.NoveltyPriority
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
 import com.ivanmadrid.vehiclecontrolapp.ui.theme.vehicleColors
+import com.ivanmadrid.vehiclecontrolapp.utils.DocumentUrgency
 import com.ivanmadrid.vehiclecontrolapp.utils.calculateTaxiBalanceSummary
+import com.ivanmadrid.vehiclecontrolapp.utils.getDaysUntilCount
 import com.ivanmadrid.vehiclecontrolapp.utils.getTaxiBalanceReferenceDates
 import com.ivanmadrid.vehiclecontrolapp.utils.getDaysUntilLabel
+import com.ivanmadrid.vehiclecontrolapp.utils.getDocumentUrgency
 
 @Composable
 fun VehicleGeneralInfoCard(vehicle: Vehicle) {
@@ -288,11 +291,27 @@ fun VehicleDocumentItem(
     onDeleteClick: () -> Unit
 ) {
     val colors = MaterialTheme.vehicleColors
+    val urgency = getDocumentUrgency(getDaysUntilCount(document.dueDate))
+    val markerColor = when (urgency) {
+        DocumentUrgency.OVERDUE,
+        DocumentUrgency.URGENT -> colors.red
+        DocumentUrgency.WARNING -> colors.orange
+        DocumentUrgency.NORMAL,
+        DocumentUrgency.UNKNOWN -> colors.green
+    }
+    val markerBackground = when (urgency) {
+        DocumentUrgency.OVERDUE,
+        DocumentUrgency.URGENT -> colors.softRed
+        DocumentUrgency.WARNING -> colors.softYellow
+        DocumentUrgency.NORMAL,
+        DocumentUrgency.UNKNOWN -> colors.softGreen
+    }
+
     DetailListItem(
         markerText = document.type.shortLabel(),
         markerIconRes = R.drawable.ic_detail_document,
-        markerColor = colors.orange,
-        markerBackground = colors.softYellow,
+        markerColor = markerColor,
+        markerBackground = markerBackground,
         title = getDocumentTypeLabel(document.type),
         subtitle = getDaysUntilLabel(document.dueDate),
         extra = document.notes,

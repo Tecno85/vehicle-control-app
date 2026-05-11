@@ -29,6 +29,24 @@ fun getDaysUntilCount(dateText: String): Long? {
     }
 }
 
+enum class DocumentUrgency {
+    OVERDUE,
+    URGENT,
+    WARNING,
+    NORMAL,
+    UNKNOWN,
+}
+
+fun getDocumentUrgency(daysUntil: Long?): DocumentUrgency {
+    return when {
+        daysUntil == null -> DocumentUrgency.UNKNOWN
+        daysUntil < 0 -> DocumentUrgency.OVERDUE
+        daysUntil <= 7 -> DocumentUrgency.URGENT
+        daysUntil <= 15 -> DocumentUrgency.WARNING
+        else -> DocumentUrgency.NORMAL
+    }
+}
+
 fun sortDocumentsByDueDate(documents: List<VehicleDocument>): List<VehicleDocument> {
     return documents.sortedWith(
         compareBy { document ->
