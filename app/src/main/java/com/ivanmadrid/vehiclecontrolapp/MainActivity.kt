@@ -28,6 +28,7 @@ import com.ivanmadrid.vehiclecontrolapp.presentation.screens.expenses.ExpenseFor
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.expenses.ExpenseFormViewModel
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.novelties.NoveltyFormScreen
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.novelties.NoveltyFormViewModel
+import com.ivanmadrid.vehiclecontrolapp.presentation.screens.reports.ReportsScreen
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleDetailScreen
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleDetailViewModel
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleFormScreen
@@ -43,6 +44,7 @@ enum class AppScreen {
     EXPENSE_FORM,
     NOVELTY_FORM,
     DOCUMENT_FORM,
+    REPORTS,
 }
 
 private const val THEME_PREFERENCES_NAME = "theme_preferences"
@@ -152,6 +154,10 @@ class MainActivity : ComponentActivity() {
                                         .putBoolean(THEME_DARK_MODE_KEY, newDarkTheme)
                                         .apply()
                                 },
+                                onReportsClick = {
+                                    clearEditingState()
+                                    currentScreen = AppScreen.REPORTS
+                                },
                                 onVehicleClick = { vehicle ->
                                     clearEditingState()
                                     selectedVehicle = vehicle
@@ -234,6 +240,15 @@ class MainActivity : ComponentActivity() {
                                     }
                                 )
                             }
+                        }
+
+                        AppScreen.REPORTS -> {
+                            ReportsScreen(
+                                vehicles = vehicles,
+                                documents = documents,
+                                modifier = Modifier.padding(innerPadding),
+                                onBackClick = goToVehicleList
+                            )
                         }
 
                         AppScreen.VEHICLE_FORM -> {

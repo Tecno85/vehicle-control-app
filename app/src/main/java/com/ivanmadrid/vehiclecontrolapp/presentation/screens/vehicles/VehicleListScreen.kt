@@ -21,17 +21,24 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.ivanmadrid.vehiclecontrolapp.R
@@ -51,8 +58,12 @@ fun VehicleListScreen(
     modifier: Modifier = Modifier,
     isDarkTheme: Boolean,
     onToggleThemeClick: () -> Unit,
+    onReportsClick: () -> Unit,
     onVehicleClick: (Vehicle) -> Unit
 ) {
+    var showMainMenu by remember {
+        mutableStateOf(false)
+    }
     val taxiCount = vehicles.count { vehicle ->
         vehicle.type == VehicleType.TAXI
     }
@@ -72,12 +83,50 @@ fun VehicleListScreen(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = "Control Vehicular",
-                modifier = Modifier.weight(1f),
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold
+            HeaderIconButton(
+                iconRes = R.drawable.ic_menu,
+                contentDescription = "Abrir menú principal",
+                onClick = {
+                    showMainMenu = true
+                }
             )
+
+            DropdownMenu(
+                expanded = showMainMenu,
+                onDismissRequest = {
+                    showMainMenu = false
+                }
+            ) {
+                DropdownMenuItem(
+                    text = {
+                        Text(text = "Vehículos")
+                    },
+                    onClick = {
+                        showMainMenu = false
+                    }
+                )
+
+                DropdownMenuItem(
+                    text = {
+                        Text(text = "Reportes")
+                    },
+                    onClick = {
+                        showMainMenu = false
+                        onReportsClick()
+                    }
+                )
+            }
+
+            Box(
+                modifier = Modifier.weight(1f),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Control Vehicular",
+                    style = MaterialTheme.typography.headlineLarge,
+                    fontWeight = FontWeight.Bold
+                )
+            }
 
             ThemeToggleButton(
                 isDarkTheme = isDarkTheme,
@@ -89,7 +138,10 @@ fun VehicleListScreen(
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(
+                space = 8.dp,
+                alignment = Alignment.CenterHorizontally
+            )
         ) {
             SummaryMetricChip(
                 count = vehicles.size,
@@ -188,9 +240,11 @@ fun SummaryMetricChip(
             color = chipColor.copy(alpha = 0.18f)
         )
     ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp, vertical = 10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = count.toString(),
@@ -199,13 +253,14 @@ fun SummaryMetricChip(
                 fontWeight = FontWeight.Bold
             )
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.height(2.dp))
 
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontWeight = FontWeight.SemiBold,
+                textAlign = TextAlign.Center,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
@@ -497,6 +552,23 @@ fun ThemeToggleButton(
         R.drawable.ic_theme_moon
     }
 
+    HeaderIconButton(
+        iconRes = iconRes,
+        contentDescription = if (isDarkTheme) {
+            "Cambiar a modo claro"
+        } else {
+            "Cambiar a modo oscuro"
+        },
+        onClick = onClick
+    )
+}
+
+@Composable
+fun HeaderIconButton(
+    iconRes: Int,
+    contentDescription: String,
+    onClick: () -> Unit
+) {
     Surface(
         modifier = Modifier
             .size(42.dp)
@@ -514,11 +586,7 @@ fun ThemeToggleButton(
         ) {
             Image(
                 painter = painterResource(id = iconRes),
-                contentDescription = if (isDarkTheme) {
-                    "Cambiar a modo claro"
-                } else {
-                    "Cambiar a modo oscuro"
-                },
+                contentDescription = contentDescription,
                 modifier = Modifier.size(20.dp),
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
             )

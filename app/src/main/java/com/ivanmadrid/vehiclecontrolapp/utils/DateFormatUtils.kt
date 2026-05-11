@@ -6,10 +6,10 @@ import java.time.temporal.ChronoUnit
 
 fun getDaysUntilLabel(dateText: String): String {
     return try {
-        val dueDate = LocalDate.parse(dateText)
-        val daysUntil = ChronoUnit.DAYS.between(LocalDate.now(), dueDate)
+        val daysUntil = getDaysUntilCount(dateText)
 
         when {
+            daysUntil == null -> "Fecha por revisar"
             daysUntil < 0 -> "Vencido"
             daysUntil == 0L -> "Vence hoy"
             daysUntil == 1L -> "Vence mañana"
@@ -17,6 +17,15 @@ fun getDaysUntilLabel(dateText: String): String {
         }
     } catch (_: Exception) {
         "Fecha por revisar"
+    }
+}
+
+fun getDaysUntilCount(dateText: String): Long? {
+    return try {
+        val dueDate = LocalDate.parse(dateText)
+        ChronoUnit.DAYS.between(LocalDate.now(), dueDate)
+    } catch (_: Exception) {
+        null
     }
 }
 
