@@ -37,8 +37,10 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.Novelty
 import com.ivanmadrid.vehiclecontrolapp.domain.model.NoveltyPriority
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
+import com.ivanmadrid.vehiclecontrolapp.presentation.components.AppBackButton
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleAvatar
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleTypeChip
+import com.ivanmadrid.vehiclecontrolapp.utils.getTodayIsoDate
 import com.ivanmadrid.vehiclecontrolapp.utils.isValidIsoDate
 
 @Composable
@@ -50,7 +52,7 @@ fun NoveltyFormScreen(
     onBackClick: () -> Unit
 ) {
     var date by remember(noveltyToEdit?.id) {
-        mutableStateOf(noveltyToEdit?.date.orEmpty())
+        mutableStateOf(noveltyToEdit?.date ?: getTodayIsoDate())
     }
 
     var noveltyType by remember(noveltyToEdit?.id) {
@@ -88,11 +90,7 @@ fun NoveltyFormScreen(
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 16.dp, vertical = 18.dp)
     ) {
-        TextButton(
-            onClick = onBackClick
-        ) {
-            Text(text = "< Volver")
-        }
+        AppBackButton(onClick = onBackClick)
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -142,6 +140,18 @@ fun NoveltyFormScreen(
                     },
                     placeholder = {
                         Text(text = "Ej: 2026-05-09")
+                    },
+                    supportingText = {
+                        Text(text = "Formato: yyyy-MM-dd")
+                    },
+                    trailingIcon = {
+                        TextButton(
+                            onClick = {
+                                date = getTodayIsoDate()
+                            }
+                        ) {
+                            Text(text = "Hoy")
+                        }
                     },
                     singleLine = true
                 )

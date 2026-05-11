@@ -34,8 +34,10 @@ import androidx.compose.ui.unit.dp
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Expense
 import com.ivanmadrid.vehiclecontrolapp.domain.model.ExpenseCategory
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
+import com.ivanmadrid.vehiclecontrolapp.presentation.components.AppBackButton
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleAvatar
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleTypeChip
+import com.ivanmadrid.vehiclecontrolapp.utils.getTodayIsoDate
 import com.ivanmadrid.vehiclecontrolapp.utils.isValidIsoDate
 
 @Composable
@@ -47,7 +49,7 @@ fun ExpenseFormScreen(
     onBackClick: () -> Unit
 ) {
     var date by remember(expenseToEdit?.id) {
-        mutableStateOf(expenseToEdit?.date.orEmpty())
+        mutableStateOf(expenseToEdit?.date ?: getTodayIsoDate())
     }
 
     var category by remember(expenseToEdit?.id) {
@@ -73,11 +75,7 @@ fun ExpenseFormScreen(
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 16.dp, vertical = 18.dp)
     ) {
-        TextButton(
-            onClick = onBackClick
-        ) {
-            Text(text = "< Volver")
-        }
+        AppBackButton(onClick = onBackClick)
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -127,6 +125,18 @@ fun ExpenseFormScreen(
                     },
                     placeholder = {
                         Text(text = "Ej: 2026-05-07")
+                    },
+                    supportingText = {
+                        Text(text = "Formato: yyyy-MM-dd")
+                    },
+                    trailingIcon = {
+                        TextButton(
+                            onClick = {
+                                date = getTodayIsoDate()
+                            }
+                        ) {
+                            Text(text = "Hoy")
+                        }
                     },
                     singleLine = true
                 )

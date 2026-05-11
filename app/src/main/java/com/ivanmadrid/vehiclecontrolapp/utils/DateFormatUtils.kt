@@ -37,6 +37,10 @@ fun isValidIsoDate(dateText: String): Boolean {
     }
 }
 
+fun getTodayIsoDate(): String {
+    return LocalDate.now().toString()
+}
+
 private fun parseDateOrMax(dateText: String): LocalDate {
     return try {
         LocalDate.parse(dateText)

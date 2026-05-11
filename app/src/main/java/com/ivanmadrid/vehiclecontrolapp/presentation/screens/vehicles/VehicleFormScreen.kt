@@ -18,7 +18,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +29,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
+import com.ivanmadrid.vehiclecontrolapp.presentation.components.AppBackButton
 
 @Composable
 fun VehicleFormScreen(
@@ -77,11 +77,7 @@ fun VehicleFormScreen(
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 16.dp, vertical = 18.dp)
     ) {
-        TextButton(
-            onClick = onBackClick
-        ) {
-            Text(text = "< Volver")
-        }
+        AppBackButton(onClick = onBackClick)
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -137,6 +133,9 @@ fun VehicleFormScreen(
                     },
                     placeholder = {
                         Text(text = "Ej: ABC123")
+                    },
+                    supportingText = {
+                        Text(text = "Se guardará en mayúsculas.")
                     },
                     singleLine = true
                 )
@@ -209,6 +208,20 @@ fun VehicleFormScreen(
                     )
                 }
 
+                Spacer(modifier = Modifier.height(6.dp))
+
+                Text(
+                    text = if (vehicleType == VehicleType.TAXI) {
+                        "Los taxis permiten registrar conductor actual e ingreso diario."
+                    } else if (vehicleType == VehicleType.PRIVATE) {
+                        "Los particulares no manejan ingreso diario."
+                    } else {
+                        "Selecciona Taxi o Particular para continuar."
+                    },
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
                 Spacer(modifier = Modifier.height(12.dp))
 
                 OutlinedTextField(
@@ -243,13 +256,13 @@ fun VehicleFormScreen(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = "Datos de taxi",
+                        text = "Información del taxi",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
 
                     Text(
-                        text = "Información especial para vehículos tipo taxi.",
+                        text = "Estos campos solo aplican para vehículos tipo taxi.",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -23,7 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -33,6 +30,9 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.Novelty
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
+import com.ivanmadrid.vehiclecontrolapp.presentation.components.AppBackButton
+import com.ivanmadrid.vehiclecontrolapp.presentation.components.DeleteConfirmButton
+import com.ivanmadrid.vehiclecontrolapp.presentation.components.DestructiveOutlinedButton
 import com.ivanmadrid.vehiclecontrolapp.utils.sortDocumentsByDueDate
 
 @Composable
@@ -80,11 +80,7 @@ fun VehicleDetailScreen(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            TextButton(
-                onClick = onBackClick
-            ) {
-                Text(text = "< Volver")
-            }
+            AppBackButton(onClick = onBackClick)
 
             Spacer(modifier = Modifier.weight(1f))
 
@@ -163,21 +159,13 @@ fun VehicleDetailScreen(
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        OutlinedButton(
+        DestructiveOutlinedButton(
             modifier = Modifier.fillMaxWidth(),
-            border = BorderStroke(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.error
-            ),
-            colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = MaterialTheme.colorScheme.error
-            ),
+            text = "Eliminar vehículo",
             onClick = {
                 showDeleteDialog = true
             }
-        ) {
-            Text(text = "Eliminar vehículo")
-        }
+        )
 
         Spacer(modifier = Modifier.height(80.dp))
     }
@@ -196,14 +184,12 @@ fun VehicleDetailScreen(
                 )
             },
             confirmButton = {
-                Button(
+                DeleteConfirmButton(
                     onClick = {
                         showDeleteDialog = false
                         onDeleteVehicleClick()
                     }
-                ) {
-                    Text(text = "Eliminar")
-                }
+                )
             },
             dismissButton = {
                 TextButton(
@@ -229,14 +215,12 @@ fun VehicleDetailScreen(
                 Text(text = "¿Seguro que quieres eliminar este gasto de ${formatCurrency(expense.amount)}?")
             },
             confirmButton = {
-                Button(
+                DeleteConfirmButton(
                     onClick = {
                         expenseToDelete = null
                         onDeleteExpenseClick(expense)
                     }
-                ) {
-                    Text(text = "Eliminar")
-                }
+                )
             },
             dismissButton = {
                 TextButton(
@@ -262,14 +246,12 @@ fun VehicleDetailScreen(
                 Text(text = "¿Seguro que quieres eliminar la novedad \"${novelty.type}\"?")
             },
             confirmButton = {
-                Button(
+                DeleteConfirmButton(
                     onClick = {
                         noveltyToDelete = null
                         onDeleteNoveltyClick(novelty)
                     }
-                ) {
-                    Text(text = "Eliminar")
-                }
+                )
             },
             dismissButton = {
                 TextButton(
@@ -295,14 +277,12 @@ fun VehicleDetailScreen(
                 Text(text = "¿Seguro que quieres eliminar este documento?")
             },
             confirmButton = {
-                Button(
+                DeleteConfirmButton(
                     onClick = {
                         documentToDelete = null
                         onDeleteDocumentClick(document)
                     }
-                ) {
-                    Text(text = "Eliminar")
-                }
+                )
             },
             dismissButton = {
                 TextButton(

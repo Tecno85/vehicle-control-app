@@ -45,16 +45,26 @@ enum class AppScreen {
     DOCUMENT_FORM,
 }
 
+private const val THEME_PREFERENCES_NAME = "theme_preferences"
+private const val THEME_DARK_MODE_KEY = "dark_mode"
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val appContainer = (application as VehicleControlApplication).appContainer
+        val themePreferences = getSharedPreferences(THEME_PREFERENCES_NAME, MODE_PRIVATE)
 
         setContent {
             val systemDarkTheme = isSystemInDarkTheme()
             var darkThemeOverride by rememberSaveable {
-                mutableStateOf<Boolean?>(null)
+                mutableStateOf<Boolean?>(
+                    if (themePreferences.contains(THEME_DARK_MODE_KEY)) {
+                        themePreferences.getBoolean(THEME_DARK_MODE_KEY, systemDarkTheme)
+                    } else {
+                        null
+                    }
+                )
             }
             val isDarkTheme = darkThemeOverride ?: systemDarkTheme
 
@@ -135,7 +145,12 @@ class MainActivity : ComponentActivity() {
                                 modifier = Modifier.padding(innerPadding),
                                 isDarkTheme = isDarkTheme,
                                 onToggleThemeClick = {
-                                    darkThemeOverride = !isDarkTheme
+                                    val newDarkTheme = !isDarkTheme
+                                    darkThemeOverride = newDarkTheme
+                                    themePreferences
+                                        .edit()
+                                        .putBoolean(THEME_DARK_MODE_KEY, newDarkTheme)
+                                        .apply()
                                 },
                                 onVehicleClick = { vehicle ->
                                     clearEditingState()

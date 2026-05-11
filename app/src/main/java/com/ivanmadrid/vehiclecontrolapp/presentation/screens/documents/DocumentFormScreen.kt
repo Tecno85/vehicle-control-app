@@ -19,7 +19,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocumentType
+import com.ivanmadrid.vehiclecontrolapp.presentation.components.AppBackButton
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleAvatar
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleTypeChip
 import com.ivanmadrid.vehiclecontrolapp.utils.isValidIsoDate
@@ -67,11 +67,7 @@ fun DocumentFormScreen(
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 16.dp, vertical = 18.dp)
     ) {
-        TextButton(
-            onClick = onBackClick
-        ) {
-            Text(text = "< Volver")
-        }
+        AppBackButton(onClick = onBackClick)
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -138,6 +134,9 @@ fun DocumentFormScreen(
                     },
                     placeholder = {
                         Text(text = "Ej: 2026-05-21")
+                    },
+                    supportingText = {
+                        Text(text = "Formato: yyyy-MM-dd")
                     },
                     singleLine = true
                 )
