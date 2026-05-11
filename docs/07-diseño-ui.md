@@ -26,6 +26,8 @@ La app usa un estilo:
 - Con chips para estados y categorías.
 - Con botones visibles.
 - Con buen espacio entre secciones.
+- Con iconos vectoriales simples para reforzar jerarquía visual.
+- Compatible con modo claro y modo oscuro.
 
 La UI debe mantenerse simple mientras la app sigue en fase inicial. Se prefieren mejoras graduales antes que una personalización visual demasiado compleja.
 
@@ -42,7 +44,40 @@ La interfaz usa una paleta sencilla:
 - Morado para novedades.
 - Fondos suaves para tarjetas internas y chips.
 
-No existe todavía una paleta final formal. Los colores actuales son una guía visual práctica para mejorar lectura y jerarquía.
+La app cuenta ahora con una paleta propia para modo claro y modo oscuro.
+
+La paleta debe mantener:
+
+- Buen contraste entre fondo, tarjetas y texto.
+- Fondos suaves para chips, recordatorios y acciones.
+- Colores consistentes por tipo de información.
+- Legibilidad correcta en formularios y detalle.
+
+La preferencia de tema se puede alternar desde la pantalla principal durante la sesión. Más adelante se puede guardar la preferencia del usuario.
+
+---
+
+## Iconos e imágenes
+
+Se usan iconos vectoriales locales en `res/drawable`.
+
+Uso actual:
+
+- Taxi: ilustración vectorial amarilla.
+- Particular: ilustración vectorial plateada.
+- Información general.
+- Información del taxi.
+- Documentos.
+- Gastos.
+- Novedades.
+- Acciones rápidas.
+- Modo claro / modo oscuro.
+
+Decisión actual:
+
+- Preferir vectores locales antes que imágenes pesadas.
+- Mantener los iconos simples, claros y coherentes con el mockup.
+- No agregar fotos reales por vehículo todavía.
 
 ---
 
@@ -58,6 +93,7 @@ Debe mostrar:
 - Próximos vencimientos.
 - Tarjetas de vehículos.
 - Botón flotante `+` para agregar vehículo.
+- Botón para alternar modo claro/oscuro.
 
 Los próximos vencimientos:
 
@@ -67,12 +103,14 @@ Los próximos vencimientos:
 
 Las tarjetas de vehículo deben mostrar:
 
-- Avatar visual por tipo.
+- Avatar visual por tipo con icono vectorial.
 - Placa.
 - Marca y modelo.
 - Tipo de vehículo.
 - Estado.
 - Para taxis: conductor e ingreso diario.
+
+No se incluye búsqueda por ahora, porque el alcance inicial contempla pocos vehículos y la lista debe mantenerse directa.
 
 ---
 
@@ -102,6 +140,13 @@ Para taxis también debe mostrar:
 
 Los particulares no deben mostrar información exclusiva de taxi.
 
+Las acciones rápidas deben mantener:
+
+- Tres botones del mismo tamaño visual.
+- Texto centrado.
+- Icono superior.
+- Colores consistentes por acción.
+
 ---
 
 ## Formularios
@@ -115,7 +160,7 @@ Reglas:
 - Usar una tarjeta principal para los datos del formulario.
 - Mantener scroll vertical.
 - Usar botones `Guardar`, `Cancelar` y `Volver`.
-- Mostrar aviso temporal cuando el guardado todavía no está implementado.
+- Mantener compatibilidad visual con modo claro y modo oscuro.
 
 Controles guiados actuales:
 
@@ -128,8 +173,6 @@ Controles guiados actuales:
 No se usan todavía:
 
 - Selector de fecha.
-- Persistencia real.
-- Validaciones completas.
 - Mensajes de error por campo.
 
 ---
