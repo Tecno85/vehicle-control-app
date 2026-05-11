@@ -1,12 +1,14 @@
 package com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,9 +34,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.ivanmadrid.vehiclecontrolapp.R
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Expense
 import com.ivanmadrid.vehiclecontrolapp.domain.model.ExpenseCategory
 import com.ivanmadrid.vehiclecontrolapp.domain.model.IncomeAdjustmentType
@@ -42,31 +47,24 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.Novelty
 import com.ivanmadrid.vehiclecontrolapp.domain.model.NoveltyPriority
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
+import com.ivanmadrid.vehiclecontrolapp.ui.theme.vehicleColors
 import com.ivanmadrid.vehiclecontrolapp.utils.calculateTaxiBalanceSummary
 import com.ivanmadrid.vehiclecontrolapp.utils.getTaxiBalanceReferenceDates
 import com.ivanmadrid.vehiclecontrolapp.utils.getDaysUntilLabel
 
-private val DetailBlue = Color(0xFF0B63CE)
-private val DetailGreen = Color(0xFF188038)
-private val DetailOrange = Color(0xFFE8710A)
-private val DetailRed = Color(0xFFD93025)
-private val SoftBlue = Color(0xFFE8F1FF)
-private val SoftGreen = Color(0xFFE8F5E9)
-private val SoftYellow = Color(0xFFFFF7DB)
-private val SoftRed = Color(0xFFFFECEC)
-private val DividerColor = Color(0xFFE4E7EC)
-
 @Composable
 fun VehicleGeneralInfoCard(vehicle: Vehicle) {
+    val colors = MaterialTheme.vehicleColors
     DetailSectionCard(
         title = "Información general",
         markerText = "i",
-        markerColor = DetailBlue,
-        markerBackground = SoftBlue
+        markerIconRes = R.drawable.ic_detail_info,
+        markerColor = colors.blue,
+        markerBackground = colors.softBlue
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 DetailInfoTile(label = "Tipo", value = getVehicleTypeLabel(vehicle.type))
@@ -85,15 +83,17 @@ fun VehicleGeneralInfoCard(vehicle: Vehicle) {
 
 @Composable
 fun TaxiInfoCard(vehicle: Vehicle) {
+    val colors = MaterialTheme.vehicleColors
     DetailSectionCard(
         title = "Información del taxi",
         markerText = "T",
-        markerColor = DetailOrange,
-        markerBackground = SoftYellow
+        markerIconRes = R.drawable.ic_detail_taxi,
+        markerColor = colors.orange,
+        markerBackground = colors.softYellow
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             HighlightInfoItem(
                 label = "Conductor actual",
@@ -103,7 +103,7 @@ fun TaxiInfoCard(vehicle: Vehicle) {
             HighlightInfoItem(
                 label = "Ingreso diario",
                 value = formatCurrency(vehicle.dailyFixedIncome),
-                valueColor = DetailGreen,
+                valueColor = colors.green,
                 modifier = Modifier.weight(1f)
             )
         }
@@ -116,6 +116,7 @@ fun TaxiBalanceSummaryCard(
     expenses: List<Expense>,
     novelties: List<Novelty>
 ) {
+    val colors = MaterialTheme.vehicleColors
     val referenceDates = getTaxiBalanceReferenceDates(
         expenses = expenses,
         novelties = novelties
@@ -133,8 +134,9 @@ fun TaxiBalanceSummaryCard(
     DetailSectionCard(
         title = "Resumen económico",
         markerText = "$",
-        markerColor = DetailGreen,
-        markerBackground = SoftGreen
+        markerIconRes = R.drawable.ic_detail_expense,
+        markerColor = colors.green,
+        markerBackground = colors.softGreen
     ) {
         Text(
             text = if (balanceSummary.referenceDate != null) {
@@ -147,7 +149,7 @@ fun TaxiBalanceSummaryCard(
         )
 
         if (referenceDates.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -166,42 +168,42 @@ fun TaxiBalanceSummaryCard(
             }
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             BalanceMetricItem(
                 label = "Ingreso esperado",
                 value = formatCurrency(balanceSummary.baseIncome),
-                valueColor = DetailGreen,
+                valueColor = colors.green,
                 modifier = Modifier.weight(1f)
             )
 
             BalanceMetricItem(
                 label = "Ingreso ajustado",
                 value = formatCurrency(balanceSummary.adjustedIncome),
-                valueColor = DetailGreen,
+                valueColor = colors.green,
                 modifier = Modifier.weight(1f)
             )
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         BalanceMetricItem(
             label = "Gastos",
             value = formatCurrency(balanceSummary.totalExpenses),
-            valueColor = DetailRed,
+            valueColor = colors.red,
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         BalanceMetricItem(
             label = "Balance estimado",
             value = formatCurrency(balanceSummary.estimatedBalance),
-            valueColor = if (balanceSummary.estimatedBalance >= 0) DetailGreen else DetailRed,
+            valueColor = if (balanceSummary.estimatedBalance >= 0) colors.green else colors.red,
             modifier = Modifier.fillMaxWidth()
         )
     }
@@ -247,11 +249,13 @@ fun VehicleDocumentsCard(
     onEditDocumentClick: (VehicleDocument) -> Unit,
     onDeleteDocumentClick: (VehicleDocument) -> Unit
 ) {
+    val colors = MaterialTheme.vehicleColors
     DetailSectionCard(
         title = "Documentos y vencimientos",
         markerText = "D",
-        markerColor = DetailBlue,
-        markerBackground = SoftBlue
+        markerIconRes = R.drawable.ic_detail_document,
+        markerColor = colors.blue,
+        markerBackground = colors.softBlue
     ) {
         if (documents.isEmpty()) {
             EmptySectionText(text = "No hay documentos registrados para este vehículo.")
@@ -281,10 +285,12 @@ fun VehicleDocumentItem(
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
+    val colors = MaterialTheme.vehicleColors
     DetailListItem(
         markerText = document.type.shortLabel(),
-        markerColor = DetailOrange,
-        markerBackground = SoftYellow,
+        markerIconRes = R.drawable.ic_detail_document,
+        markerColor = colors.orange,
+        markerBackground = colors.softYellow,
         title = getDocumentTypeLabel(document.type),
         subtitle = getDaysUntilLabel(document.dueDate),
         extra = document.notes,
@@ -301,11 +307,13 @@ fun VehicleExpensesCard(
     onEditExpenseClick: (Expense) -> Unit,
     onDeleteExpenseClick: (Expense) -> Unit
 ) {
+    val colors = MaterialTheme.vehicleColors
     DetailSectionCard(
         title = "Gastos recientes",
         markerText = "$",
-        markerColor = DetailBlue,
-        markerBackground = SoftBlue
+        markerIconRes = R.drawable.ic_detail_expense,
+        markerColor = colors.blue,
+        markerBackground = colors.softBlue
     ) {
         if (expenses.isEmpty()) {
             EmptySectionText(text = "No hay gastos registrados para este vehículo.")
@@ -335,10 +343,12 @@ fun VehicleExpenseItem(
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
+    val colors = MaterialTheme.vehicleColors
     DetailListItem(
         markerText = "$",
-        markerColor = DetailBlue,
-        markerBackground = SoftBlue,
+        markerIconRes = R.drawable.ic_detail_expense,
+        markerColor = colors.blue,
+        markerBackground = colors.softBlue,
         title = expense.description,
         subtitle = getExpenseCategoryLabel(expense.category),
         extra = expense.date,
@@ -356,11 +366,13 @@ fun VehicleNoveltiesCard(
     onEditNoveltyClick: (Novelty) -> Unit,
     onDeleteNoveltyClick: (Novelty) -> Unit
 ) {
+    val colors = MaterialTheme.vehicleColors
     DetailSectionCard(
         title = "Novedades recientes",
         markerText = "N",
-        markerColor = Color(0xFF6F35D4),
-        markerBackground = Color(0xFFF0E7FF)
+        markerIconRes = R.drawable.ic_detail_novelty,
+        markerColor = colors.purple,
+        markerBackground = colors.softPurple
     ) {
         if (novelties.isEmpty()) {
             EmptySectionText(text = "No hay novedades registradas para este vehículo.")
@@ -390,20 +402,22 @@ fun VehicleNoveltyItem(
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
+    val colors = MaterialTheme.vehicleColors
     val markerColor = when (novelty.priority) {
-        NoveltyPriority.LOW -> DetailGreen
-        NoveltyPriority.MEDIUM -> DetailOrange
-        NoveltyPriority.HIGH -> DetailRed
+        NoveltyPriority.LOW -> colors.green
+        NoveltyPriority.MEDIUM -> colors.orange
+        NoveltyPriority.HIGH -> colors.red
     }
 
     val markerBackground = when (novelty.priority) {
-        NoveltyPriority.LOW -> SoftGreen
-        NoveltyPriority.MEDIUM -> SoftYellow
-        NoveltyPriority.HIGH -> SoftRed
+        NoveltyPriority.LOW -> colors.softGreen
+        NoveltyPriority.MEDIUM -> colors.softYellow
+        NoveltyPriority.HIGH -> colors.softRed
     }
 
     DetailListItem(
         markerText = getNoveltyPriorityLabel(novelty.priority).take(1),
+        markerIconRes = R.drawable.ic_detail_novelty,
         markerColor = markerColor,
         markerBackground = markerBackground,
         title = novelty.type,
@@ -441,11 +455,13 @@ fun VehicleQuickActionsCard(
     onRegisterNoveltyClick: () -> Unit,
     onRegisterDocumentClick: () -> Unit
 ) {
+    val colors = MaterialTheme.vehicleColors
     DetailSectionCard(
         title = "Acciones rápidas",
         markerText = "+",
-        markerColor = DetailGreen,
-        markerBackground = SoftGreen
+        markerIconRes = R.drawable.ic_detail_action,
+        markerColor = colors.green,
+        markerBackground = colors.softGreen
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -454,24 +470,27 @@ fun VehicleQuickActionsCard(
             QuickActionTile(
                 label = "Registrar gasto",
                 markerText = "$",
-                markerColor = DetailBlue,
-                backgroundColor = SoftBlue,
+                markerIconRes = R.drawable.ic_detail_expense,
+                markerColor = colors.blue,
+                backgroundColor = colors.softBlue,
                 modifier = Modifier.weight(1f),
                 onClick = onRegisterExpenseClick
             )
             QuickActionTile(
                 label = "Registrar novedad",
                 markerText = "!",
-                markerColor = Color(0xFF6F35D4),
-                backgroundColor = Color(0xFFF0E7FF),
+                markerIconRes = R.drawable.ic_detail_novelty,
+                markerColor = colors.purple,
+                backgroundColor = colors.softPurple,
                 modifier = Modifier.weight(1f),
                 onClick = onRegisterNoveltyClick
             )
             QuickActionTile(
                 label = "Registrar documento",
                 markerText = "D",
-                markerColor = DetailGreen,
-                backgroundColor = SoftGreen,
+                markerIconRes = R.drawable.ic_detail_document,
+                markerColor = colors.green,
+                backgroundColor = colors.softGreen,
                 modifier = Modifier.weight(1f),
                 onClick = onRegisterDocumentClick
             )
@@ -483,21 +502,23 @@ fun VehicleQuickActionsCard(
 fun DetailSectionCard(
     title: String,
     markerText: String,
+    markerIconRes: Int? = null,
     markerColor: Color,
     markerBackground: Color,
     actionText: String? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
+    val colors = MaterialTheme.vehicleColors
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(14.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         )
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(14.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -505,17 +526,18 @@ fun DetailSectionCard(
             ) {
                 DetailMarker(
                     text = markerText,
+                    iconRes = markerIconRes,
                     color = markerColor,
                     backgroundColor = markerBackground,
-                    size = 34
+                    size = 30
                 )
 
-                Spacer(modifier = Modifier.width(10.dp))
+                Spacer(modifier = Modifier.width(8.dp))
 
                 Text(
                     text = title,
                     modifier = Modifier.weight(1f),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
                 )
 
@@ -523,13 +545,13 @@ fun DetailSectionCard(
                     Text(
                         text = actionText,
                         style = MaterialTheme.typography.labelMedium,
-                        color = DetailBlue,
+                        color = colors.blue,
                         fontWeight = FontWeight.Bold
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             content()
         }
@@ -541,10 +563,11 @@ fun DetailInfoTile(
     label: String,
     value: String
 ) {
+    val colors = MaterialTheme.vehicleColors
     Column {
         Text(
             text = label,
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
@@ -556,11 +579,11 @@ fun DetailInfoTile(
     }
 
     HorizontalDivider(
-        modifier = Modifier.padding(top = 8.dp),
-        color = DividerColor
+        modifier = Modifier.padding(top = 6.dp),
+        color = colors.divider
     )
 
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(6.dp))
 }
 
 @Composable
@@ -570,19 +593,20 @@ fun HighlightInfoItem(
     valueColor: Color = MaterialTheme.colorScheme.onSurface,
     modifier: Modifier = Modifier
 ) {
+    val colors = MaterialTheme.vehicleColors
     Column(
         modifier = modifier
     ) {
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium,
-            color = DetailBlue,
+            color = colors.blue,
             fontWeight = FontWeight.Bold
         )
 
         Text(
             text = value,
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.bodyMedium,
             color = valueColor,
             fontWeight = FontWeight.SemiBold
         )
@@ -605,7 +629,7 @@ fun BalanceMetricItem(
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(
-            modifier = Modifier.padding(12.dp)
+            modifier = Modifier.padding(10.dp)
         ) {
             Text(
                 text = label,
@@ -617,7 +641,7 @@ fun BalanceMetricItem(
 
             Text(
                 text = value,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleSmall,
                 color = valueColor,
                 fontWeight = FontWeight.Bold
             )
@@ -628,6 +652,7 @@ fun BalanceMetricItem(
 @Composable
 fun DetailListItem(
     markerText: String,
+    markerIconRes: Int? = null,
     markerColor: Color,
     markerBackground: Color,
     title: String,
@@ -648,12 +673,13 @@ fun DetailListItem(
     ) {
         DetailMarker(
             text = markerText,
+            iconRes = markerIconRes,
             color = markerColor,
             backgroundColor = markerBackground,
-            size = 46
+            size = 40
         )
 
-        Spacer(modifier = Modifier.width(12.dp))
+        Spacer(modifier = Modifier.width(10.dp))
 
         Column(
             modifier = Modifier.weight(1f)
@@ -666,7 +692,7 @@ fun DetailListItem(
 
             Text(
                 text = subtitle,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
@@ -690,7 +716,7 @@ fun DetailListItem(
                 if (trailingText != null) {
                     Text(
                         text = trailingText,
-                        style = MaterialTheme.typography.bodyLarge,
+                        style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -701,19 +727,26 @@ fun DetailListItem(
                 ) {
                     if (actionText != null && onActionClick != null) {
                         TextButton(
+                            contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp),
                             onClick = onActionClick
                         ) {
-                            Text(text = actionText)
+                            Text(
+                                text = actionText,
+                                style = MaterialTheme.typography.labelMedium
+                            )
                         }
                     }
 
                     if (secondaryActionText != null && onSecondaryActionClick != null) {
+                        val colors = MaterialTheme.vehicleColors
                         TextButton(
+                            contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp),
                             onClick = onSecondaryActionClick
                         ) {
                             Text(
                                 text = secondaryActionText,
-                                color = DetailRed
+                                style = MaterialTheme.typography.labelMedium,
+                                color = colors.red
                             )
                         }
                     }
@@ -727,11 +760,13 @@ fun DetailListItem(
 fun QuickActionTile(
     label: String,
     markerText: String,
+    markerIconRes: Int? = null,
     markerColor: Color,
     backgroundColor: Color,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
+    val colors = MaterialTheme.vehicleColors
     Card(
         modifier = modifier.clickable { onClick() },
         shape = RoundedCornerShape(14.dp),
@@ -743,17 +778,18 @@ fun QuickActionTile(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 14.dp),
+                .padding(horizontal = 8.dp, vertical = 12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             DetailMarker(
                 text = markerText,
+                iconRes = markerIconRes,
                 color = markerColor,
-                backgroundColor = Color.White,
-                size = 38
+                backgroundColor = colors.avatarSurface,
+                size = 34
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
             Text(
                 text = label,
@@ -768,6 +804,7 @@ fun QuickActionTile(
 @Composable
 fun DetailMarker(
     text: String,
+    iconRes: Int? = null,
     color: Color,
     backgroundColor: Color,
     size: Int
@@ -779,12 +816,21 @@ fun DetailMarker(
             .background(backgroundColor),
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.labelLarge,
-            color = color,
-            fontWeight = FontWeight.Bold
-        )
+        if (iconRes == null) {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.labelLarge,
+                color = color,
+                fontWeight = FontWeight.Bold
+            )
+        } else {
+            Image(
+                painter = painterResource(id = iconRes),
+                contentDescription = null,
+                modifier = Modifier.size((size * 0.58f).dp),
+                colorFilter = ColorFilter.tint(color)
+            )
+        }
     }
 }
 
@@ -799,9 +845,10 @@ fun EmptySectionText(text: String) {
 
 @Composable
 fun DetailDivider() {
+    val colors = MaterialTheme.vehicleColors
     HorizontalDivider(
         modifier = Modifier.padding(vertical = 12.dp),
-        color = DividerColor
+        color = colors.divider
     )
 }
 

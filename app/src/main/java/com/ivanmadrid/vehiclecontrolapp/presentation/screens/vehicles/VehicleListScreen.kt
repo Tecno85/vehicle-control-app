@@ -1,6 +1,7 @@
 package com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,33 +29,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.ivanmadrid.vehiclecontrolapp.R
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocumentType
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
+import com.ivanmadrid.vehiclecontrolapp.ui.theme.vehicleColors
 import com.ivanmadrid.vehiclecontrolapp.utils.getDaysUntilLabel
 import com.ivanmadrid.vehiclecontrolapp.utils.sortDocumentsByDueDate
 import java.util.Locale
-
-private val TaxiBlue = Color(0xFF0B63CE)
-private val PrivateGreen = Color(0xFF188038)
-private val WarningOrange = Color(0xFFE8710A)
-private val AlertRed = Color(0xFFD93025)
-private val SoftBlue = Color(0xFFE8F1FF)
-private val SoftGreen = Color(0xFFE8F5E9)
-private val SoftYellow = Color(0xFFFFF7DB)
-private val SoftRed = Color(0xFFFFECEC)
-private val DividerColor = Color(0xFFE4E7EC)
 
 @Composable
 fun VehicleListScreen(
     vehicles: List<Vehicle>,
     documents: List<VehicleDocument>,
     modifier: Modifier = Modifier,
+    isDarkTheme: Boolean,
+    onToggleThemeClick: () -> Unit,
     onVehicleClick: (Vehicle) -> Unit
 ) {
     val taxiCount = vehicles.count { vehicle ->
@@ -70,42 +66,51 @@ fun VehicleListScreen(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .background(MaterialTheme.colorScheme.background)
-            .padding(horizontal = 16.dp, vertical = 18.dp)
+            .padding(horizontal = 16.dp, vertical = 14.dp)
     ) {
-        Text(
-            text = "Control Vehicular",
-            style = MaterialTheme.typography.headlineLarge,
-            fontWeight = FontWeight.Bold
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Column(
+        Row(
             modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "${vehicles.size} vehículos registrados",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                text = "Control Vehicular",
+                modifier = Modifier.weight(1f),
+                style = MaterialTheme.typography.headlineLarge,
+                fontWeight = FontWeight.Bold
             )
 
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                SummaryChip(
-                    text = "$taxiCount taxis",
-                    type = VehicleType.TAXI
-                )
-                SummaryChip(
-                    text = "$privateCount particulares",
-                    type = VehicleType.PRIVATE
-                )
-            }
+            ThemeToggleButton(
+                isDarkTheme = isDarkTheme,
+                onClick = onToggleThemeClick
+            )
         }
 
-        Spacer(modifier = Modifier.height(28.dp))
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            SummaryMetricChip(
+                count = vehicles.size,
+                label = "vehículos",
+                modifier = Modifier.weight(1f)
+            )
+            SummaryMetricChip(
+                count = taxiCount,
+                label = "taxis",
+                type = VehicleType.TAXI,
+                modifier = Modifier.weight(1f)
+            )
+            SummaryMetricChip(
+                count = privateCount,
+                label = "particulares",
+                type = VehicleType.PRIVATE,
+                modifier = Modifier.weight(1f)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(22.dp))
 
         SectionTitle(title = "Próximos vencimientos")
 
@@ -125,7 +130,7 @@ fun VehicleListScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         SectionTitle(title = "Vehículos registrados")
 
@@ -148,37 +153,63 @@ fun VehicleListScreen(
 fun SectionTitle(title: String) {
     Text(
         text = title,
-        style = MaterialTheme.typography.titleLarge,
+        style = MaterialTheme.typography.titleMedium,
         fontWeight = FontWeight.Bold
     )
 }
 
 @Composable
-fun SummaryChip(
-    text: String,
-    type: VehicleType
+fun SummaryMetricChip(
+    count: Int,
+    label: String,
+    modifier: Modifier = Modifier,
+    type: VehicleType? = null
 ) {
+    val colors = MaterialTheme.vehicleColors
     val chipColor = when (type) {
-        VehicleType.TAXI -> TaxiBlue
-        VehicleType.PRIVATE -> PrivateGreen
+        VehicleType.TAXI -> colors.blue
+        VehicleType.PRIVATE -> colors.green
+        null -> colors.blue
     }
 
     val chipBackground = when (type) {
-        VehicleType.TAXI -> SoftBlue
-        VehicleType.PRIVATE -> SoftGreen
+        VehicleType.TAXI -> colors.softBlue
+        VehicleType.PRIVATE -> colors.softGreen
+        null -> MaterialTheme.colorScheme.surface
     }
 
     Surface(
+        modifier = modifier,
         color = chipBackground,
         contentColor = chipColor,
-        shape = RoundedCornerShape(50.dp)
-    ) {
-        Text(
-            text = text,
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-            style = MaterialTheme.typography.labelLarge,
-            fontWeight = FontWeight.SemiBold
+        shape = RoundedCornerShape(14.dp),
+        border = BorderStroke(
+            width = 1.dp,
+            color = chipColor.copy(alpha = 0.18f)
         )
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = count.toString(),
+                style = MaterialTheme.typography.titleLarge,
+                color = chipColor,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
     }
 }
 
@@ -189,16 +220,17 @@ fun DocumentReminderCard(
     isUrgent: Boolean,
     modifier: Modifier = Modifier
 ) {
+    val colors = MaterialTheme.vehicleColors
     val vehicle = vehicles.firstOrNull { vehicle ->
         vehicle.id == document.vehicleId
     }
 
     val vehiclePlate = vehicle?.plate ?: "Vehículo"
-    val accentColor = if (isUrgent) AlertRed else WarningOrange
-    val containerColor = if (isUrgent) SoftRed else SoftYellow
+    val accentColor = if (isUrgent) colors.red else colors.orange
+    val containerColor = if (isUrgent) colors.softRed else colors.softYellow
 
     Card(
-        modifier = modifier.padding(top = 8.dp),
+        modifier = modifier.padding(top = 6.dp),
         shape = RoundedCornerShape(14.dp),
         border = BorderStroke(1.dp, accentColor.copy(alpha = 0.25f)),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
@@ -207,7 +239,7 @@ fun DocumentReminderCard(
         )
     ) {
         Row(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier.padding(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
@@ -225,7 +257,7 @@ fun DocumentReminderCard(
                 )
             }
 
-            Spacer(modifier = Modifier.width(10.dp))
+            Spacer(modifier = Modifier.width(8.dp))
 
             Column(
                 modifier = Modifier.weight(1f)
@@ -256,24 +288,28 @@ fun VehicleCard(
     vehicle: Vehicle,
     onClick: () -> Unit
 ) {
+    val colors = MaterialTheme.vehicleColors
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 14.dp)
+            .padding(top = 10.dp)
             .clickable { onClick() },
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+        shape = RoundedCornerShape(14.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         )
     ) {
         Row(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            VehicleAvatar(type = vehicle.type)
+            VehicleAvatar(
+                type = vehicle.type,
+                size = 68
+            )
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(14.dp))
 
             Column(
                 modifier = Modifier.weight(1f)
@@ -287,7 +323,7 @@ fun VehicleCard(
                     ) {
                         Text(
                             text = vehicle.plate,
-                            style = MaterialTheme.typography.headlineSmall,
+                            style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
@@ -297,7 +333,7 @@ fun VehicleCard(
 
                         Text(
                             text = "${vehicle.brand} ${vehicle.model}",
-                            style = MaterialTheme.typography.titleMedium,
+                            style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
@@ -307,14 +343,14 @@ fun VehicleCard(
                     VehicleStatusChip(status = vehicle.status)
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(6.dp))
 
                 VehicleTypeChip(type = vehicle.type)
 
                 if (vehicle.type == VehicleType.TAXI) {
                     HorizontalDivider(
                         modifier = Modifier.padding(vertical = 12.dp),
-                        color = DividerColor
+                        color = colors.divider
                     )
 
                     Row(
@@ -327,7 +363,7 @@ fun VehicleCard(
                             modifier = Modifier.weight(1f)
                         )
 
-                        Spacer(modifier = Modifier.width(12.dp))
+                        Spacer(modifier = Modifier.width(10.dp))
 
                         InfoItem(
                             label = "Ingreso diario",
@@ -342,50 +378,54 @@ fun VehicleCard(
 }
 
 @Composable
-fun VehicleAvatar(type: VehicleType) {
+fun VehicleAvatar(
+    type: VehicleType,
+    size: Int = 84
+) {
+    val colors = MaterialTheme.vehicleColors
     val backgroundColor = when (type) {
-        VehicleType.TAXI -> SoftYellow
-        VehicleType.PRIVATE -> SoftBlue
+        VehicleType.TAXI -> colors.softYellow
+        VehicleType.PRIVATE -> colors.softBlue
     }
 
-    val textColor = when (type) {
-        VehicleType.TAXI -> WarningOrange
-        VehicleType.PRIVATE -> TaxiBlue
+    val iconRes = when (type) {
+        VehicleType.TAXI -> R.drawable.ic_vehicle_taxi
+        VehicleType.PRIVATE -> R.drawable.ic_vehicle_car
     }
 
-    val label = when (type) {
-        VehicleType.TAXI -> "TAXI"
-        VehicleType.PRIVATE -> "AUTO"
+    val contentDescription = when (type) {
+        VehicleType.TAXI -> "Taxi"
+        VehicleType.PRIVATE -> "Vehículo particular"
     }
 
     Box(
         modifier = Modifier
-            .size(84.dp)
+            .size(size.dp)
             .clip(CircleShape)
             .background(backgroundColor),
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelLarge,
-            color = textColor,
-            fontWeight = FontWeight.Bold
+        Image(
+            painter = painterResource(id = iconRes),
+            contentDescription = contentDescription,
+            modifier = Modifier.size((size * 0.76f).dp)
         )
     }
 }
 
 @Composable
 fun VehicleTypeChip(type: VehicleType) {
+    val colors = MaterialTheme.vehicleColors
     val label = getVehicleTypeLabel(type)
 
     val containerColor = when (type) {
-        VehicleType.TAXI -> SoftYellow
-        VehicleType.PRIVATE -> SoftGreen
+        VehicleType.TAXI -> colors.softYellow
+        VehicleType.PRIVATE -> colors.softGreen
     }
 
     val contentColor = when (type) {
-        VehicleType.TAXI -> WarningOrange
-        VehicleType.PRIVATE -> PrivateGreen
+        VehicleType.TAXI -> colors.orange
+        VehicleType.PRIVATE -> colors.green
     }
 
     Surface(
@@ -404,9 +444,10 @@ fun VehicleTypeChip(type: VehicleType) {
 
 @Composable
 fun VehicleStatusChip(status: String) {
+    val colors = MaterialTheme.vehicleColors
     Surface(
-        color = SoftGreen,
-        contentColor = PrivateGreen,
+        color = colors.softGreen,
+        contentColor = colors.green,
         shape = RoundedCornerShape(50.dp)
     ) {
         Text(
@@ -424,13 +465,14 @@ fun InfoItem(
     value: String,
     modifier: Modifier = Modifier
 ) {
+    val colors = MaterialTheme.vehicleColors
     Column(
         modifier = modifier
     ) {
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium,
-            color = TaxiBlue,
+            color = colors.blue,
             fontWeight = FontWeight.Bold
         )
 
@@ -441,6 +483,46 @@ fun InfoItem(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
+    }
+}
+
+@Composable
+fun ThemeToggleButton(
+    isDarkTheme: Boolean,
+    onClick: () -> Unit
+) {
+    val iconRes = if (isDarkTheme) {
+        R.drawable.ic_theme_sun
+    } else {
+        R.drawable.ic_theme_moon
+    }
+
+    Surface(
+        modifier = Modifier
+            .size(42.dp)
+            .clickable { onClick() },
+        color = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.primary,
+        shape = CircleShape,
+        border = BorderStroke(
+            width = 1.dp,
+            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.45f)
+        )
+    ) {
+        Box(
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(id = iconRes),
+                contentDescription = if (isDarkTheme) {
+                    "Cambiar a modo claro"
+                } else {
+                    "Cambiar a modo oscuro"
+                },
+                modifier = Modifier.size(20.dp),
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
+            )
+        }
     }
 }
 

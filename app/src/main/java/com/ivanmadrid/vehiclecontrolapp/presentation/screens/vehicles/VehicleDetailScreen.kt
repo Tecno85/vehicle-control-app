@@ -74,7 +74,7 @@ fun VehicleDetailScreen(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .background(MaterialTheme.colorScheme.background)
-            .padding(horizontal = 16.dp, vertical = 18.dp)
+            .padding(horizontal = 16.dp, vertical = 14.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -95,20 +95,20 @@ fun VehicleDetailScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         VehicleDetailHeader(vehicle = vehicle)
 
-        Spacer(modifier = Modifier.height(22.dp))
+        Spacer(modifier = Modifier.height(18.dp))
 
         VehicleGeneralInfoCard(vehicle = vehicle)
 
         if (vehicle.type == VehicleType.TAXI) {
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             TaxiInfoCard(vehicle = vehicle)
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         VehicleDocumentsCard(
             documents = vehicleDocuments,
@@ -120,7 +120,7 @@ fun VehicleDetailScreen(
             }
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         VehicleExpensesCard(
             expenses = expenses,
@@ -133,7 +133,7 @@ fun VehicleDetailScreen(
         )
 
         if (vehicle.type == VehicleType.TAXI) {
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             TaxiBalanceSummaryCard(
                 vehicle = vehicle,
                 expenses = expenses,
@@ -141,7 +141,7 @@ fun VehicleDetailScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         VehicleNoveltiesCard(
             novelties = novelties,
@@ -153,7 +153,7 @@ fun VehicleDetailScreen(
             }
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         VehicleQuickActionsCard(
             onRegisterExpenseClick = onRegisterExpenseClick,
@@ -161,7 +161,7 @@ fun VehicleDetailScreen(
             onRegisterDocumentClick = onRegisterDocumentClick
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         OutlinedButton(
             modifier = Modifier.fillMaxWidth(),

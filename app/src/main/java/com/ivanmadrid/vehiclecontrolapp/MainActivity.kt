@@ -9,10 +9,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -50,7 +52,15 @@ class MainActivity : ComponentActivity() {
         val appContainer = (application as VehicleControlApplication).appContainer
 
         setContent {
-            VehicleControlAppTheme {
+            val systemDarkTheme = isSystemInDarkTheme()
+            var darkThemeOverride by rememberSaveable {
+                mutableStateOf<Boolean?>(null)
+            }
+            val isDarkTheme = darkThemeOverride ?: systemDarkTheme
+
+            VehicleControlAppTheme(
+                darkTheme = isDarkTheme
+            ) {
                 val vehicleListViewModel: VehicleListViewModel = viewModel(
                     factory = VehicleListViewModel.Factory(
                         vehicleRepository = appContainer.vehicleRepository,
@@ -123,6 +133,10 @@ class MainActivity : ComponentActivity() {
                                 vehicles = vehicles,
                                 documents = documents,
                                 modifier = Modifier.padding(innerPadding),
+                                isDarkTheme = isDarkTheme,
+                                onToggleThemeClick = {
+                                    darkThemeOverride = !isDarkTheme
+                                },
                                 onVehicleClick = { vehicle ->
                                     clearEditingState()
                                     selectedVehicle = vehicle
