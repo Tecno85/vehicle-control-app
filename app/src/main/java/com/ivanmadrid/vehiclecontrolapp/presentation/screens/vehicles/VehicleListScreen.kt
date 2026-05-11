@@ -47,6 +47,7 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocumentType
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
 import com.ivanmadrid.vehiclecontrolapp.ui.theme.vehicleColors
+import com.ivanmadrid.vehiclecontrolapp.utils.getDaysUntilCount
 import com.ivanmadrid.vehiclecontrolapp.utils.getDaysUntilLabel
 import com.ivanmadrid.vehiclecontrolapp.utils.sortDocumentsByDueDate
 import java.util.Locale
@@ -172,11 +173,10 @@ fun VehicleListScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            sortDocumentsByDueDate(documents).take(2).forEachIndexed { index, document ->
+            sortDocumentsByDueDate(documents).take(2).forEach { document ->
                 DocumentReminderCard(
                     document = document,
                     vehicles = vehicles,
-                    isUrgent = index == 0,
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -272,7 +272,6 @@ fun SummaryMetricChip(
 fun DocumentReminderCard(
     document: VehicleDocument,
     vehicles: List<Vehicle>,
-    isUrgent: Boolean,
     modifier: Modifier = Modifier
 ) {
     val colors = MaterialTheme.vehicleColors
@@ -281,8 +280,22 @@ fun DocumentReminderCard(
     }
 
     val vehiclePlate = vehicle?.plate ?: "Vehículo"
-    val accentColor = if (isUrgent) colors.red else colors.orange
-    val containerColor = if (isUrgent) colors.softRed else colors.softYellow
+    val daysUntil = getDaysUntilCount(document.dueDate)
+    val urgency = getDocumentUrgency(daysUntil)
+    val accentColor = when (urgency) {
+        DocumentUrgency.OVERDUE,
+        DocumentUrgency.URGENT -> colors.red
+        DocumentUrgency.WARNING -> colors.orange
+        DocumentUrgency.NORMAL,
+        DocumentUrgency.UNKNOWN -> colors.green
+    }
+    val containerColor = when (urgency) {
+        DocumentUrgency.OVERDUE,
+        DocumentUrgency.URGENT -> colors.softRed
+        DocumentUrgency.WARNING -> colors.softYellow
+        DocumentUrgency.NORMAL,
+        DocumentUrgency.UNKNOWN -> colors.softGreen
+    }
 
     Card(
         modifier = modifier.padding(top = 6.dp),
@@ -335,6 +348,24 @@ fun DocumentReminderCard(
                 )
             }
         }
+    }
+}
+
+enum class DocumentUrgency {
+    OVERDUE,
+    URGENT,
+    WARNING,
+    NORMAL,
+    UNKNOWN,
+}
+
+fun getDocumentUrgency(daysUntil: Long?): DocumentUrgency {
+    return when {
+        daysUntil == null -> DocumentUrgency.UNKNOWN
+        daysUntil < 0 -> DocumentUrgency.OVERDUE
+        daysUntil <= 7 -> DocumentUrgency.URGENT
+        daysUntil <= 15 -> DocumentUrgency.WARNING
+        else -> DocumentUrgency.NORMAL
     }
 }
 
