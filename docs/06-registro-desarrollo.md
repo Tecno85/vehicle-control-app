@@ -61,6 +61,33 @@ Se consolidó un bloque importante de mejoras visuales y experiencia de usuario.
 - Se ejecutó `./gradlew testDebugUnitTest`.
 - La compilación y pruebas unitarias finalizaron correctamente.
 
+---
+
+## 11-05-2026 - Pulido formulario de novedades
+
+### Actividad realizada
+
+Se mejoró visualmente el formulario de novedades y el estilo de acciones secundarias en el detalle.
+
+### Avances
+
+- Se reemplazó el botón inline de `Eliminar` por una acción más discreta con icono y texto rojo.
+- Se rediseñaron las opciones de prioridad en `NoveltyFormScreen` como tarjetas compactas.
+- Se agregaron iconos específicos para prioridad baja, media y alta.
+- Se mejoró la sección de impacto en la operación para taxis.
+- Se mejoraron las opciones de resultado del día cuando una novedad afecta el ingreso.
+
+### Decisiones tomadas
+
+- Se mantuvo la lógica actual de novedades, sin cambiar modelos ni persistencia.
+- Se mantuvo la confirmación antes de eliminar registros.
+- Los iconos nuevos siguen siendo vectores locales en `res/drawable`.
+
+### Validación
+
+- Se ejecutó `./gradlew testDebugUnitTest`.
+- La compilación y pruebas unitarias finalizaron correctamente.
+
 ### Commit
 
 ```text

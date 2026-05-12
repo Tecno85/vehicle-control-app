@@ -363,6 +363,8 @@ La app ya permite:
 - Alternar el tema claro/oscuro desde la pantalla principal y recordar la preferencia localmente.
 - Mostrar iconos vectoriales para vehículos y secciones internas.
 - Mostrar iconos vectoriales específicos para categorías de gasto y tipos de documento.
+- Mostrar iconos vectoriales específicos para prioridades de novedades.
+- Usar un formulario de novedades más visual para prioridad e impacto en operación.
 - Consultar una pantalla inicial de reportes.
 - Ver colores de vencimiento consistentes en lista, detalle y reportes.
 

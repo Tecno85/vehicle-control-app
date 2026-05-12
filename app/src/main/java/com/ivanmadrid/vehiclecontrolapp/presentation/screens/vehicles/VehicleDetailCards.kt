@@ -827,28 +827,28 @@ fun InlineDeleteButton(
 ) {
     val colors = MaterialTheme.vehicleColors
 
-    Row(
-        modifier = Modifier
-            .clip(RoundedCornerShape(50.dp))
-            .background(colors.softRed.copy(alpha = 0.72f))
-            .clickable { onClick() }
-            .padding(horizontal = 8.dp, vertical = 5.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-        verticalAlignment = Alignment.CenterVertically
+    TextButton(
+        contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp),
+        onClick = onClick
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_delete),
-            contentDescription = null,
-            modifier = Modifier.size(13.dp),
-            colorFilter = ColorFilter.tint(colors.red)
-        )
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_delete),
+                contentDescription = null,
+                modifier = Modifier.size(13.dp),
+                colorFilter = ColorFilter.tint(colors.red)
+            )
 
-        Text(
-            text = text,
-            style = MaterialTheme.typography.labelSmall,
-            color = colors.red,
-            fontWeight = FontWeight.SemiBold
-        )
+            Text(
+                text = text,
+                style = MaterialTheme.typography.labelSmall,
+                color = colors.red,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
     }
 }
 

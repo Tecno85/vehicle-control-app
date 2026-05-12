@@ -1,6 +1,9 @@
 package com.ivanmadrid.vehiclecontrolapp.presentation.screens.novelties
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,9 +11,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -29,9 +35,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.ivanmadrid.vehiclecontrolapp.R
 import com.ivanmadrid.vehiclecontrolapp.domain.model.IncomeAdjustmentType
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Novelty
 import com.ivanmadrid.vehiclecontrolapp.domain.model.NoveltyPriority
@@ -40,6 +51,7 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
 import com.ivanmadrid.vehiclecontrolapp.presentation.components.AppBackButton
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleAvatar
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleTypeChip
+import com.ivanmadrid.vehiclecontrolapp.ui.theme.vehicleColors
 import com.ivanmadrid.vehiclecontrolapp.utils.getTodayIsoDate
 import com.ivanmadrid.vehiclecontrolapp.utils.isValidIsoDate
 
@@ -231,22 +243,12 @@ fun NoveltyFormScreen(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Checkbox(
-                            checked = affectsIncome,
-                            onCheckedChange = { checked ->
-                                affectsIncome = checked
-                            }
-                        )
-
-                        Text(
-                            text = "Esta novedad cambió el día de trabajo del taxi",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
+                    IncomeImpactToggle(
+                        checked = affectsIncome,
+                        onCheckedChange = { checked ->
+                            affectsIncome = checked
+                        }
+                    )
 
                     if (affectsIncome) {
                         Spacer(modifier = Modifier.height(12.dp))
@@ -411,8 +413,8 @@ fun PriorityOptions(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         NoveltyPriority.entries.forEach { priority ->
-            OptionButton(
-                text = getPriorityLabel(priority),
+            PriorityOptionButton(
+                priority = priority,
                 selected = selectedPriority == priority,
                 modifier = Modifier.weight(1f),
                 onClick = {
@@ -432,8 +434,8 @@ fun IncomeAdjustmentOptions(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         IncomeAdjustmentType.entries.forEach { type ->
-            OptionButton(
-                text = getIncomeAdjustmentLabel(type),
+            IncomeAdjustmentOptionButton(
+                type = type,
                 selected = selectedType == type,
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
@@ -445,25 +447,251 @@ fun IncomeAdjustmentOptions(
 }
 
 @Composable
-fun OptionButton(
-    text: String,
+fun PriorityOptionButton(
+    priority: NoveltyPriority,
     selected: Boolean,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    if (selected) {
-        Button(
-            modifier = modifier,
-            onClick = onClick
-        ) {
-            Text(text = text)
-        }
+    val colors = MaterialTheme.vehicleColors
+    val accentColor = when (priority) {
+        NoveltyPriority.LOW -> colors.green
+        NoveltyPriority.MEDIUM -> colors.orange
+        NoveltyPriority.HIGH -> colors.red
+    }
+    val backgroundColor = when (priority) {
+        NoveltyPriority.LOW -> colors.softGreen
+        NoveltyPriority.MEDIUM -> colors.softYellow
+        NoveltyPriority.HIGH -> colors.softRed
+    }
+    val description = when (priority) {
+        NoveltyPriority.LOW -> "Seguimiento"
+        NoveltyPriority.MEDIUM -> "Revisar"
+        NoveltyPriority.HIGH -> "Prioritaria"
+    }
+
+    NoveltyOptionCard(
+        title = getPriorityLabel(priority),
+        description = description,
+        iconRes = getPriorityIcon(priority),
+        selected = selected,
+        accentColor = accentColor,
+        selectedBackgroundColor = backgroundColor,
+        modifier = modifier,
+        onClick = onClick
+    )
+}
+
+@Composable
+fun IncomeAdjustmentOptionButton(
+    type: IncomeAdjustmentType,
+    selected: Boolean,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    val colors = MaterialTheme.vehicleColors
+    val description = when (type) {
+        IncomeAdjustmentType.NO_INCOME -> "Ingreso $0"
+        IncomeAdjustmentType.HALF_INCOME -> "Aprox. 50%"
+        IncomeAdjustmentType.CUSTOM_AMOUNT -> "Valor real"
+    }
+
+    NoveltyOptionCard(
+        title = getIncomeAdjustmentLabel(type),
+        description = description,
+        iconRes = R.drawable.ic_detail_expense,
+        selected = selected,
+        accentColor = colors.green,
+        selectedBackgroundColor = colors.softGreen,
+        modifier = modifier,
+        horizontal = true,
+        onClick = onClick
+    )
+}
+
+@Composable
+fun NoveltyOptionCard(
+    title: String,
+    description: String,
+    iconRes: Int,
+    selected: Boolean,
+    accentColor: Color,
+    selectedBackgroundColor: Color,
+    modifier: Modifier = Modifier,
+    horizontal: Boolean = false,
+    onClick: () -> Unit
+) {
+    val containerColor = if (selected) {
+        selectedBackgroundColor
     } else {
-        OutlinedButton(
-            modifier = modifier,
-            onClick = onClick
+        MaterialTheme.colorScheme.surface
+    }
+    val borderColor = if (selected) {
+        accentColor.copy(alpha = 0.55f)
+    } else {
+        MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)
+    }
+
+    Card(
+        modifier = modifier
+            .heightIn(min = if (horizontal) 64.dp else 88.dp)
+            .clickable { onClick() },
+        shape = RoundedCornerShape(14.dp),
+        border = BorderStroke(width = 1.dp, color = borderColor),
+        colors = CardDefaults.cardColors(
+            containerColor = containerColor
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = if (selected) 1.dp else 0.dp)
+    ) {
+        if (horizontal) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 10.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                NoveltyOptionIcon(
+                    iconRes = iconRes,
+                    color = accentColor,
+                    backgroundColor = selectedBackgroundColor
+                )
+
+                Spacer(modifier = Modifier.width(10.dp))
+
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.labelLarge,
+                        color = accentColor,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Text(
+                        text = description,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp, vertical = 10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                NoveltyOptionIcon(
+                    iconRes = iconRes,
+                    color = accentColor,
+                    backgroundColor = selectedBackgroundColor
+                )
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = accentColor,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1
+                )
+
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun NoveltyOptionIcon(
+    iconRes: Int,
+    color: Color,
+    backgroundColor: Color
+) {
+    androidx.compose.foundation.layout.Box(
+        modifier = Modifier
+            .size(34.dp)
+            .background(
+                color = backgroundColor,
+                shape = androidx.compose.foundation.shape.CircleShape
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painter = painterResource(id = iconRes),
+            contentDescription = null,
+            modifier = Modifier.size(19.dp),
+            colorFilter = ColorFilter.tint(color)
+        )
+    }
+}
+
+@Composable
+fun IncomeImpactToggle(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    val colors = MaterialTheme.vehicleColors
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onCheckedChange(!checked)
+            },
+        shape = RoundedCornerShape(14.dp),
+        border = BorderStroke(
+            width = 1.dp,
+            color = if (checked) {
+                colors.orange.copy(alpha = 0.55f)
+            } else {
+                MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)
+            }
+        ),
+        colors = CardDefaults.cardColors(
+            containerColor = if (checked) {
+                colors.softYellow
+            } else {
+                MaterialTheme.colorScheme.surface
+            }
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = text)
+            Checkbox(
+                checked = checked,
+                onCheckedChange = onCheckedChange
+            )
+
+            Spacer(modifier = Modifier.width(6.dp))
+
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = "Cambió el día de trabajo del taxi",
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Text(
+                    text = "Activa esta opción si el ingreso esperado del día fue diferente.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
     }
 }
@@ -473,6 +701,14 @@ fun getPriorityLabel(priority: NoveltyPriority): String {
         NoveltyPriority.LOW -> "Baja"
         NoveltyPriority.MEDIUM -> "Media"
         NoveltyPriority.HIGH -> "Alta"
+    }
+}
+
+fun getPriorityIcon(priority: NoveltyPriority): Int {
+    return when (priority) {
+        NoveltyPriority.LOW -> R.drawable.ic_priority_low
+        NoveltyPriority.MEDIUM -> R.drawable.ic_priority_medium
+        NoveltyPriority.HIGH -> R.drawable.ic_priority_high
     }
 }
 
