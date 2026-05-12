@@ -364,6 +364,7 @@ La app ya permite:
 - Mostrar iconos vectoriales para vehículos y secciones internas.
 - Mostrar iconos vectoriales específicos para categorías de gasto y tipos de documento.
 - Mostrar iconos vectoriales específicos para prioridades de novedades.
+- Usar formularios de gasto y documento con opciones visuales tipo tarjeta.
 - Usar un formulario de novedades más visual para prioridad e impacto en operación.
 - Consultar una pantalla inicial de reportes.
 - Ver colores de vencimiento consistentes en lista, detalle y reportes.

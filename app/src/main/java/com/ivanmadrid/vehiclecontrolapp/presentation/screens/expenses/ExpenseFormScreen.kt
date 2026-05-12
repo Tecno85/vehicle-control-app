@@ -1,7 +1,9 @@
 package com.ivanmadrid.vehiclecontrolapp.presentation.screens.expenses
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,9 +11,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -29,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -42,6 +48,7 @@ import com.ivanmadrid.vehiclecontrolapp.presentation.components.AppBackButton
 import com.ivanmadrid.vehiclecontrolapp.presentation.components.getExpenseCategoryIcon
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleAvatar
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleTypeChip
+import com.ivanmadrid.vehiclecontrolapp.ui.theme.vehicleColors
 import com.ivanmadrid.vehiclecontrolapp.utils.getTodayIsoDate
 import com.ivanmadrid.vehiclecontrolapp.utils.isValidIsoDate
 
@@ -299,7 +306,7 @@ fun ExpenseCategoryOptions(
             ) {
                 rowCategories.forEach { category ->
                     ExpenseCategoryButton(
-                        text = getExpenseCategoryLabel(category),
+                        category = category,
                         iconRes = getExpenseCategoryIcon(category),
                         selected = selectedCategory == category,
                         modifier = Modifier.weight(1f),
@@ -319,34 +326,47 @@ fun ExpenseCategoryOptions(
 
 @Composable
 fun ExpenseCategoryButton(
-    text: String,
+    category: ExpenseCategory,
     iconRes: Int,
     selected: Boolean,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    if (selected) {
-        Button(
-            modifier = modifier,
-            onClick = onClick
-        ) {
-            CategoryButtonContent(
-                text = text,
-                iconRes = iconRes,
-                tint = MaterialTheme.colorScheme.onPrimary
-            )
-        }
+    val colors = MaterialTheme.vehicleColors
+    val accentColor = getExpenseCategoryColor(category)
+    val selectedBackgroundColor = getExpenseCategoryBackgroundColor(category)
+    val containerColor = if (selected) {
+        selectedBackgroundColor
     } else {
-        OutlinedButton(
-            modifier = modifier,
-            onClick = onClick
-        ) {
-            CategoryButtonContent(
-                text = text,
-                iconRes = iconRes,
-                tint = MaterialTheme.colorScheme.primary
-            )
-        }
+        MaterialTheme.colorScheme.surface
+    }
+    val borderColor = if (selected) {
+        accentColor.copy(alpha = 0.55f)
+    } else {
+        MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)
+    }
+
+    Card(
+        modifier = modifier
+            .heightIn(min = 74.dp)
+            .clickable { onClick() },
+        shape = RoundedCornerShape(14.dp),
+        border = BorderStroke(width = 1.dp, color = borderColor),
+        colors = CardDefaults.cardColors(
+            containerColor = containerColor
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = if (selected) 1.dp else 0.dp)
+    ) {
+        CategoryButtonContent(
+            text = getExpenseCategoryLabel(category),
+            iconRes = iconRes,
+            tint = accentColor,
+            backgroundColor = if (selected) {
+                MaterialTheme.colorScheme.surface
+            } else {
+                colors.avatarSurface
+            }
+        )
     }
 }
 
@@ -354,22 +374,39 @@ fun ExpenseCategoryButton(
 fun CategoryButtonContent(
     text: String,
     iconRes: Int,
-    tint: androidx.compose.ui.graphics.Color
+    tint: Color,
+    backgroundColor: Color
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
-        verticalAlignment = Alignment.CenterVertically
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Image(
-            painter = painterResource(id = iconRes),
-            contentDescription = null,
-            modifier = Modifier.height(18.dp).width(18.dp),
-            colorFilter = ColorFilter.tint(tint)
-        )
+        androidx.compose.foundation.layout.Box(
+            modifier = Modifier
+                .size(32.dp)
+                .background(
+                    color = backgroundColor,
+                    shape = androidx.compose.foundation.shape.CircleShape
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(id = iconRes),
+                contentDescription = null,
+                modifier = Modifier.size(18.dp),
+                colorFilter = ColorFilter.tint(tint)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(6.dp))
 
         Text(
             text = text,
+            style = MaterialTheme.typography.labelSmall,
+            color = tint,
+            fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.Center,
             maxLines = 2
         )
@@ -386,6 +423,36 @@ fun getExpenseCategoryLabel(category: ExpenseCategory): String {
         ExpenseCategory.TAXES -> "Impuestos"
         ExpenseCategory.FINES -> "Multas"
         ExpenseCategory.OTHER -> "Otros"
+    }
+}
+
+@Composable
+fun getExpenseCategoryColor(category: ExpenseCategory): Color {
+    val colors = MaterialTheme.vehicleColors
+    return when (category) {
+        ExpenseCategory.FUEL,
+        ExpenseCategory.WASH,
+        ExpenseCategory.MAINTENANCE,
+        ExpenseCategory.SPARE_PARTS,
+        ExpenseCategory.INSURANCE,
+        ExpenseCategory.OTHER -> colors.blue
+        ExpenseCategory.TAXES -> colors.green
+        ExpenseCategory.FINES -> colors.red
+    }
+}
+
+@Composable
+fun getExpenseCategoryBackgroundColor(category: ExpenseCategory): Color {
+    val colors = MaterialTheme.vehicleColors
+    return when (category) {
+        ExpenseCategory.FUEL,
+        ExpenseCategory.WASH,
+        ExpenseCategory.MAINTENANCE,
+        ExpenseCategory.SPARE_PARTS,
+        ExpenseCategory.INSURANCE,
+        ExpenseCategory.OTHER -> colors.softBlue
+        ExpenseCategory.TAXES -> colors.softGreen
+        ExpenseCategory.FINES -> colors.softRed
     }
 }
 

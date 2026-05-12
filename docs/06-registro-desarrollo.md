@@ -63,6 +63,32 @@ Se consolidó un bloque importante de mejoras visuales y experiencia de usuario.
 
 ---
 
+## 11-05-2026 - Pulido formularios de gasto y documento
+
+### Actividad realizada
+
+Se alinearon visualmente los formularios de gasto y documento con el estilo aplicado al formulario de novedades.
+
+### Avances
+
+- Las categorías de gasto ahora se muestran como tarjetas compactas con icono circular.
+- Las categorías seleccionadas muestran fondo suave, borde y color de énfasis.
+- Los tipos de documento ahora se muestran como tarjetas visuales con icono y descripción breve.
+- Se mantuvieron los mismos campos, validaciones, guardado y navegación.
+
+### Decisiones tomadas
+
+- Se mantuvo el enfoque de micro UX sin agregar nuevos flujos.
+- Se reutilizaron los iconos vectoriales existentes para categorías y documentos.
+- No se agregaron selectores de fecha ni cambios de persistencia.
+
+### Validación
+
+- Se ejecutó `./gradlew testDebugUnitTest`.
+- La compilación y pruebas unitarias finalizaron correctamente.
+
+---
+
 ## 11-05-2026 - Pulido formulario de novedades
 
 ### Actividad realizada

@@ -1,17 +1,24 @@
 package com.ivanmadrid.vehiclecontrolapp.presentation.screens.documents
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -27,10 +34,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
@@ -39,6 +47,7 @@ import com.ivanmadrid.vehiclecontrolapp.presentation.components.AppBackButton
 import com.ivanmadrid.vehiclecontrolapp.presentation.components.getVehicleDocumentIcon
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleAvatar
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleTypeChip
+import com.ivanmadrid.vehiclecontrolapp.ui.theme.vehicleColors
 import com.ivanmadrid.vehiclecontrolapp.utils.isValidIsoDate
 
 @Composable
@@ -246,7 +255,7 @@ fun DocumentTypeOptions(
     ) {
         VehicleDocumentType.entries.forEach { type ->
             DocumentTypeButton(
-                text = getDocumentTypeLabel(type),
+                type = type,
                 iconRes = getVehicleDocumentIcon(type),
                 selected = selectedType == type,
                 modifier = Modifier.fillMaxWidth(),
@@ -260,60 +269,98 @@ fun DocumentTypeOptions(
 
 @Composable
 fun DocumentTypeButton(
-    text: String,
+    type: VehicleDocumentType,
     iconRes: Int,
     selected: Boolean,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    if (selected) {
-        Button(
-            modifier = modifier,
-            onClick = onClick
-        ) {
-            DocumentTypeButtonContent(
-                text = text,
-                iconRes = iconRes,
-                tint = MaterialTheme.colorScheme.onPrimary
-            )
-        }
+    val accentColor = getDocumentTypeColor(type)
+    val selectedBackgroundColor = getDocumentTypeBackgroundColor(type)
+    val containerColor = if (selected) {
+        selectedBackgroundColor
     } else {
-        OutlinedButton(
-            modifier = modifier,
-            onClick = onClick
-        ) {
-            DocumentTypeButtonContent(
-                text = text,
-                iconRes = iconRes,
-                tint = MaterialTheme.colorScheme.primary
-            )
-        }
+        MaterialTheme.colorScheme.surface
+    }
+    val borderColor = if (selected) {
+        accentColor.copy(alpha = 0.55f)
+    } else {
+        MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)
+    }
+
+    Card(
+        modifier = modifier
+            .heightIn(min = 68.dp)
+            .clickable { onClick() },
+        shape = RoundedCornerShape(14.dp),
+        border = BorderStroke(width = 1.dp, color = borderColor),
+        colors = CardDefaults.cardColors(
+            containerColor = containerColor
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = if (selected) 1.dp else 0.dp)
+    ) {
+        DocumentTypeButtonContent(
+            title = getDocumentTypeLabel(type),
+            description = getDocumentTypeDescription(type),
+            iconRes = iconRes,
+            tint = accentColor,
+            backgroundColor = if (selected) {
+                MaterialTheme.colorScheme.surface
+            } else {
+                getDocumentTypeBackgroundColor(type)
+            }
+        )
     }
 }
 
 @Composable
 fun DocumentTypeButtonContent(
-    text: String,
+    title: String,
+    description: String,
     iconRes: Int,
-    tint: androidx.compose.ui.graphics.Color
+    tint: Color,
+    backgroundColor: Color
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            painter = painterResource(id = iconRes),
-            contentDescription = null,
-            modifier = Modifier.height(18.dp).width(18.dp),
-            colorFilter = ColorFilter.tint(tint)
-        )
+        Box(
+            modifier = Modifier
+                .size(38.dp)
+                .clip(CircleShape)
+                .background(backgroundColor),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(id = iconRes),
+                contentDescription = null,
+                modifier = Modifier.size(21.dp),
+                colorFilter = ColorFilter.tint(tint)
+            )
+        }
 
-        Text(
-            text = text,
-            textAlign = TextAlign.Center,
-            maxLines = 2
-        )
+        Spacer(modifier = Modifier.width(12.dp))
+
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.labelLarge,
+                color = tint,
+                fontWeight = FontWeight.Bold
+            )
+
+            Text(
+                text = description,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 2
+            )
+        }
     }
 }
 
@@ -322,6 +369,34 @@ fun getDocumentTypeLabel(type: VehicleDocumentType): String {
         VehicleDocumentType.SOAT -> "SOAT"
         VehicleDocumentType.TECHNICAL_MECHANICAL_REVIEW -> "Tecnicomecánica"
         VehicleDocumentType.TAXES -> "Impuestos"
+    }
+}
+
+fun getDocumentTypeDescription(type: VehicleDocumentType): String {
+    return when (type) {
+        VehicleDocumentType.SOAT -> "Seguro obligatorio"
+        VehicleDocumentType.TECHNICAL_MECHANICAL_REVIEW -> "Revisión del vehículo"
+        VehicleDocumentType.TAXES -> "Pago anual"
+    }
+}
+
+@Composable
+fun getDocumentTypeColor(type: VehicleDocumentType): Color {
+    val colors = MaterialTheme.vehicleColors
+    return when (type) {
+        VehicleDocumentType.SOAT -> colors.orange
+        VehicleDocumentType.TECHNICAL_MECHANICAL_REVIEW -> colors.red
+        VehicleDocumentType.TAXES -> colors.green
+    }
+}
+
+@Composable
+fun getDocumentTypeBackgroundColor(type: VehicleDocumentType): Color {
+    val colors = MaterialTheme.vehicleColors
+    return when (type) {
+        VehicleDocumentType.SOAT -> colors.softYellow
+        VehicleDocumentType.TECHNICAL_MECHANICAL_REVIEW -> colors.softRed
+        VehicleDocumentType.TAXES -> colors.softGreen
     }
 }
 
