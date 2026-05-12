@@ -341,6 +341,7 @@ La app ya permite:
 - Ver resumen económico estimado para taxis.
 - Abrir formularios visuales para vehículo, gasto, novedad y documento.
 - Navegar entre lista, detalle y formularios.
+- Usar el botón Back nativo de Android para volver desde detalle, reportes y formularios.
 - Agregar vehículos nuevos y guardarlos en Room desde el botón flotante `+`.
 - Editar vehículos existentes desde el detalle.
 - Eliminar vehículos desde el detalle con confirmación.
@@ -368,6 +369,7 @@ La app ya permite:
 - Usar un formulario de novedades más visual para prioridad e impacto en operación.
 - Consultar una pantalla inicial de reportes.
 - Ver colores de vencimiento consistentes en lista, detalle y reportes.
+- Usar un botón flotante `+` circular y exclusivo de la lista principal.
 
 La app todavía no permite:
 
@@ -379,13 +381,9 @@ La app todavía no permite:
 
 ## Próximos pasos recomendados
 
-1. Revisar visualmente todas las pantallas en emulador.
+1. Revisar visualmente modo claro y modo oscuro después de cada tanda de cambios.
 2. Ajustar textos, espaciados o tamaños que se vean apretados.
-3. Probar el guardado real de vehículos desde el botón flotante `+`.
-4. Probar el guardado real de gastos desde el detalle de un vehículo.
-5. Probar el guardado real de novedades desde el detalle de un vehículo.
-6. Probar el guardado real de documentos desde el detalle de un vehículo.
-7. Probar la edición de vehículos desde el detalle.
-8. Evaluar fotos reales por vehículo solo si aportan más claridad que los iconos vectoriales actuales.
-9. Agregar selector de periodo más completo para reportes.
-10. Evaluar Navigation Compose cuando haya historial, reportes y ajustes.
+3. Probar flujos completos de creación, edición y eliminación de vehículos, gastos, novedades y documentos.
+4. Evaluar fotos reales por vehículo solo si aportan más claridad que los iconos vectoriales actuales.
+5. Agregar selector de periodo más completo para reportes.
+6. Evaluar Navigation Compose cuando haya historial, reportes y ajustes más complejos.

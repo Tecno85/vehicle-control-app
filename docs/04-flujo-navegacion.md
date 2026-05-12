@@ -18,12 +18,12 @@ Pantallas conectadas actualmente:
 4. Formulario de gasto.
 5. Formulario de novedad.
 6. Formulario de documento.
+7. Reportes.
 
 Pantallas planeadas para más adelante:
 
 1. Historial del vehículo.
-2. Reportes.
-3. Ajustes.
+2. Ajustes.
 
 ---
 
@@ -39,6 +39,7 @@ enum class AppScreen {
     EXPENSE_FORM,
     NOVELTY_FORM,
     DOCUMENT_FORM,
+    REPORTS,
 }
 ```
 
@@ -56,33 +57,50 @@ Este valor permite mantener el vehículo seleccionado cuando se navega desde el 
 
 ```text
 Lista de vehículos
+  ├── menú principal
+  │     └── Reportes
+  │           ├── Volver
+  │           └── Back del sistema
+  │                 └── Lista de vehículos
+  │
   ├── tocar tarjeta de vehículo
   │     └── Detalle del vehículo
   │           ├── Volver
+  │           ├── Back del sistema
   │           │     └── Lista de vehículos
+  │           │
+  │           ├── Editar vehículo
+  │           │     └── Formulario de vehículo
+  │           │           ├── Volver / Cancelar
+  │           │           └── Back del sistema
+  │           │                 └── Detalle del mismo vehículo
   │           │
   │           ├── Registrar gasto
   │           │     └── Formulario de gasto
   │           │           ├── Volver
   │           │           └── Cancelar
+  │           │           └── Back del sistema
   │           │                 └── Detalle del mismo vehículo
   │           │
   │           ├── Registrar novedad
   │           │     └── Formulario de novedad
   │           │           ├── Volver
   │           │           └── Cancelar
+  │           │           └── Back del sistema
   │           │                 └── Detalle del mismo vehículo
   │           │
   │           └── Registrar documento
   │                 └── Formulario de documento
   │                       ├── Volver
   │                       └── Cancelar
+  │                       └── Back del sistema
   │                             └── Detalle del mismo vehículo
   │
   └── tocar botón flotante +
         └── Formulario de vehículo
               ├── Volver
               └── Cancelar
+              └── Back del sistema
                     └── Lista de vehículos
 ```
 
@@ -91,6 +109,8 @@ Lista de vehículos
 ## Botón flotante
 
 El botón flotante `+` solo se muestra en la pantalla de lista de vehículos.
+
+El botón tiene estilo circular y funciona como acción principal para agregar un vehículo.
 
 No aparece en:
 
@@ -101,6 +121,23 @@ No aparece en:
 - Formulario de vehículo.
 
 Esto evita confusión porque el botón `+` solo aplica a crear un vehículo desde la lista.
+
+---
+
+## Back nativo de Android
+
+La app maneja el botón o gesto Back del sistema Android usando `BackHandler` en `MainActivity.kt`.
+
+Comportamiento actual:
+
+- En lista principal: Back permite salir de la app.
+- En detalle de vehículo: Back vuelve a la lista.
+- En reportes: Back vuelve a la lista.
+- En agregar vehículo: Back vuelve a la lista.
+- En editar vehículo: Back vuelve al detalle.
+- En formularios de gasto, novedad y documento: Back vuelve al detalle del vehículo.
+
+Este manejo mantiene la navegación simple por estado sin introducir Navigation Compose todavía.
 
 ---
 
@@ -132,7 +169,7 @@ Los vehículos particulares no muestran secciones exclusivas de taxi.
 
 ## Formularios
 
-Los formularios actuales son visuales y todavía no guardan datos reales.
+Los formularios actuales guardan datos reales en Room y mantienen una presentación visual consistente.
 
 Formulario de vehículo:
 
@@ -149,6 +186,7 @@ Formulario de gasto:
 - Categoría.
 - Valor.
 - Descripción.
+- Opciones de categoría con tarjetas visuales e iconos.
 
 Formulario de novedad:
 
@@ -157,12 +195,15 @@ Formulario de novedad:
 - Prioridad.
 - Descripción.
 - Ajuste de ingreso solo para taxis.
+- Opciones visuales para prioridad.
+- Tarjeta para marcar impacto en la operación del taxi.
 
 Formulario de documento:
 
 - Tipo de documento.
 - Fecha de vencimiento.
 - Notas.
+- Opciones de tipo de documento con tarjetas visuales e iconos.
 
 ---
 
@@ -173,7 +214,5 @@ La navegación actual puede mantenerse mientras las pantallas sean pocas y el fl
 Conviene evaluar Navigation Compose cuando se implementen:
 
 - Historial del vehículo.
-- Reportes.
 - Ajustes.
-- Edición de registros existentes.
 - Pantallas con parámetros más complejos.

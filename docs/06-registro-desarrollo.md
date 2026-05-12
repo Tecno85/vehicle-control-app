@@ -63,6 +63,34 @@ Se consolidó un bloque importante de mejoras visuales y experiencia de usuario.
 
 ---
 
+## 11-05-2026 - Navegación Back y botón principal
+
+### Actividad realizada
+
+Se mejoró la navegación con el botón Back nativo de Android y se definió el estilo final del botón flotante principal.
+
+### Avances
+
+- Se agregó `BackHandler` en `MainActivity.kt`.
+- El Back del sistema vuelve desde detalle y reportes hacia la lista.
+- El Back del sistema vuelve desde formularios asociados hacia el detalle del vehículo.
+- El Back del sistema vuelve desde agregar vehículo hacia la lista.
+- El botón flotante `+` quedó circular, más liviano y con tamaño fijo.
+
+### Decisiones tomadas
+
+- Se mantiene la navegación simple por estado.
+- No se migra todavía a Navigation Compose.
+- El botón flotante sigue apareciendo solo en la lista principal.
+
+### Validación
+
+- Se ejecutó `./gradlew testDebugUnitTest`.
+- Se probó en emulador: detalle -> Back -> lista.
+- Se probó en emulador: agregar vehículo -> Back -> lista.
+
+---
+
 ## 11-05-2026 - Pulido formularios de gasto y documento
 
 ### Actividad realizada
