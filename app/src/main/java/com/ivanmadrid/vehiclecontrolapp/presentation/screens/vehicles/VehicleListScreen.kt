@@ -478,7 +478,7 @@ fun VehicleAvatar(
         Image(
             painter = painterResource(id = iconRes),
             contentDescription = contentDescription,
-            modifier = Modifier.size((size * 0.76f).dp)
+            modifier = Modifier.size((size * 0.84f).dp)
         )
     }
 }
