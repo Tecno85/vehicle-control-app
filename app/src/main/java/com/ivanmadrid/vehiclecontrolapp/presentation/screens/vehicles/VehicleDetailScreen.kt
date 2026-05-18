@@ -53,7 +53,8 @@ fun VehicleDetailScreen(
     onDeleteDocumentClick: (VehicleDocument) -> Unit,
     onRegisterExpenseClick: () -> Unit,
     onRegisterNoveltyClick: () -> Unit,
-    onRegisterDocumentClick: () -> Unit
+    onRegisterDocumentClick: () -> Unit,
+    onHistoryClick: () -> Unit
 ) {
     val vehicleDocuments = sortDocumentsByDueDate(documents)
     var showDeleteDialog by remember {
@@ -154,7 +155,8 @@ fun VehicleDetailScreen(
         VehicleQuickActionsCard(
             onRegisterExpenseClick = onRegisterExpenseClick,
             onRegisterNoveltyClick = onRegisterNoveltyClick,
-            onRegisterDocumentClick = onRegisterDocumentClick
+            onRegisterDocumentClick = onRegisterDocumentClick,
+            onHistoryClick = onHistoryClick
         )
 
         Spacer(modifier = Modifier.height(10.dp))

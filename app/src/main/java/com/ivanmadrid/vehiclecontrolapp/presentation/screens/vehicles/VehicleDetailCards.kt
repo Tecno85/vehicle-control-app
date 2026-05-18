@@ -524,7 +524,8 @@ fun getNoveltyExtraLabel(novelty: Novelty): String {
 fun VehicleQuickActionsCard(
     onRegisterExpenseClick: () -> Unit,
     onRegisterNoveltyClick: () -> Unit,
-    onRegisterDocumentClick: () -> Unit
+    onRegisterDocumentClick: () -> Unit,
+    onHistoryClick: () -> Unit
 ) {
     val colors = MaterialTheme.vehicleColors
     DetailSectionCard(
@@ -534,37 +535,56 @@ fun VehicleQuickActionsCard(
         markerColor = colors.green,
         markerBackground = colors.softGreen
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        Column(
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            QuickActionTile(
-                label = "Registrar gasto",
-                markerText = "$",
-                markerIconRes = R.drawable.ic_detail_expense,
-                markerColor = colors.blue,
-                backgroundColor = colors.softBlue,
-                modifier = Modifier.weight(1f),
-                onClick = onRegisterExpenseClick
-            )
-            QuickActionTile(
-                label = "Registrar novedad",
-                markerText = "!",
-                markerIconRes = R.drawable.ic_detail_novelty,
-                markerColor = colors.purple,
-                backgroundColor = colors.softPurple,
-                modifier = Modifier.weight(1f),
-                onClick = onRegisterNoveltyClick
-            )
-            QuickActionTile(
-                label = "Registrar documento",
-                markerText = "D",
-                markerIconRes = R.drawable.ic_detail_document,
-                markerColor = colors.green,
-                backgroundColor = colors.softGreen,
-                modifier = Modifier.weight(1f),
-                onClick = onRegisterDocumentClick
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                QuickActionTile(
+                    label = "Registrar gasto",
+                    markerText = "$",
+                    markerIconRes = R.drawable.ic_detail_expense,
+                    markerColor = colors.blue,
+                    backgroundColor = colors.softBlue,
+                    modifier = Modifier.weight(1f),
+                    onClick = onRegisterExpenseClick
+                )
+                QuickActionTile(
+                    label = "Registrar novedad",
+                    markerText = "!",
+                    markerIconRes = R.drawable.ic_detail_novelty,
+                    markerColor = colors.purple,
+                    backgroundColor = colors.softPurple,
+                    modifier = Modifier.weight(1f),
+                    onClick = onRegisterNoveltyClick
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                QuickActionTile(
+                    label = "Registrar documento",
+                    markerText = "D",
+                    markerIconRes = R.drawable.ic_detail_document,
+                    markerColor = colors.green,
+                    backgroundColor = colors.softGreen,
+                    modifier = Modifier.weight(1f),
+                    onClick = onRegisterDocumentClick
+                )
+                QuickActionTile(
+                    label = "Ver historial",
+                    markerText = "H",
+                    markerIconRes = R.drawable.ic_detail_history,
+                    markerColor = colors.orange,
+                    backgroundColor = colors.softYellow,
+                    modifier = Modifier.weight(1f),
+                    onClick = onHistoryClick
+                )
+            }
         }
     }
 }

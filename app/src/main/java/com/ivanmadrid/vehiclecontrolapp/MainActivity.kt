@@ -40,6 +40,7 @@ import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleDet
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleDetailViewModel
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleFormScreen
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleFormViewModel
+import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleHistoryScreen
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleListScreen
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleListViewModel
 import com.ivanmadrid.vehiclecontrolapp.ui.theme.VehicleControlAppTheme
@@ -51,6 +52,7 @@ enum class AppScreen {
     EXPENSE_FORM,
     NOVELTY_FORM,
     DOCUMENT_FORM,
+    VEHICLE_HISTORY,
     REPORTS,
 }
 
@@ -138,6 +140,10 @@ class MainActivity : ComponentActivity() {
                         AppScreen.VEHICLE_DETAIL,
                         AppScreen.REPORTS -> {
                             goToVehicleList()
+                        }
+
+                        AppScreen.VEHICLE_HISTORY -> {
+                            goToVehicleDetail()
                         }
 
                         AppScreen.VEHICLE_FORM -> {
@@ -283,7 +289,40 @@ class MainActivity : ComponentActivity() {
                                     onRegisterDocumentClick = {
                                         clearEditingState()
                                         currentScreen = AppScreen.DOCUMENT_FORM
+                                    },
+                                    onHistoryClick = {
+                                        clearEditingState()
+                                        currentScreen = AppScreen.VEHICLE_HISTORY
                                     }
+                                )
+                            }
+                        }
+
+                        AppScreen.VEHICLE_HISTORY -> {
+                            selectedVehicle?.let { vehicle ->
+                                val vehicleDetailViewModel: VehicleDetailViewModel = viewModel(
+                                    key = "vehicle-history-${vehicle.id}",
+                                    factory = VehicleDetailViewModel.Factory(
+                                        vehicleId = vehicle.id,
+                                        vehicleRepository = appContainer.vehicleRepository,
+                                        vehicleDeletionRepository = appContainer.vehicleDeletionRepository,
+                                        expenseRepository = appContainer.expenseRepository,
+                                        noveltyRepository = appContainer.noveltyRepository,
+                                        vehicleDocumentRepository = appContainer.vehicleDocumentRepository
+                                    )
+                                )
+                                val currentVehicle by vehicleDetailViewModel.vehicle.collectAsState()
+                                val vehicleDocuments by vehicleDetailViewModel.documents.collectAsState()
+                                val vehicleExpenses by vehicleDetailViewModel.expenses.collectAsState()
+                                val vehicleNovelties by vehicleDetailViewModel.novelties.collectAsState()
+
+                                VehicleHistoryScreen(
+                                    vehicle = currentVehicle ?: vehicle,
+                                    documents = vehicleDocuments,
+                                    expenses = vehicleExpenses,
+                                    novelties = vehicleNovelties,
+                                    modifier = Modifier.padding(innerPadding),
+                                    onBackClick = goToVehicleDetail
                                 )
                             }
                         }
