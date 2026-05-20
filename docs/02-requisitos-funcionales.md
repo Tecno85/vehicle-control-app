@@ -164,3 +164,19 @@ Para carros particulares:
 - Gastos registrados.
 - Próximos vencimientos.
 - Últimas novedades.
+
+---
+
+## RF-11: Consultar historial por vehículo
+
+La aplicación debe permitir consultar el historial de un vehículo desde su pantalla de detalle.
+
+El historial debe mostrar en una sola vista:
+
+- Gastos registrados.
+- Novedades registradas.
+- Documentos registrados.
+
+La información debe agruparse por fecha para facilitar la lectura de lo ocurrido con el vehículo.
+
+En esta primera versión, el historial no requiere filtros avanzados ni selector de periodo.

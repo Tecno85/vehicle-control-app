@@ -63,6 +63,44 @@ Se consolidó un bloque importante de mejoras visuales y experiencia de usuario.
 
 ---
 
+## 17-05-2026 - Historial del vehículo
+
+### Actividad realizada
+
+Se agregó una pantalla de historial accesible desde el detalle de cada vehículo.
+
+### Avances
+
+- Se agregó la pantalla `VehicleHistoryScreen`.
+- Se agregó la acción rápida `Ver historial` en el detalle del vehículo.
+- Las acciones rápidas quedaron organizadas en una cuadrícula 2x2.
+- El historial agrupa por fecha gastos, novedades y documentos.
+- Se agregó el icono vectorial `ic_detail_history`.
+- Se conectó la navegación desde `MainActivity.kt` usando el estado actual de pantallas.
+- El botón `Volver` y el Back nativo regresan desde historial al detalle del mismo vehículo.
+
+### Decisiones tomadas
+
+- Se mantuvo la navegación simple por estado.
+- No se agregó Navigation Compose.
+- No se modificaron modelos, Room ni repositorios.
+- El historial reutiliza los datos ya cargados para el detalle del vehículo.
+- No se agregaron filtros ni selector de periodo todavía para evitar sobreingeniería.
+
+### Validación
+
+- Se ejecutó `./gradlew testDebugUnitTest`.
+- Se ejecutó `./gradlew assembleDebug`.
+- Se validó en emulador que `Ver historial` abre la pantalla y muestra eventos agrupados por fecha.
+
+### Commit
+
+```text
+4d92828 feat: agregar historial del vehiculo
+```
+
+---
+
 ## 11-05-2026 - Navegación Back y botón principal
 
 ### Actividad realizada

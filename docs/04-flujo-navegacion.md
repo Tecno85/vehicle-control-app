@@ -18,12 +18,12 @@ Pantallas conectadas actualmente:
 4. Formulario de gasto.
 5. Formulario de novedad.
 6. Formulario de documento.
-7. Reportes.
+7. Historial del vehículo.
+8. Reportes.
 
 Pantallas planeadas para más adelante:
 
-1. Historial del vehículo.
-2. Ajustes.
+1. Ajustes.
 
 ---
 
@@ -39,6 +39,7 @@ enum class AppScreen {
     EXPENSE_FORM,
     NOVELTY_FORM,
     DOCUMENT_FORM,
+    VEHICLE_HISTORY,
     REPORTS,
 }
 ```
@@ -96,6 +97,12 @@ Lista de vehículos
   │                       └── Back del sistema
   │                             └── Detalle del mismo vehículo
   │
+  │           └── Ver historial
+  │                 └── Historial del vehículo
+  │                       ├── Volver
+  │                       └── Back del sistema
+  │                             └── Detalle del mismo vehículo
+  │
   └── tocar botón flotante +
         └── Formulario de vehículo
               ├── Volver
@@ -133,6 +140,7 @@ Comportamiento actual:
 - En lista principal: Back permite salir de la app.
 - En detalle de vehículo: Back vuelve a la lista.
 - En reportes: Back vuelve a la lista.
+- En historial del vehículo: Back vuelve al detalle del mismo vehículo.
 - En agregar vehículo: Back vuelve a la lista.
 - En editar vehículo: Back vuelve al detalle.
 - En formularios de gasto, novedad y documento: Back vuelve al detalle del vehículo.
@@ -154,7 +162,9 @@ Para todos los vehículos muestra:
 - Documentos y vencimientos.
 - Gastos recientes.
 - Novedades recientes.
+- Resumen económico estimado, si es taxi.
 - Acciones rápidas.
+- Acceso al historial del vehículo.
 
 Para taxis también muestra:
 
@@ -164,6 +174,20 @@ Para taxis también muestra:
 - Resumen económico estimado.
 
 Los vehículos particulares no muestran secciones exclusivas de taxi.
+
+## Historial del vehículo
+
+El historial del vehículo se abre desde el detalle mediante la acción rápida `Ver historial`.
+
+La pantalla muestra:
+
+- Placa, marca y modelo del vehículo.
+- Gastos registrados.
+- Novedades registradas.
+- Documentos registrados.
+- Agrupación por fecha.
+
+El historial usa los datos ya cargados desde Room para el vehículo seleccionado y no requiere una navegación compleja ni filtros por ahora.
 
 ---
 
@@ -213,6 +237,5 @@ La navegación actual puede mantenerse mientras las pantallas sean pocas y el fl
 
 Conviene evaluar Navigation Compose cuando se implementen:
 
-- Historial del vehículo.
 - Ajustes.
 - Pantallas con parámetros más complejos.

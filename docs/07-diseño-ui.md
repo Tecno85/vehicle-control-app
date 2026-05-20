@@ -12,6 +12,7 @@ La prioridad es que la información importante de cada vehículo se pueda leer r
 - Gastos recientes.
 - Novedades recientes.
 - Acciones disponibles.
+- Historial del vehículo.
 
 ---
 
@@ -74,6 +75,7 @@ Uso actual:
 - Novedades.
 - Acciones rápidas.
 - Modo claro / modo oscuro.
+- Historial del vehículo.
 
 Decisión actual:
 
@@ -131,6 +133,7 @@ Debe mostrar:
 - Documentos y vencimientos.
 - Gastos recientes.
 - Novedades recientes.
+- Historial del vehículo.
 - Acciones rápidas.
 
 Para taxis también debe mostrar:
@@ -144,12 +147,39 @@ Los particulares no deben mostrar información exclusiva de taxi.
 
 Las acciones rápidas deben mantener:
 
-- Tres botones del mismo tamaño visual.
+- Cuatro botones organizados en una cuadrícula 2x2.
 - Texto centrado.
 - Icono superior.
 - Colores consistentes por acción.
 
+Acciones actuales:
+
+- Registrar gasto.
+- Registrar novedad.
+- Registrar documento.
+- Ver historial.
+
 Los documentos y gastos dentro del detalle deben usar iconos relacionados con su tipo o categoría para mejorar el reconocimiento visual sin depender solo del texto.
+
+## Pantalla historial del vehículo
+
+El historial debe sentirse como una extensión del detalle, no como un módulo independiente complejo.
+
+Debe mostrar:
+
+- Botón `Volver`.
+- Título `Historial del vehículo`.
+- Placa, marca y modelo como contexto.
+- Eventos agrupados por fecha.
+- Iconos por tipo de evento.
+
+Tipos de evento:
+
+- Gasto.
+- Novedad.
+- Documento.
+
+La pantalla debe mantener el mismo estilo de tarjetas, marcadores circulares, espaciado y compatibilidad con modo claro/oscuro.
 
 ---
 
