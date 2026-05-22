@@ -50,7 +50,7 @@ import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleAva
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleTypeChip
 import com.ivanmadrid.vehiclecontrolapp.ui.theme.vehicleColors
 import com.ivanmadrid.vehiclecontrolapp.utils.getTodayIsoDate
-import com.ivanmadrid.vehiclecontrolapp.utils.isValidIsoDate
+import com.ivanmadrid.vehiclecontrolapp.utils.validateExpenseForm
 
 @Composable
 fun ExpenseFormScreen(
@@ -218,19 +218,14 @@ fun ExpenseFormScreen(
             onClick = {
                 val selectedCategory = category
                 val parsedAmount = amount.toLongOrNull()
+                val validationResult = validateExpenseForm(
+                    date = date,
+                    category = selectedCategory,
+                    amount = parsedAmount
+                )
 
-                if (
-                    date.isBlank() ||
-                    selectedCategory == null ||
-                    parsedAmount == null ||
-                    parsedAmount <= 0L
-                ) {
-                    validationMessage = "Completa fecha, categoría y un valor mayor a cero."
-                    return@Button
-                }
-
-                if (!isValidIsoDate(date.trim())) {
-                    validationMessage = "La fecha debe tener el formato yyyy-MM-dd. Ej: 2026-05-09."
+                if (!validationResult.isValid || selectedCategory == null || parsedAmount == null) {
+                    validationMessage = validationResult.message
                     return@Button
                 }
 

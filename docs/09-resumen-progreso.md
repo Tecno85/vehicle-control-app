@@ -242,6 +242,11 @@ Los formularios:
 - Usan tarjetas para separar contenido.
 - Tienen botones `Guardar`, `Cancelar` y `Volver`.
 - Funcionan visualmente con modo claro y modo oscuro.
+- Validan campos obligatorios antes de guardar.
+- Validan fechas con formato `yyyy-MM-dd`.
+- Validan valores monetarios mayores que cero.
+- Validan ingreso diario obligatorio para taxis.
+- Validan ingreso personalizado cuando una novedad de taxi afecta la operación con valor propio.
 - El formulario de vehículo ya guarda registros reales en Room.
 - El formulario de vehículo también se reutiliza para editar vehículos existentes.
 - El formulario de gasto ya guarda registros reales en Room.
@@ -272,6 +277,7 @@ enum class AppScreen {
     EXPENSE_FORM,
     NOVELTY_FORM,
     DOCUMENT_FORM,
+    VEHICLE_HISTORY,
     REPORTS,
 }
 ```
@@ -288,8 +294,10 @@ Lista de vehículos
   │           │     └── Formulario de gasto
   │           ├── Registrar novedad
   │           │     └── Formulario de novedad
-  │           └── Registrar documento
-  │                 └── Formulario de documento
+  │           ├── Registrar documento
+  │           │     └── Formulario de documento
+  │           └── Ver historial
+  │                 └── Historial del vehículo
   │
   ├── menú principal
   │     └── Reportes
@@ -314,6 +322,7 @@ Archivo:
 
 ```text
 DateFormatUtils.kt
+FormValidationUtils.kt
 ```
 
 Incluye:
@@ -323,6 +332,10 @@ Incluye:
 - `getDocumentUrgency`: clasifica vencimientos como vencido, urgente, atención, normal o fecha por revisar.
 - `sortDocumentsByDueDate`: ordena documentos por fecha de vencimiento.
 - `isValidIsoDate`: valida que una fecha tenga formato ISO `yyyy-MM-dd`.
+- `validateVehicleForm`: valida datos mínimos del vehículo y reglas de taxi.
+- `validateExpenseForm`: valida fecha, categoría y valor de gasto.
+- `validateNoveltyForm`: valida fecha, tipo, prioridad e impacto de ingreso.
+- `validateDocumentForm`: valida tipo de documento y fecha de vencimiento.
 
 ---
 
@@ -368,12 +381,12 @@ La app ya permite:
 - Usar formularios de gasto y documento con opciones visuales tipo tarjeta.
 - Usar un formulario de novedades más visual para prioridad e impacto en operación.
 - Consultar una pantalla inicial de reportes.
+- Consultar historial completo por vehículo, agrupado por fecha.
 - Ver colores de vencimiento consistentes en lista, detalle y reportes.
 - Usar un botón flotante `+` circular y exclusivo de la lista principal.
 
 La app todavía no permite:
 
-- Consultar historial completo.
 - Sincronizar con Firebase.
 - Enviar notificaciones del sistema.
 

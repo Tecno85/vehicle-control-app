@@ -48,7 +48,7 @@ import com.ivanmadrid.vehiclecontrolapp.presentation.components.getVehicleDocume
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleAvatar
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleTypeChip
 import com.ivanmadrid.vehiclecontrolapp.ui.theme.vehicleColors
-import com.ivanmadrid.vehiclecontrolapp.utils.isValidIsoDate
+import com.ivanmadrid.vehiclecontrolapp.utils.validateDocumentForm
 
 @Composable
 fun DocumentFormScreen(
@@ -180,14 +180,13 @@ fun DocumentFormScreen(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
                 val selectedDocumentType = documentType
+                val validationResult = validateDocumentForm(
+                    documentType = selectedDocumentType,
+                    dueDate = dueDate
+                )
 
-                if (selectedDocumentType == null || dueDate.isBlank()) {
-                    validationMessage = "Selecciona el tipo de documento y completa la fecha de vencimiento."
-                    return@Button
-                }
-
-                if (!isValidIsoDate(dueDate.trim())) {
-                    validationMessage = "La fecha debe tener el formato yyyy-MM-dd. Ej: 2026-05-09."
+                if (!validationResult.isValid || selectedDocumentType == null) {
+                    validationMessage = validationResult.message
                     return@Button
                 }
 

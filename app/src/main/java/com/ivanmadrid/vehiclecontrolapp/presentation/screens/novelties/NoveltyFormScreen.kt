@@ -53,7 +53,7 @@ import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleAva
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleTypeChip
 import com.ivanmadrid.vehiclecontrolapp.ui.theme.vehicleColors
 import com.ivanmadrid.vehiclecontrolapp.utils.getTodayIsoDate
-import com.ivanmadrid.vehiclecontrolapp.utils.isValidIsoDate
+import com.ivanmadrid.vehiclecontrolapp.utils.validateNoveltyForm
 
 @Composable
 fun NoveltyFormScreen(
@@ -305,32 +305,17 @@ fun NoveltyFormScreen(
                 val selectedAdjustmentType = incomeAdjustmentType
                 val parsedAdjustedIncome = adjustedIncomeAmount.toLongOrNull()
                 val shouldAffectIncome = vehicle.type == VehicleType.TAXI && affectsIncome
+                val validationResult = validateNoveltyForm(
+                    date = date,
+                    noveltyType = noveltyType,
+                    priority = selectedPriority,
+                    affectsIncome = shouldAffectIncome,
+                    incomeAdjustmentType = selectedAdjustmentType,
+                    adjustedIncomeAmount = parsedAdjustedIncome
+                )
 
-                if (
-                    date.isBlank() ||
-                    noveltyType.isBlank() ||
-                    selectedPriority == null
-                ) {
-                    validationMessage = "Completa fecha, tipo de novedad y prioridad."
-                    return@Button
-                }
-
-                if (!isValidIsoDate(date.trim())) {
-                    validationMessage = "La fecha debe tener el formato yyyy-MM-dd. Ej: 2026-05-09."
-                    return@Button
-                }
-
-                if (shouldAffectIncome && selectedAdjustmentType == null) {
-                    validationMessage = "Selecciona el resultado del día."
-                    return@Button
-                }
-
-                if (
-                    shouldAffectIncome &&
-                    selectedAdjustmentType == IncomeAdjustmentType.CUSTOM_AMOUNT &&
-                    (parsedAdjustedIncome == null || parsedAdjustedIncome <= 0L)
-                ) {
-                    validationMessage = "Ingresa un ingreso real del día mayor a cero."
+                if (!validationResult.isValid || selectedPriority == null) {
+                    validationMessage = validationResult.message
                     return@Button
                 }
 

@@ -276,7 +276,7 @@ fun VehicleDetailScreen(
                 Text(text = "Eliminar documento")
             },
             text = {
-                Text(text = "¿Seguro que quieres eliminar este documento?")
+                Text(text = "¿Seguro que quieres eliminar este documento de ${vehicle.plate}?")
             },
             confirmButton = {
                 DeleteConfirmButton(

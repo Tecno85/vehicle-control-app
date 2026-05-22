@@ -38,6 +38,7 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
 import com.ivanmadrid.vehiclecontrolapp.presentation.components.AppBackButton
 import com.ivanmadrid.vehiclecontrolapp.ui.theme.vehicleColors
+import com.ivanmadrid.vehiclecontrolapp.utils.validateVehicleForm
 
 @Composable
 fun VehicleFormScreen(
@@ -322,14 +323,17 @@ fun VehicleFormScreen(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
                 val selectedType = vehicleType
+                val parsedDailyFixedIncome = dailyFixedIncome.toLongOrNull()
+                val validationResult = validateVehicleForm(
+                    plate = plate,
+                    brand = brand,
+                    model = model,
+                    vehicleType = selectedType,
+                    dailyFixedIncome = parsedDailyFixedIncome
+                )
 
-                if (
-                    plate.isBlank() ||
-                    brand.isBlank() ||
-                    model.isBlank() ||
-                    selectedType == null
-                ) {
-                    validationMessage = "Completa placa, marca, modelo y tipo de vehículo."
+                if (!validationResult.isValid || selectedType == null) {
+                    validationMessage = validationResult.message
                     return@Button
                 }
 
@@ -349,7 +353,7 @@ fun VehicleFormScreen(
                             null
                         },
                         dailyFixedIncome = if (selectedType == VehicleType.TAXI) {
-                            dailyFixedIncome.toLongOrNull()
+                            parsedDailyFixedIncome
                         } else {
                             null
                         }
