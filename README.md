@@ -10,17 +10,9 @@ La app permite registrar y consultar información importante de cada vehículo, 
 
 ## Capturas
 
-### Lista de vehículos
-
-![Lista de vehículos](docs/images/vehicle-list.png)
-
-### Detalle del vehículo
-
-![Detalle del vehículo](docs/images/vehicle-detail.png)
-
-### Historial
-
-![Historial del vehículo](docs/images/vehicle-history.png)
+| Lista de vehículos | Detalle del vehículo | Historial |
+| --- | --- | --- |
+| <img src="./docs/images/vehicle-list.png" width="220" alt="Lista de vehículos"> | <img src="./docs/images/vehicle-detail.png" width="220" alt="Detalle del vehículo"> | <img src="./docs/images/vehicle-history.png" width="220" alt="Historial del vehículo"> |
 
 ## Funcionalidades principales
 
