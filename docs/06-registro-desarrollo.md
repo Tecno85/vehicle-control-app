@@ -101,6 +101,36 @@ Se agregó una pantalla de historial accesible desde el detalle de cada vehícul
 
 ---
 
+## 25-05-2026 - Preparación del repositorio en GitHub
+
+### Actividad realizada
+
+Se organizó la presentación inicial del proyecto para el repositorio remoto.
+
+### Avances
+
+- Se agregó un archivo `README.md` en la raíz del proyecto.
+- Se documentaron descripción, funcionalidades, tecnologías, estructura, ejecución, pruebas y próximos pasos.
+- Se agregaron capturas de la app en `docs/images/`.
+- Se incluyeron capturas de lista de vehículos, detalle del vehículo e historial.
+- Se ajustó el formato de imágenes del README para mejorar compatibilidad con visores Markdown.
+- Se revisó que archivos locales o generados no estén versionados.
+
+### Validación
+
+- Se confirmó que `.gitignore` excluye `.idea/`, `.gradle/`, `build/`, `local.properties`, `.DS_Store`, keystores y archivos de Firebase.
+- Se confirmó que no hay archivos sensibles o generados versionados.
+- Se confirmó que el repositorio local quedó sincronizado con `origin/main`.
+
+### Commits
+
+```text
+579cd94 docs: agregar readme con capturas
+6823807 docs: mejorar compatibilidad de capturas en readme
+```
+
+---
+
 ## 11-05-2026 - Navegación Back y botón principal
 
 ### Actividad realizada

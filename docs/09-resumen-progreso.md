@@ -384,6 +384,9 @@ La app ya permite:
 - Consultar historial completo por vehículo, agrupado por fecha.
 - Ver colores de vencimiento consistentes en lista, detalle y reportes.
 - Usar un botón flotante `+` circular y exclusivo de la lista principal.
+- Contar con un `README.md` inicial para GitHub.
+- Mostrar capturas principales de la app desde `docs/images/`.
+- Mantener `.gitignore` configurado para excluir archivos locales, generados y sensibles.
 
 La app todavía no permite:
 
@@ -400,3 +403,4 @@ La app todavía no permite:
 4. Evaluar fotos reales por vehículo solo si aportan más claridad que los iconos vectoriales actuales.
 5. Agregar selector de periodo más completo para reportes.
 6. Evaluar Navigation Compose cuando haya historial, reportes y ajustes más complejos.
+7. Mantener actualizado el README cuando cambien pantallas o funcionalidades principales.
