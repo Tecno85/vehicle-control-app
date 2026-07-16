@@ -5,6 +5,7 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.IncomeAdjustmentType
 import com.ivanmadrid.vehiclecontrolapp.domain.model.NoveltyPriority
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocumentType
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -21,6 +22,7 @@ class FormValidationUtilsTest {
         )
 
         assertFalse(result.isValid)
+        assertEquals(ValidationField.DAILY_FIXED_INCOME, result.field)
     }
 
     @Test
@@ -44,19 +46,21 @@ class FormValidationUtilsTest {
             amount = 50_000L
         )
         val zeroAmount = validateExpenseForm(
-            date = "2026-05-09",
+            date = "2026-07-16",
             category = ExpenseCategory.FUEL,
             amount = 0L
         )
 
         assertFalse(invalidDate.isValid)
+        assertEquals(ValidationField.DATE, invalidDate.field)
         assertFalse(zeroAmount.isValid)
+        assertEquals(ValidationField.AMOUNT, zeroAmount.field)
     }
 
     @Test
     fun validateNoveltyForm_requiresCustomIncomeAmountWhenSelected() {
         val result = validateNoveltyForm(
-            date = "2026-05-09",
+            date = "2026-07-16",
             noveltyType = "Trabajo parcial",
             priority = NoveltyPriority.MEDIUM,
             affectsIncome = true,
@@ -65,23 +69,25 @@ class FormValidationUtilsTest {
         )
 
         assertFalse(result.isValid)
+        assertEquals(ValidationField.ADJUSTED_INCOME_AMOUNT, result.field)
     }
 
     @Test
     fun validateDocumentForm_rejectsMissingType() {
         val result = validateDocumentForm(
             documentType = null,
-            dueDate = "2026-05-09"
+            dueDate = "2026-08-05"
         )
 
         assertFalse(result.isValid)
+        assertEquals(ValidationField.DOCUMENT_TYPE, result.field)
     }
 
     @Test
     fun validateDocumentForm_acceptsValidDocument() {
         val result = validateDocumentForm(
             documentType = VehicleDocumentType.SOAT,
-            dueDate = "2026-05-09"
+            dueDate = "2026-08-05"
         )
 
         assertTrue(result.isValid)

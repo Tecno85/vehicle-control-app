@@ -52,6 +52,7 @@ import com.ivanmadrid.vehiclecontrolapp.presentation.components.AppBackButton
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleAvatar
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleTypeChip
 import com.ivanmadrid.vehiclecontrolapp.ui.theme.vehicleColors
+import com.ivanmadrid.vehiclecontrolapp.utils.ValidationField
 import com.ivanmadrid.vehiclecontrolapp.utils.getTodayIsoDate
 import com.ivanmadrid.vehiclecontrolapp.utils.validateNoveltyForm
 
@@ -93,6 +94,10 @@ fun NoveltyFormScreen(
 
     var validationMessage by remember(noveltyToEdit?.id) {
         mutableStateOf<String?>(null)
+    }
+
+    var validationField by remember(noveltyToEdit?.id) {
+        mutableStateOf<ValidationField?>(null)
     }
 
     Column(
@@ -146,25 +151,34 @@ fun NoveltyFormScreen(
                     value = date,
                     onValueChange = { newValue ->
                         date = newValue
+                        if (validationField == ValidationField.DATE) validationField = null
                     },
                     label = {
                         Text(text = "Fecha")
                     },
                     placeholder = {
-                        Text(text = "Ej: 2026-05-09")
+                        Text(text = "Ej: 2026-07-16")
                     },
                     supportingText = {
-                        Text(text = "Formato: yyyy-MM-dd")
+                        Text(
+                            text = if (validationField == ValidationField.DATE) {
+                                validationMessage.orEmpty()
+                            } else {
+                                "Formato: yyyy-MM-dd"
+                            }
+                        )
                     },
                     trailingIcon = {
                         TextButton(
                             onClick = {
                                 date = getTodayIsoDate()
+                                if (validationField == ValidationField.DATE) validationField = null
                             }
                         ) {
                             Text(text = "Hoy")
                         }
                     },
+                    isError = validationField == ValidationField.DATE,
                     singleLine = true
                 )
 
@@ -175,6 +189,7 @@ fun NoveltyFormScreen(
                     value = noveltyType,
                     onValueChange = { newValue ->
                         noveltyType = newValue
+                        if (validationField == ValidationField.NOVELTY_TYPE) validationField = null
                     },
                     label = {
                         Text(text = "Tipo de novedad")
@@ -182,6 +197,12 @@ fun NoveltyFormScreen(
                     placeholder = {
                         Text(text = "Ej: Trabajo parcial")
                     },
+                    supportingText = if (validationField == ValidationField.NOVELTY_TYPE) {
+                        { Text(text = validationMessage.orEmpty()) }
+                    } else {
+                        null
+                    },
+                    isError = validationField == ValidationField.NOVELTY_TYPE,
                     singleLine = true
                 )
 
@@ -199,8 +220,18 @@ fun NoveltyFormScreen(
                     selectedPriority = priority,
                     onPriorityClick = { selectedPriority ->
                         priority = selectedPriority
+                        if (validationField == ValidationField.PRIORITY) validationField = null
                     }
                 )
+
+                if (validationField == ValidationField.PRIORITY) {
+                    Text(
+                        text = validationMessage.orEmpty(),
+                        modifier = Modifier.padding(top = 6.dp),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -247,6 +278,9 @@ fun NoveltyFormScreen(
                         checked = affectsIncome,
                         onCheckedChange = { checked ->
                             affectsIncome = checked
+                            if (!checked) {
+                                validationField = null
+                            }
                         }
                     )
 
@@ -265,8 +299,20 @@ fun NoveltyFormScreen(
                             selectedType = incomeAdjustmentType,
                             onTypeClick = { selectedType ->
                                 incomeAdjustmentType = selectedType
+                                if (validationField == ValidationField.INCOME_ADJUSTMENT_TYPE) {
+                                    validationField = null
+                                }
                             }
                         )
+
+                        if (validationField == ValidationField.INCOME_ADJUSTMENT_TYPE) {
+                            Text(
+                                text = validationMessage.orEmpty(),
+                                modifier = Modifier.padding(top = 6.dp),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
 
                         if (incomeAdjustmentType == IncomeAdjustmentType.CUSTOM_AMOUNT) {
                             Spacer(modifier = Modifier.height(12.dp))
@@ -277,6 +323,9 @@ fun NoveltyFormScreen(
                                 onValueChange = { newValue ->
                                     if (newValue.all { character -> character.isDigit() }) {
                                         adjustedIncomeAmount = newValue
+                                        if (validationField == ValidationField.ADJUSTED_INCOME_AMOUNT) {
+                                            validationField = null
+                                        }
                                     }
                                 },
                                 label = {
@@ -288,6 +337,14 @@ fun NoveltyFormScreen(
                                 keyboardOptions = KeyboardOptions(
                                     keyboardType = KeyboardType.Number
                                 ),
+                                supportingText = if (
+                                    validationField == ValidationField.ADJUSTED_INCOME_AMOUNT
+                                ) {
+                                    { Text(text = validationMessage.orEmpty()) }
+                                } else {
+                                    null
+                                },
+                                isError = validationField == ValidationField.ADJUSTED_INCOME_AMOUNT,
                                 singleLine = true
                             )
                         }
@@ -316,10 +373,12 @@ fun NoveltyFormScreen(
 
                 if (!validationResult.isValid || selectedPriority == null) {
                     validationMessage = validationResult.message
+                    validationField = validationResult.field
                     return@Button
                 }
 
                 validationMessage = null
+                validationField = null
 
                 onSaveNovelty(
                     Novelty(
@@ -346,6 +405,7 @@ fun NoveltyFormScreen(
                     )
                 ) { message ->
                     validationMessage = message
+                    validationField = null
                 }
             }
         ) {

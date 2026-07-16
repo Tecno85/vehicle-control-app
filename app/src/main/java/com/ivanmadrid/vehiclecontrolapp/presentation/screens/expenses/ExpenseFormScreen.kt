@@ -49,6 +49,7 @@ import com.ivanmadrid.vehiclecontrolapp.presentation.components.getExpenseCatego
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleAvatar
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleTypeChip
 import com.ivanmadrid.vehiclecontrolapp.ui.theme.vehicleColors
+import com.ivanmadrid.vehiclecontrolapp.utils.ValidationField
 import com.ivanmadrid.vehiclecontrolapp.utils.getTodayIsoDate
 import com.ivanmadrid.vehiclecontrolapp.utils.validateExpenseForm
 
@@ -78,6 +79,10 @@ fun ExpenseFormScreen(
 
     var validationMessage by remember(expenseToEdit?.id) {
         mutableStateOf<String?>(null)
+    }
+
+    var validationField by remember(expenseToEdit?.id) {
+        mutableStateOf<ValidationField?>(null)
     }
 
     Column(
@@ -131,25 +136,34 @@ fun ExpenseFormScreen(
                     value = date,
                     onValueChange = { newValue ->
                         date = newValue
+                        if (validationField == ValidationField.DATE) validationField = null
                     },
                     label = {
                         Text(text = "Fecha")
                     },
                     placeholder = {
-                        Text(text = "Ej: 2026-05-07")
+                        Text(text = "Ej: 2026-07-16")
                     },
                     supportingText = {
-                        Text(text = "Formato: yyyy-MM-dd")
+                        Text(
+                            text = if (validationField == ValidationField.DATE) {
+                                validationMessage.orEmpty()
+                            } else {
+                                "Formato: yyyy-MM-dd"
+                            }
+                        )
                     },
                     trailingIcon = {
                         TextButton(
                             onClick = {
                                 date = getTodayIsoDate()
+                                if (validationField == ValidationField.DATE) validationField = null
                             }
                         ) {
                             Text(text = "Hoy")
                         }
                     },
+                    isError = validationField == ValidationField.DATE,
                     singleLine = true
                 )
 
@@ -167,8 +181,18 @@ fun ExpenseFormScreen(
                     selectedCategory = category,
                     onCategoryClick = { selectedCategory ->
                         category = selectedCategory
+                        if (validationField == ValidationField.CATEGORY) validationField = null
                     }
                 )
+
+                if (validationField == ValidationField.CATEGORY) {
+                    Text(
+                        text = validationMessage.orEmpty(),
+                        modifier = Modifier.padding(top = 6.dp),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -178,6 +202,7 @@ fun ExpenseFormScreen(
                     onValueChange = { newValue ->
                         if (newValue.all { character -> character.isDigit() }) {
                             amount = newValue
+                            if (validationField == ValidationField.AMOUNT) validationField = null
                         }
                     },
                     label = {
@@ -189,6 +214,12 @@ fun ExpenseFormScreen(
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number
                     ),
+                    supportingText = if (validationField == ValidationField.AMOUNT) {
+                        { Text(text = validationMessage.orEmpty()) }
+                    } else {
+                        null
+                    },
+                    isError = validationField == ValidationField.AMOUNT,
                     singleLine = true
                 )
 
@@ -226,10 +257,12 @@ fun ExpenseFormScreen(
 
                 if (!validationResult.isValid || selectedCategory == null || parsedAmount == null) {
                     validationMessage = validationResult.message
+                    validationField = validationResult.field
                     return@Button
                 }
 
                 validationMessage = null
+                validationField = null
 
                 onSaveExpense(
                     Expense(
@@ -242,6 +275,7 @@ fun ExpenseFormScreen(
                     )
                 ) { message ->
                     validationMessage = message
+                    validationField = null
                 }
             }
         ) {

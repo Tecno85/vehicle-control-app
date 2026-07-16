@@ -14,6 +14,22 @@ Paquete principal:
 
 - com.ivanmadrid.vehiclecontrolapp
 
+## Corte de avance: 16 de julio de 2026
+
+El proyecto queda preparado como candidato `1.0.0-rc1` para validación en un celular Android real.
+
+En este corte se completó:
+
+- Cobertura de repositorios y operaciones Room para vehículos, gastos, novedades y documentos.
+- Seis pruebas instrumentadas ejecutadas correctamente en un emulador Android.
+- Validación contextual por campo en los cuatro formularios principales.
+- Compatibilidad de `java.time` desde Android 7 mediante core library desugaring.
+- Punto de extensión documentado para futuras migraciones Room, sin borrado destructivo de datos.
+- Datos demo, capturas reales y pieza promocional alineados con julio de 2026.
+- Checklist de instalación y validación física del MVP 1.0.
+
+La etiqueta final `v1.0.0` se reservará hasta completar la prueba en un dispositivo físico.
+
 ---
 
 ## Objetivo general

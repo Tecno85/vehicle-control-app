@@ -38,6 +38,7 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
 import com.ivanmadrid.vehiclecontrolapp.presentation.components.AppBackButton
 import com.ivanmadrid.vehiclecontrolapp.ui.theme.vehicleColors
+import com.ivanmadrid.vehiclecontrolapp.utils.ValidationField
 import com.ivanmadrid.vehiclecontrolapp.utils.validateVehicleForm
 
 @Composable
@@ -77,6 +78,10 @@ fun VehicleFormScreen(
 
     var validationMessage by remember(vehicleToEdit?.id) {
         mutableStateOf<String?>(null)
+    }
+
+    var validationField by remember(vehicleToEdit?.id) {
+        mutableStateOf<ValidationField?>(null)
     }
 
     Column(
@@ -136,6 +141,7 @@ fun VehicleFormScreen(
                     value = plate,
                     onValueChange = { newValue ->
                         plate = newValue.uppercase()
+                        if (validationField == ValidationField.PLATE) validationField = null
                     },
                     label = {
                         Text(text = "Placa")
@@ -144,8 +150,15 @@ fun VehicleFormScreen(
                         Text(text = "Ej: ABC123")
                     },
                     supportingText = {
-                        Text(text = "Se guardará en mayúsculas.")
+                        Text(
+                            text = if (validationField == ValidationField.PLATE) {
+                                validationMessage.orEmpty()
+                            } else {
+                                "Se guardará en mayúsculas."
+                            }
+                        )
                     },
+                    isError = validationField == ValidationField.PLATE,
                     singleLine = true
                 )
 
@@ -156,6 +169,7 @@ fun VehicleFormScreen(
                     value = brand,
                     onValueChange = { newValue ->
                         brand = newValue
+                        if (validationField == ValidationField.BRAND) validationField = null
                     },
                     label = {
                         Text(text = "Marca")
@@ -163,6 +177,12 @@ fun VehicleFormScreen(
                     placeholder = {
                         Text(text = "Ej: Kia")
                     },
+                    supportingText = if (validationField == ValidationField.BRAND) {
+                        { Text(text = validationMessage.orEmpty()) }
+                    } else {
+                        null
+                    },
+                    isError = validationField == ValidationField.BRAND,
                     singleLine = true
                 )
 
@@ -173,6 +193,7 @@ fun VehicleFormScreen(
                     value = model,
                     onValueChange = { newValue ->
                         model = newValue
+                        if (validationField == ValidationField.MODEL) validationField = null
                     },
                     label = {
                         Text(text = "Modelo")
@@ -180,6 +201,12 @@ fun VehicleFormScreen(
                     placeholder = {
                         Text(text = "Ej: Picanto")
                     },
+                    supportingText = if (validationField == ValidationField.MODEL) {
+                        { Text(text = validationMessage.orEmpty()) }
+                    } else {
+                        null
+                    },
+                    isError = validationField == ValidationField.MODEL,
                     singleLine = true
                 )
 
@@ -203,6 +230,7 @@ fun VehicleFormScreen(
                         modifier = Modifier.weight(1f),
                         onClick = {
                             vehicleType = VehicleType.TAXI
+                            if (validationField == ValidationField.VEHICLE_TYPE) validationField = null
                         }
                     )
 
@@ -212,6 +240,7 @@ fun VehicleFormScreen(
                         modifier = Modifier.weight(1f),
                         onClick = {
                             vehicleType = VehicleType.PRIVATE
+                            if (validationField == ValidationField.VEHICLE_TYPE) validationField = null
                         }
                     )
                 }
@@ -227,7 +256,11 @@ fun VehicleFormScreen(
                         "Selecciona Taxi o Particular para continuar."
                     },
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = if (validationField == ValidationField.VEHICLE_TYPE) {
+                        MaterialTheme.colorScheme.error
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -300,6 +333,9 @@ fun VehicleFormScreen(
                         onValueChange = { newValue ->
                             if (newValue.all { character -> character.isDigit() }) {
                                 dailyFixedIncome = newValue
+                                if (validationField == ValidationField.DAILY_FIXED_INCOME) {
+                                    validationField = null
+                                }
                             }
                         },
                         label = {
@@ -311,6 +347,12 @@ fun VehicleFormScreen(
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number
                         ),
+                        supportingText = if (validationField == ValidationField.DAILY_FIXED_INCOME) {
+                            { Text(text = validationMessage.orEmpty()) }
+                        } else {
+                            null
+                        },
+                        isError = validationField == ValidationField.DAILY_FIXED_INCOME,
                         singleLine = true
                     )
                 }
@@ -334,10 +376,12 @@ fun VehicleFormScreen(
 
                 if (!validationResult.isValid || selectedType == null) {
                     validationMessage = validationResult.message
+                    validationField = validationResult.field
                     return@Button
                 }
 
                 validationMessage = null
+                validationField = null
 
                 onSaveVehicle(
                     Vehicle(
@@ -360,6 +404,11 @@ fun VehicleFormScreen(
                     )
                 ) { message ->
                     validationMessage = message
+                    validationField = if (message.contains("placa", ignoreCase = true)) {
+                        ValidationField.PLATE
+                    } else {
+                        null
+                    }
                 }
             }
         ) {

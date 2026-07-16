@@ -48,6 +48,7 @@ import com.ivanmadrid.vehiclecontrolapp.presentation.components.getVehicleDocume
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleAvatar
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleTypeChip
 import com.ivanmadrid.vehiclecontrolapp.ui.theme.vehicleColors
+import com.ivanmadrid.vehiclecontrolapp.utils.ValidationField
 import com.ivanmadrid.vehiclecontrolapp.utils.validateDocumentForm
 
 @Composable
@@ -72,6 +73,10 @@ fun DocumentFormScreen(
 
     var validationMessage by remember(documentToEdit?.id) {
         mutableStateOf<String?>(null)
+    }
+
+    var validationField by remember(documentToEdit?.id) {
+        mutableStateOf<ValidationField?>(null)
     }
 
     Column(
@@ -132,8 +137,18 @@ fun DocumentFormScreen(
                     selectedType = documentType,
                     onTypeClick = { selectedType ->
                         documentType = selectedType
+                        if (validationField == ValidationField.DOCUMENT_TYPE) validationField = null
                     }
                 )
+
+                if (validationField == ValidationField.DOCUMENT_TYPE) {
+                    Text(
+                        text = validationMessage.orEmpty(),
+                        modifier = Modifier.padding(top = 6.dp),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -142,16 +157,24 @@ fun DocumentFormScreen(
                     value = dueDate,
                     onValueChange = { newValue ->
                         dueDate = newValue
+                        if (validationField == ValidationField.DATE) validationField = null
                     },
                     label = {
                         Text(text = "Fecha de vencimiento")
                     },
                     placeholder = {
-                        Text(text = "Ej: 2026-05-21")
+                        Text(text = "Ej: 2026-08-05")
                     },
                     supportingText = {
-                        Text(text = "Formato: yyyy-MM-dd")
+                        Text(
+                            text = if (validationField == ValidationField.DATE) {
+                                validationMessage.orEmpty()
+                            } else {
+                                "Formato: yyyy-MM-dd"
+                            }
+                        )
                     },
+                    isError = validationField == ValidationField.DATE,
                     singleLine = true
                 )
 
@@ -187,10 +210,12 @@ fun DocumentFormScreen(
 
                 if (!validationResult.isValid || selectedDocumentType == null) {
                     validationMessage = validationResult.message
+                    validationField = validationResult.field
                     return@Button
                 }
 
                 validationMessage = null
+                validationField = null
 
                 onSaveDocument(
                     VehicleDocument(
@@ -202,6 +227,7 @@ fun DocumentFormScreen(
                     )
                 ) { message ->
                     validationMessage = message
+                    validationField = null
                 }
             }
         ) {

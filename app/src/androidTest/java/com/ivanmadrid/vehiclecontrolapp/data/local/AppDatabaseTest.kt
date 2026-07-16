@@ -112,6 +112,162 @@ class AppDatabaseTest {
         assertTrue(database.vehicleDocumentDao().getDocumentsByVehicle(vehicleId).first().isEmpty())
     }
 
+    @Test
+    fun expenseCrud_ordersNewestFirstAndPersistsUpdates() = runBlocking {
+        val vehicleId = database.vehicleDao().insertVehicle(
+            vehicleEntity(plate = "EXP001")
+        ).toInt()
+        val olderExpenseId = database.expenseDao().insertExpense(
+            expenseEntity(vehicleId = vehicleId, date = "2026-07-10", amount = 50_000)
+        ).toInt()
+        val newerExpenseId = database.expenseDao().insertExpense(
+            expenseEntity(vehicleId = vehicleId, date = "2026-07-15", amount = 70_000)
+        ).toInt()
+
+        val orderedExpenses = database.expenseDao().getExpensesByVehicle(vehicleId).first()
+        assertEquals(listOf(newerExpenseId, olderExpenseId), orderedExpenses.map { it.id })
+
+        database.expenseDao().updateExpense(
+            expenseEntity(
+                id = newerExpenseId,
+                vehicleId = vehicleId,
+                date = "2026-07-15",
+                amount = 75_000
+            )
+        )
+        assertEquals(
+            75_000L,
+            database.expenseDao().getExpensesByVehicle(vehicleId).first().first().amount
+        )
+
+        database.expenseDao().deleteExpense(orderedExpenses.last())
+        assertEquals(1, database.expenseDao().getExpensesByVehicle(vehicleId).first().size)
+    }
+
+    @Test
+    fun noveltyCrud_preservesTaxiIncomeAdjustment() = runBlocking {
+        val vehicleId = database.vehicleDao().insertVehicle(
+            vehicleEntity(plate = "NOV001")
+        ).toInt()
+        val noveltyId = database.noveltyDao().insertNovelty(
+            noveltyEntity(vehicleId = vehicleId)
+        ).toInt()
+
+        val storedNovelty = database.noveltyDao().getNoveltiesByVehicle(vehicleId).first().single()
+        assertTrue(storedNovelty.affectsIncome)
+        assertEquals(IncomeAdjustmentType.CUSTOM_AMOUNT, storedNovelty.incomeAdjustmentType)
+        assertEquals(125_000L, storedNovelty.adjustedIncomeAmount)
+
+        database.noveltyDao().updateNovelty(
+            noveltyEntity(id = noveltyId, vehicleId = vehicleId).copy(
+                priority = NoveltyPriority.HIGH
+            )
+        )
+        assertEquals(
+            NoveltyPriority.HIGH,
+            database.noveltyDao().getNoveltiesByVehicle(vehicleId).first().single().priority
+        )
+
+        database.noveltyDao().deleteNovelty(
+            database.noveltyDao().getNoveltiesByVehicle(vehicleId).first().single()
+        )
+        assertTrue(database.noveltyDao().getNoveltiesByVehicle(vehicleId).first().isEmpty())
+    }
+
+    @Test
+    fun documentCrud_ordersByDueDateAndPersistsNotes() = runBlocking {
+        val vehicleId = database.vehicleDao().insertVehicle(
+            vehicleEntity(plate = "DOC001")
+        ).toInt()
+        val laterDocumentId = database.vehicleDocumentDao().insertDocument(
+            documentEntity(
+                vehicleId = vehicleId,
+                type = VehicleDocumentType.SOAT,
+                dueDate = "2026-08-20"
+            )
+        ).toInt()
+        val earlierDocumentId = database.vehicleDocumentDao().insertDocument(
+            documentEntity(
+                vehicleId = vehicleId,
+                type = VehicleDocumentType.TAXES,
+                dueDate = "2026-07-25"
+            )
+        ).toInt()
+
+        val orderedDocuments = database.vehicleDocumentDao()
+            .getDocumentsByVehicle(vehicleId)
+            .first()
+        assertEquals(
+            listOf(earlierDocumentId, laterDocumentId),
+            orderedDocuments.map { it.id }
+        )
+
+        database.vehicleDocumentDao().updateDocument(
+            documentEntity(
+                id = earlierDocumentId,
+                vehicleId = vehicleId,
+                type = VehicleDocumentType.TAXES,
+                dueDate = "2026-07-25",
+                notes = "Pago programado"
+            )
+        )
+        assertEquals(
+            "Pago programado",
+            database.vehicleDocumentDao().getDocumentsByVehicle(vehicleId).first().first().notes
+        )
+
+        database.vehicleDocumentDao().deleteDocument(
+            database.vehicleDocumentDao().getDocumentsByVehicle(vehicleId).first().last()
+        )
+        assertEquals(
+            1,
+            database.vehicleDocumentDao().getDocumentsByVehicle(vehicleId).first().size
+        )
+    }
+
+    private fun expenseEntity(
+        id: Int = 0,
+        vehicleId: Int,
+        date: String,
+        amount: Long
+    ) = ExpenseEntity(
+        id = id,
+        vehicleId = vehicleId,
+        date = date,
+        category = ExpenseCategory.FUEL,
+        amount = amount,
+        description = "Combustible"
+    )
+
+    private fun noveltyEntity(
+        id: Int = 0,
+        vehicleId: Int
+    ) = NoveltyEntity(
+        id = id,
+        vehicleId = vehicleId,
+        date = "2026-07-15",
+        type = "Ingreso diferente",
+        description = "Operación parcial",
+        priority = NoveltyPriority.MEDIUM,
+        affectsIncome = true,
+        incomeAdjustmentType = IncomeAdjustmentType.CUSTOM_AMOUNT,
+        adjustedIncomeAmount = 125_000
+    )
+
+    private fun documentEntity(
+        id: Int = 0,
+        vehicleId: Int,
+        type: VehicleDocumentType,
+        dueDate: String,
+        notes: String? = null
+    ) = VehicleDocumentEntity(
+        id = id,
+        vehicleId = vehicleId,
+        type = type,
+        dueDate = dueDate,
+        notes = notes
+    )
+
     private fun vehicleEntity(plate: String) = VehicleEntity(
         plate = plate,
         brand = "Kia",

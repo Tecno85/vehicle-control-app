@@ -3,6 +3,7 @@ package com.ivanmadrid.vehiclecontrolapp.data
 import android.content.Context
 import androidx.room.Room
 import com.ivanmadrid.vehiclecontrolapp.data.local.AppDatabase
+import com.ivanmadrid.vehiclecontrolapp.data.local.AppDatabaseMigrations
 import com.ivanmadrid.vehiclecontrolapp.data.local.DatabaseSeeder
 import com.ivanmadrid.vehiclecontrolapp.data.local.repository.ExpenseLocalRepository
 import com.ivanmadrid.vehiclecontrolapp.data.local.repository.NoveltyLocalRepository
@@ -21,7 +22,9 @@ class AppContainer(
         context = context,
         klass = AppDatabase::class.java,
         name = "vehicle_control_database"
-    ).build()
+    )
+        .addMigrations(*AppDatabaseMigrations.all)
+        .build()
 
     val vehicleRepository = VehicleLocalRepository(
         vehicleDao = database.vehicleDao()

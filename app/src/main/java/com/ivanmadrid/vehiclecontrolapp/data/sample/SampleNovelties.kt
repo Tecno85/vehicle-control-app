@@ -8,7 +8,7 @@ val sampleNovelties = listOf(
     Novelty(
         id = 1,
         vehicleId = 1,
-        date = "2026-05-06",
+        date = "2026-07-15",
         type = "Trabajo parcial",
         description = "El taxi trabajó solo medio día por mantenimiento menor.",
         priority = NoveltyPriority.MEDIUM,
@@ -19,7 +19,7 @@ val sampleNovelties = listOf(
     Novelty(
         id = 2,
         vehicleId = 2,
-        date = "2026-05-05",
+        date = "2026-07-14",
         type = "Conductor enfermo",
         description = "El conductor no pudo laborar durante el día.",
         priority = NoveltyPriority.HIGH,
@@ -30,7 +30,7 @@ val sampleNovelties = listOf(
     Novelty(
         id = 3,
         vehicleId = 3,
-        date = "2026-05-04",
+        date = "2026-07-13",
         type = "Observación general",
         description = "Se recomienda revisar presión de las llantas.",
         priority = NoveltyPriority.LOW,
@@ -41,7 +41,7 @@ val sampleNovelties = listOf(
     Novelty(
         id = 4,
         vehicleId = 4,
-        date = "2026-05-03",
+        date = "2026-07-12",
         type = "Documento pendiente",
         description = "Verificar fecha de pago de impuestos.",
         priority = NoveltyPriority.MEDIUM,

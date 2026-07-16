@@ -8,6 +8,8 @@ Control Vehicular es una aplicación móvil desarrollada para administrar una pe
 
 La app permite registrar y consultar información importante de cada vehículo, como gastos, novedades operativas, documentos, fechas de vencimiento e historial. En el caso de los taxis, también permite manejar un ingreso diario esperado y calcular un resumen económico según gastos y novedades del día.
 
+<img src="./docs/images/control-vehicular-v1.png" width="900" alt="Presentación de Control Vehicular 1.0">
+
 ## Capturas
 
 | Lista de vehículos | Detalle del vehículo | Historial |
@@ -41,7 +43,7 @@ La app permite registrar y consultar información importante de cada vehículo, 
 
 ## Estado del proyecto
 
-El proyecto se encuentra en una versión funcional inicial.
+El proyecto se encuentra en la versión candidata `1.0.0-rc1`, preparada para validación en un dispositivo Android real.
 
 Actualmente la app permite trabajar con datos locales usando Room, incluyendo creación, edición y eliminación de vehículos, gastos, novedades y documentos. También cuenta con una interfaz visual personalizada, iconos vectoriales, modo claro/oscuro, reportes e historial por vehículo.
 
@@ -95,6 +97,21 @@ Descripción breve:
 
 El proyecto usa Gradle Wrapper, por lo que no es necesario instalar Gradle manualmente.
 
+### Instalar en un celular Android
+
+El dispositivo debe usar Android 7.0 o superior.
+
+1. Activar las opciones de desarrollador y la depuración USB en el celular.
+2. Conectar el dispositivo y aceptar la autorización de depuración.
+3. Comprobar la conexión con `adb devices`.
+4. Instalar la compilación candidata:
+
+```bash
+./gradlew installDebug
+```
+
+También se puede generar el APK con `./gradlew assembleDebug` y copiar `app/build/outputs/apk/debug/app-debug.apk` al dispositivo. Android solicitará autorización para instalar aplicaciones desde esa fuente.
+
 ## Pruebas
 
 Para ejecutar las pruebas unitarias:
@@ -127,12 +144,14 @@ El proyecto incluye documentación en la carpeta `docs/`, donde se registran:
 - Registro de desarrollo.
 - Diseño UI.
 - Resumen de progreso.
+- Estrategia de migraciones Room.
+- Lista de validación de la entrega MVP 1.0.
 
 ## Próximos pasos posibles
 
 - Mejorar reportes con selector de periodo.
 - Agregar historial con filtros.
-- Pulir mensajes de validación.
+- Validar la versión candidata en un celular real.
 - Evaluar notificaciones internas o del sistema.
 - Evaluar sincronización en la nube más adelante.
 
