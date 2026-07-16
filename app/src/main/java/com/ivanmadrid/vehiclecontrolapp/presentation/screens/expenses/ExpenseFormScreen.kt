@@ -37,6 +37,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -102,15 +104,15 @@ fun ExpenseFormScreen(
             } else {
                 "Editar gasto"
             },
-            style = MaterialTheme.typography.headlineLarge,
+            style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold
         )
 
-        Spacer(modifier = Modifier.height(14.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         ExpenseVehicleHeader(vehicle = vehicle)
 
-        Spacer(modifier = Modifier.height(18.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -121,7 +123,7 @@ fun ExpenseFormScreen(
             )
         ) {
             Column(
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(14.dp)
             ) {
                 Text(
                     text = "Datos del gasto",
@@ -129,7 +131,7 @@ fun ExpenseFormScreen(
                     fontWeight = FontWeight.Bold
                 )
 
-                Spacer(modifier = Modifier.height(14.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
@@ -166,33 +168,6 @@ fun ExpenseFormScreen(
                     isError = validationField == ValidationField.DATE,
                     singleLine = true
                 )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Text(
-                    text = "Categoría",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                ExpenseCategoryOptions(
-                    selectedCategory = category,
-                    onCategoryClick = { selectedCategory ->
-                        category = selectedCategory
-                        if (validationField == ValidationField.CATEGORY) validationField = null
-                    }
-                )
-
-                if (validationField == ValidationField.CATEGORY) {
-                    Text(
-                        text = validationMessage.orEmpty(),
-                        modifier = Modifier.padding(top = 6.dp),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.error
-                    )
-                }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -239,6 +214,33 @@ fun ExpenseFormScreen(
                     },
                     minLines = 2
                 )
+
+                Spacer(modifier = Modifier.height(14.dp))
+
+                Text(
+                    text = "Categoría",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                ExpenseCategoryOptions(
+                    selectedCategory = category,
+                    onCategoryClick = { selectedCategory ->
+                        category = selectedCategory
+                        if (validationField == ValidationField.CATEGORY) validationField = null
+                    }
+                )
+
+                if (validationField == ValidationField.CATEGORY) {
+                    Text(
+                        text = validationMessage.orEmpty(),
+                        modifier = Modifier.padding(top = 6.dp),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
             }
         }
 
@@ -363,7 +365,6 @@ fun ExpenseCategoryButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    val colors = MaterialTheme.vehicleColors
     val accentColor = getExpenseCategoryColor(category)
     val selectedBackgroundColor = getExpenseCategoryBackgroundColor(category)
     val containerColor = if (selected) {
@@ -379,10 +380,16 @@ fun ExpenseCategoryButton(
 
     Card(
         modifier = modifier
-            .heightIn(min = 74.dp)
+            .heightIn(min = 56.dp)
+            .semantics {
+                this.selected = selected
+            }
             .clickable { onClick() },
-        shape = RoundedCornerShape(14.dp),
-        border = BorderStroke(width = 1.dp, color = borderColor),
+        shape = RoundedCornerShape(12.dp),
+        border = BorderStroke(
+            width = if (selected) 2.dp else 1.dp,
+            color = borderColor
+        ),
         colors = CardDefaults.cardColors(
             containerColor = containerColor
         ),
@@ -392,11 +399,7 @@ fun ExpenseCategoryButton(
             text = getExpenseCategoryLabel(category),
             iconRes = iconRes,
             tint = accentColor,
-            backgroundColor = if (selected) {
-                MaterialTheme.colorScheme.surface
-            } else {
-                colors.avatarSurface
-            }
+            selected = selected
         )
     }
 }
@@ -406,40 +409,32 @@ fun CategoryButtonContent(
     text: String,
     iconRes: Int,
     tint: Color,
-    backgroundColor: Color
+    selected: Boolean
 ) {
-    Column(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 10.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .heightIn(min = 56.dp)
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        androidx.compose.foundation.layout.Box(
-            modifier = Modifier
-                .size(32.dp)
-                .background(
-                    color = backgroundColor,
-                    shape = androidx.compose.foundation.shape.CircleShape
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                painter = painterResource(id = iconRes),
-                contentDescription = null,
-                modifier = Modifier.size(18.dp),
-                colorFilter = ColorFilter.tint(tint)
-            )
-        }
+        Image(
+            painter = painterResource(id = iconRes),
+            contentDescription = null,
+            modifier = Modifier.size(18.dp),
+            colorFilter = ColorFilter.tint(tint)
+        )
 
-        Spacer(modifier = Modifier.height(6.dp))
+        Spacer(modifier = Modifier.width(8.dp))
 
         Text(
             text = text,
-            style = MaterialTheme.typography.labelSmall,
-            color = tint,
-            fontWeight = FontWeight.SemiBold,
+            style = MaterialTheme.typography.labelMedium,
+            color = if (selected) tint else MaterialTheme.colorScheme.onSurfaceVariant,
+            fontWeight = if (selected) FontWeight.Bold else FontWeight.SemiBold,
             textAlign = TextAlign.Center,
-            maxLines = 2
+            maxLines = 1
         )
     }
 }
@@ -491,36 +486,39 @@ fun getExpenseCategoryBackgroundColor(category: ExpenseCategory): Color {
 fun ExpenseVehicleHeader(vehicle: Vehicle) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(14.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         )
     ) {
         Row(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            VehicleAvatar(vehicle = vehicle)
+            VehicleAvatar(
+                vehicle = vehicle,
+                size = 56
+            )
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(12.dp))
 
             Column(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
                     text = vehicle.plate,
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold
                 )
 
                 Text(
                     text = "${vehicle.brand} ${vehicle.model}",
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(6.dp))
 
                 VehicleTypeChip(type = vehicle.type)
             }

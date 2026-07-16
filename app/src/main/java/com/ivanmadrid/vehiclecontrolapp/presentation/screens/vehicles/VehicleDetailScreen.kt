@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -32,7 +33,6 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
 import com.ivanmadrid.vehiclecontrolapp.presentation.components.AppBackButton
 import com.ivanmadrid.vehiclecontrolapp.presentation.components.DeleteConfirmButton
-import com.ivanmadrid.vehiclecontrolapp.presentation.components.DestructiveOutlinedButton
 import com.ivanmadrid.vehiclecontrolapp.utils.sortDocumentsByDueDate
 
 @Composable
@@ -96,16 +96,12 @@ fun VehicleDetailScreen(
 
         VehicleDetailHeader(vehicle = vehicle)
 
-        Spacer(modifier = Modifier.height(18.dp))
-
-        VehicleGeneralInfoCard(vehicle = vehicle)
+        Spacer(modifier = Modifier.height(12.dp))
 
         if (vehicle.type == VehicleType.TAXI) {
-            Spacer(modifier = Modifier.height(10.dp))
             TaxiInfoCard(vehicle = vehicle)
+            Spacer(modifier = Modifier.height(10.dp))
         }
-
-        Spacer(modifier = Modifier.height(10.dp))
 
         VehicleDocumentsCard(
             documents = vehicleDocuments,
@@ -161,13 +157,20 @@ fun VehicleDetailScreen(
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        DestructiveOutlinedButton(
-            modifier = Modifier.fillMaxWidth(),
-            text = "Eliminar vehículo",
+        TextButton(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            colors = ButtonDefaults.textButtonColors(
+                contentColor = MaterialTheme.colorScheme.error
+            ),
             onClick = {
                 showDeleteDialog = true
             }
-        )
+        ) {
+            Text(
+                text = "Eliminar vehículo",
+                fontWeight = FontWeight.SemiBold
+            )
+        }
 
         Spacer(modifier = Modifier.height(80.dp))
     }

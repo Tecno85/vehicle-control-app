@@ -53,30 +53,6 @@ import com.ivanmadrid.vehiclecontrolapp.utils.getTaxiBalanceReferenceDates
 import com.ivanmadrid.vehiclecontrolapp.utils.getDaysUntilLabel
 
 @Composable
-fun VehicleGeneralInfoCard(vehicle: Vehicle) {
-    DetailSectionCard(
-        title = "Información general"
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                DetailInfoTile(label = "Tipo", value = getVehicleTypeLabel(vehicle.type))
-                DetailInfoTile(label = "Marca", value = vehicle.brand)
-                DetailInfoTile(label = "Placa", value = vehicle.plate)
-            }
-
-            Column(modifier = Modifier.weight(1f)) {
-                DetailInfoTile(label = "Estado", value = vehicle.status)
-                DetailInfoTile(label = "Modelo", value = vehicle.model)
-                DetailInfoTile(label = "ID", value = vehicle.id.toString())
-            }
-        }
-    }
-}
-
-@Composable
 fun TaxiInfoCard(vehicle: Vehicle) {
     val colors = MaterialTheme.vehicleColors
     DetailSectionCard(
@@ -550,34 +526,6 @@ fun DetailSectionCard(
             content()
         }
     }
-}
-
-@Composable
-fun DetailInfoTile(
-    label: String,
-    value: String
-) {
-    val colors = MaterialTheme.vehicleColors
-    Column {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-
-        Text(
-            text = value,
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.SemiBold
-        )
-    }
-
-    HorizontalDivider(
-        modifier = Modifier.padding(top = 6.dp),
-        color = colors.divider
-    )
-
-    Spacer(modifier = Modifier.height(6.dp))
 }
 
 @Composable

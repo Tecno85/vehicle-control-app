@@ -5,15 +5,9 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.FloatingActionButtonDefaults
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -22,11 +16,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Expense
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Novelty
@@ -168,36 +157,7 @@ class MainActivity : ComponentActivity() {
                 }
 
                 Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    floatingActionButton = {
-                        if (currentScreen == AppScreen.VEHICLE_LIST) {
-                            FloatingActionButton(
-                                modifier = Modifier
-                                    .size(58.dp)
-                                    .semantics {
-                                        contentDescription = "Agregar vehículo"
-                                    },
-                                shape = CircleShape,
-                                containerColor = MaterialTheme.colorScheme.primary,
-                                contentColor = MaterialTheme.colorScheme.onPrimary,
-                                elevation = FloatingActionButtonDefaults.elevation(
-                                    defaultElevation = 6.dp,
-                                    pressedElevation = 8.dp
-                                ),
-                                onClick = {
-                                    clearEditingState()
-                                    currentScreen = AppScreen.VEHICLE_FORM
-                                }
-                            ) {
-                                Text(
-                                    text = "+",
-                                    modifier = Modifier.clearAndSetSemantics { },
-                                    style = MaterialTheme.typography.headlineMedium,
-                                    fontWeight = FontWeight.Normal
-                                )
-                            }
-                        }
-                    }
+                    modifier = Modifier.fillMaxSize()
                 ) { innerPadding ->
                     when (currentScreen) {
                         AppScreen.VEHICLE_LIST -> {
@@ -217,6 +177,10 @@ class MainActivity : ComponentActivity() {
                                 onReportsClick = {
                                     clearEditingState()
                                     currentScreen = AppScreen.REPORTS
+                                },
+                                onAddVehicleClick = {
+                                    clearEditingState()
+                                    currentScreen = AppScreen.VEHICLE_FORM
                                 },
                                 onVehicleClick = { vehicle ->
                                     clearEditingState()
