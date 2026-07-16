@@ -47,15 +47,10 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.Novelty
 import com.ivanmadrid.vehiclecontrolapp.domain.model.NoveltyPriority
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
-import com.ivanmadrid.vehiclecontrolapp.presentation.components.getExpenseCategoryIcon
-import com.ivanmadrid.vehiclecontrolapp.presentation.components.getVehicleDocumentIcon
 import com.ivanmadrid.vehiclecontrolapp.ui.theme.vehicleColors
-import com.ivanmadrid.vehiclecontrolapp.utils.DocumentUrgency
 import com.ivanmadrid.vehiclecontrolapp.utils.calculateTaxiBalanceSummary
-import com.ivanmadrid.vehiclecontrolapp.utils.getDaysUntilCount
 import com.ivanmadrid.vehiclecontrolapp.utils.getTaxiBalanceReferenceDates
 import com.ivanmadrid.vehiclecontrolapp.utils.getDaysUntilLabel
-import com.ivanmadrid.vehiclecontrolapp.utils.getDocumentUrgency
 
 @Composable
 fun VehicleGeneralInfoCard(vehicle: Vehicle) {
@@ -281,7 +276,8 @@ fun VehicleDocumentsCard(
                 markerText = "D",
                 markerIconRes = R.drawable.ic_detail_document,
                 markerColor = colors.blue,
-                markerBackground = colors.softBlue
+                markerBackground = colors.softBlue,
+                showMarker = false
             )
         } else {
             documents.forEachIndexed { index, document ->
@@ -309,31 +305,11 @@ fun VehicleDocumentItem(
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
-    val colors = MaterialTheme.vehicleColors
-    val urgency = getDocumentUrgency(getDaysUntilCount(document.dueDate))
-    val markerColor = when (urgency) {
-        DocumentUrgency.OVERDUE,
-        DocumentUrgency.URGENT -> colors.red
-        DocumentUrgency.WARNING -> colors.orange
-        DocumentUrgency.NORMAL,
-        DocumentUrgency.UNKNOWN -> colors.green
-    }
-    val markerBackground = when (urgency) {
-        DocumentUrgency.OVERDUE,
-        DocumentUrgency.URGENT -> colors.softRed
-        DocumentUrgency.WARNING -> colors.softYellow
-        DocumentUrgency.NORMAL,
-        DocumentUrgency.UNKNOWN -> colors.softGreen
-    }
-
     DetailListItem(
-        markerText = document.type.shortLabel(),
-        markerIconRes = getVehicleDocumentIcon(document.type),
-        markerColor = markerColor,
-        markerBackground = markerBackground,
         title = getDocumentTypeLabel(document.type),
         subtitle = getDaysUntilLabel(document.dueDate),
         extra = document.notes,
+        showMarker = false,
         actionText = "Editar",
         onActionClick = onEditClick,
         secondaryActionText = "Eliminar",
@@ -358,7 +334,8 @@ fun VehicleExpensesCard(
                 markerText = "$",
                 markerIconRes = R.drawable.ic_detail_expense,
                 markerColor = colors.blue,
-                markerBackground = colors.softBlue
+                markerBackground = colors.softBlue,
+                showMarker = false
             )
         } else {
             expenses.forEachIndexed { index, expense ->
@@ -386,15 +363,11 @@ fun VehicleExpenseItem(
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
-    val colors = MaterialTheme.vehicleColors
     DetailListItem(
-        markerText = "$",
-        markerIconRes = getExpenseCategoryIcon(expense.category),
-        markerColor = colors.blue,
-        markerBackground = colors.softBlue,
         title = expense.description,
         subtitle = getExpenseCategoryLabel(expense.category),
         extra = expense.date,
+        showMarker = false,
         trailingText = formatCurrency(expense.amount),
         actionText = "Editar",
         onActionClick = onEditClick,
@@ -420,7 +393,8 @@ fun VehicleNoveltiesCard(
                 markerText = "N",
                 markerIconRes = R.drawable.ic_detail_novelty,
                 markerColor = colors.purple,
-                markerBackground = colors.softPurple
+                markerBackground = colors.softPurple,
+                showMarker = false
             )
         } else {
             novelties.forEachIndexed { index, novelty ->
@@ -448,27 +422,11 @@ fun VehicleNoveltyItem(
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
-    val colors = MaterialTheme.vehicleColors
-    val markerColor = when (novelty.priority) {
-        NoveltyPriority.LOW -> colors.green
-        NoveltyPriority.MEDIUM -> colors.orange
-        NoveltyPriority.HIGH -> colors.red
-    }
-
-    val markerBackground = when (novelty.priority) {
-        NoveltyPriority.LOW -> colors.softGreen
-        NoveltyPriority.MEDIUM -> colors.softYellow
-        NoveltyPriority.HIGH -> colors.softRed
-    }
-
     DetailListItem(
-        markerText = getNoveltyPriorityLabel(novelty.priority).take(1),
-        markerIconRes = R.drawable.ic_detail_novelty,
-        markerColor = markerColor,
-        markerBackground = markerBackground,
         title = novelty.type,
         subtitle = novelty.description,
         extra = getNoveltyExtraLabel(novelty),
+        showMarker = false,
         actionText = "Editar",
         onActionClick = onEditClick,
         secondaryActionText = "Eliminar",
@@ -515,19 +473,13 @@ fun VehicleQuickActionsCard(
             ) {
                 QuickActionTile(
                     label = "Registrar gasto",
-                    markerText = "$",
-                    markerIconRes = R.drawable.ic_detail_expense,
-                    markerColor = colors.blue,
-                    backgroundColor = colors.softBlue,
+                    actionColor = colors.blue,
                     modifier = Modifier.weight(1f),
                     onClick = onRegisterExpenseClick
                 )
                 QuickActionTile(
                     label = "Registrar novedad",
-                    markerText = "!",
-                    markerIconRes = R.drawable.ic_detail_novelty,
-                    markerColor = colors.purple,
-                    backgroundColor = colors.softPurple,
+                    actionColor = colors.purple,
                     modifier = Modifier.weight(1f),
                     onClick = onRegisterNoveltyClick
                 )
@@ -539,19 +491,13 @@ fun VehicleQuickActionsCard(
             ) {
                 QuickActionTile(
                     label = "Registrar documento",
-                    markerText = "D",
-                    markerIconRes = R.drawable.ic_detail_document,
-                    markerColor = colors.green,
-                    backgroundColor = colors.softGreen,
+                    actionColor = colors.green,
                     modifier = Modifier.weight(1f),
                     onClick = onRegisterDocumentClick
                 )
                 QuickActionTile(
                     label = "Ver historial",
-                    markerText = "H",
-                    markerIconRes = R.drawable.ic_detail_history,
-                    markerColor = colors.orange,
-                    backgroundColor = colors.softYellow,
+                    actionColor = colors.orange,
                     modifier = Modifier.weight(1f),
                     onClick = onHistoryClick
                 )
@@ -699,13 +645,14 @@ fun BalanceMetricItem(
 
 @Composable
 fun DetailListItem(
-    markerText: String,
-    markerIconRes: Int? = null,
-    markerColor: Color,
-    markerBackground: Color,
     title: String,
     subtitle: String,
     extra: String?,
+    markerText: String = "",
+    markerIconRes: Int? = null,
+    markerColor: Color = Color.Unspecified,
+    markerBackground: Color = Color.Unspecified,
+    showMarker: Boolean = true,
     trailingText: String? = null,
     actionText: String? = null,
     onActionClick: (() -> Unit)? = null,
@@ -719,15 +666,17 @@ fun DetailListItem(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.Top
     ) {
-        DetailMarker(
-            text = markerText,
-            iconRes = markerIconRes,
-            color = markerColor,
-            backgroundColor = markerBackground,
-            size = 40
-        )
+        if (showMarker) {
+            DetailMarker(
+                text = markerText,
+                iconRes = markerIconRes,
+                color = markerColor,
+                backgroundColor = markerBackground,
+                size = 40
+            )
 
-        Spacer(modifier = Modifier.width(10.dp))
+            Spacer(modifier = Modifier.width(10.dp))
+        }
 
         Column(
             modifier = Modifier.weight(1f)
@@ -832,44 +781,32 @@ fun InlineDeleteButton(
 @Composable
 fun QuickActionTile(
     label: String,
-    markerText: String,
-    markerIconRes: Int? = null,
-    markerColor: Color,
-    backgroundColor: Color,
+    actionColor: Color,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    val colors = MaterialTheme.vehicleColors
     Card(
         modifier = modifier
-            .heightIn(min = 92.dp)
+            .heightIn(min = 64.dp)
             .clickable { onClick() },
         shape = RoundedCornerShape(14.dp),
         colors = CardDefaults.cardColors(
-            containerColor = backgroundColor
+            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.55f)
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 12.dp),
+                .heightIn(min = 64.dp)
+                .padding(horizontal = 10.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            DetailMarker(
-                text = markerText,
-                iconRes = markerIconRes,
-                color = markerColor,
-                backgroundColor = colors.avatarSurface,
-                size = 34
-            )
-
-            Spacer(modifier = Modifier.height(6.dp))
-
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelMedium,
-                color = markerColor,
+                color = actionColor,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 maxLines = 2
@@ -915,10 +852,11 @@ fun DetailMarker(
 fun EmptySectionMessage(
     title: String,
     description: String,
-    markerText: String,
-    markerIconRes: Int,
-    markerColor: Color,
-    markerBackground: Color
+    markerText: String = "",
+    markerIconRes: Int? = null,
+    markerColor: Color = Color.Unspecified,
+    markerBackground: Color = MaterialTheme.colorScheme.surfaceVariant,
+    showMarker: Boolean = true
 ) {
     Row(
         modifier = Modifier
@@ -928,15 +866,17 @@ fun EmptySectionMessage(
             .padding(14.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        DetailMarker(
-            text = markerText,
-            iconRes = markerIconRes,
-            color = markerColor,
-            backgroundColor = MaterialTheme.colorScheme.surface,
-            size = 38
-        )
+        if (showMarker) {
+            DetailMarker(
+                text = markerText,
+                iconRes = markerIconRes,
+                color = markerColor,
+                backgroundColor = MaterialTheme.colorScheme.surface,
+                size = 38
+            )
 
-        Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(12.dp))
+        }
 
         Column(
             modifier = Modifier.weight(1f)
