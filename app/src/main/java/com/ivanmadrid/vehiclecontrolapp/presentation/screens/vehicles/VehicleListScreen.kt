@@ -431,6 +431,7 @@ fun VehicleCard(
                         InfoItem(
                             label = "Conductor",
                             value = vehicle.currentDriver ?: "Sin asignar",
+                            maxLines = 2,
                             modifier = Modifier.weight(1f)
                         )
 
@@ -453,10 +454,12 @@ fun VehicleAvatar(
     vehicle: Vehicle,
     size: Int = 84
 ) {
+    val vehicleImageRes = getVehicleImageResource(vehicle)
     VehicleAvatarContent(
         type = vehicle.type,
         size = size,
-        imageRes = getVehicleImageResource(vehicle),
+        imageRes = vehicleImageRes,
+        isSpecificImage = vehicleImageRes != null,
         contentDescription = "${vehicle.brand} ${vehicle.model}"
     )
 }
@@ -479,6 +482,7 @@ fun VehicleAvatar(
         type = type,
         size = size,
         imageRes = genericImageRes,
+        isSpecificImage = false,
         contentDescription = contentDescription
     )
 }
@@ -488,6 +492,7 @@ private fun VehicleAvatarContent(
     type: VehicleType,
     size: Int,
     imageRes: Int?,
+    isSpecificImage: Boolean,
     contentDescription: String
 ) {
     val colors = MaterialTheme.vehicleColors
@@ -496,17 +501,34 @@ private fun VehicleAvatarContent(
         VehicleType.PRIVATE -> colors.softBlue
     }
 
-    Box(
-        modifier = Modifier
+    val containerModifier = if (isSpecificImage) {
+        Modifier
+            .width((size * 1.35f).dp)
+            .height(size.dp)
+            .clip(RoundedCornerShape(16.dp))
+    } else {
+        Modifier
             .size(size.dp)
             .clip(CircleShape)
+    }
+
+    Box(
+        modifier = containerModifier
             .background(backgroundColor),
         contentAlignment = Alignment.Center
     ) {
+        val imageModifier = if (isSpecificImage) {
+            Modifier
+                .fillMaxSize()
+                .padding(3.dp)
+        } else {
+            Modifier.size((size * 0.92f).dp)
+        }
+
         Image(
             painter = painterResource(id = imageRes ?: R.drawable.ic_vehicle_car),
             contentDescription = contentDescription,
-            modifier = Modifier.size((size * 0.92f).dp),
+            modifier = imageModifier,
             contentScale = ContentScale.Fit
         )
     }
@@ -579,6 +601,7 @@ fun VehicleStatusChip(status: String) {
 fun InfoItem(
     label: String,
     value: String,
+    maxLines: Int = 1,
     modifier: Modifier = Modifier
 ) {
     val colors = MaterialTheme.vehicleColors
@@ -596,7 +619,7 @@ fun InfoItem(
             text = value,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            maxLines = 1,
+            maxLines = maxLines,
             overflow = TextOverflow.Ellipsis
         )
     }
