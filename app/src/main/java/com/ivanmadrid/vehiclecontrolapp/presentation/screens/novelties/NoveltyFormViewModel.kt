@@ -12,16 +12,21 @@ class NoveltyFormViewModel(
 ) : ViewModel() {
     fun saveNovelty(
         novelty: Novelty,
+        onSaveError: (String) -> Unit,
         onSaved: () -> Unit
     ) {
         viewModelScope.launch {
-            if (novelty.id == 0) {
-                noveltyRepository.insertNovelty(novelty)
-            } else {
-                noveltyRepository.updateNovelty(novelty)
-            }
+            try {
+                if (novelty.id == 0) {
+                    noveltyRepository.insertNovelty(novelty)
+                } else {
+                    noveltyRepository.updateNovelty(novelty)
+                }
 
-            onSaved()
+                onSaved()
+            } catch (_: Exception) {
+                onSaveError("No fue posible guardar la novedad. Intenta nuevamente.")
+            }
         }
     }
 

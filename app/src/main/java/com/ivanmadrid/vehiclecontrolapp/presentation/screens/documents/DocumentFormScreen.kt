@@ -55,7 +55,7 @@ fun DocumentFormScreen(
     vehicle: Vehicle,
     modifier: Modifier = Modifier,
     documentToEdit: VehicleDocument? = null,
-    onSaveDocument: (VehicleDocument) -> Unit,
+    onSaveDocument: (VehicleDocument, (String) -> Unit) -> Unit,
     onBackClick: () -> Unit
 ) {
     var documentType by remember(documentToEdit?.id) {
@@ -200,7 +200,9 @@ fun DocumentFormScreen(
                         dueDate = dueDate.trim(),
                         notes = notes.trim().ifBlank { null }
                     )
-                )
+                ) { message ->
+                    validationMessage = message
+                }
             }
         ) {
             Text(

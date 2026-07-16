@@ -60,7 +60,7 @@ fun NoveltyFormScreen(
     vehicle: Vehicle,
     modifier: Modifier = Modifier,
     noveltyToEdit: Novelty? = null,
-    onSaveNovelty: (Novelty) -> Unit,
+    onSaveNovelty: (Novelty, (String) -> Unit) -> Unit,
     onBackClick: () -> Unit
 ) {
     var date by remember(noveltyToEdit?.id) {
@@ -344,7 +344,9 @@ fun NoveltyFormScreen(
                             null
                         }
                     )
-                )
+                ) { message ->
+                    validationMessage = message
+                }
             }
         ) {
             Text(

@@ -16,27 +16,31 @@ class VehicleFormViewModel(
         onSaved: (Vehicle) -> Unit
     ) {
         viewModelScope.launch {
-            val duplicatedPlate = if (vehicle.id == 0) {
-                vehicleRepository.plateExists(vehicle.plate)
-            } else {
-                vehicleRepository.plateExistsForOtherVehicle(
-                    plate = vehicle.plate,
-                    vehicleId = vehicle.id
-                )
-            }
+            try {
+                val duplicatedPlate = if (vehicle.id == 0) {
+                    vehicleRepository.plateExists(vehicle.plate)
+                } else {
+                    vehicleRepository.plateExistsForOtherVehicle(
+                        plate = vehicle.plate,
+                        vehicleId = vehicle.id
+                    )
+                }
 
-            if (duplicatedPlate) {
-                onValidationError("Ya existe un vehículo registrado con esa placa.")
-                return@launch
-            }
+                if (duplicatedPlate) {
+                    onValidationError("Ya existe un vehículo registrado con esa placa.")
+                    return@launch
+                }
 
-            if (vehicle.id == 0) {
-                vehicleRepository.insertVehicle(vehicle)
-            } else {
-                vehicleRepository.updateVehicle(vehicle)
-            }
+                if (vehicle.id == 0) {
+                    vehicleRepository.insertVehicle(vehicle)
+                } else {
+                    vehicleRepository.updateVehicle(vehicle)
+                }
 
-            onSaved(vehicle)
+                onSaved(vehicle)
+            } catch (_: Exception) {
+                onValidationError("No fue posible guardar el vehículo. Intenta nuevamente.")
+            }
         }
     }
 

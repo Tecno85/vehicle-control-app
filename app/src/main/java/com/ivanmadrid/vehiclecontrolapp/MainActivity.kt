@@ -22,6 +22,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -169,7 +172,11 @@ class MainActivity : ComponentActivity() {
                     floatingActionButton = {
                         if (currentScreen == AppScreen.VEHICLE_LIST) {
                             FloatingActionButton(
-                                modifier = Modifier.size(58.dp),
+                                modifier = Modifier
+                                    .size(58.dp)
+                                    .semantics {
+                                        contentDescription = "Agregar vehículo"
+                                    },
                                 shape = CircleShape,
                                 containerColor = MaterialTheme.colorScheme.primary,
                                 contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -184,6 +191,7 @@ class MainActivity : ComponentActivity() {
                             ) {
                                 Text(
                                     text = "+",
+                                    modifier = Modifier.clearAndSetSemantics { },
                                     style = MaterialTheme.typography.headlineMedium,
                                     fontWeight = FontWeight.Normal
                                 )
@@ -381,8 +389,11 @@ class MainActivity : ComponentActivity() {
                                     vehicle = vehicle,
                                     modifier = Modifier.padding(innerPadding),
                                     expenseToEdit = expenseToEdit,
-                                    onSaveExpense = { expense ->
-                                        expenseFormViewModel.saveExpense(expense) {
+                                    onSaveExpense = { expense, onSaveError ->
+                                        expenseFormViewModel.saveExpense(
+                                            expense = expense,
+                                            onSaveError = onSaveError
+                                        ) {
                                             goToVehicleDetail()
                                         }
                                     },
@@ -403,8 +414,11 @@ class MainActivity : ComponentActivity() {
                                     vehicle = vehicle,
                                     modifier = Modifier.padding(innerPadding),
                                     noveltyToEdit = noveltyToEdit,
-                                    onSaveNovelty = { novelty ->
-                                        noveltyFormViewModel.saveNovelty(novelty) {
+                                    onSaveNovelty = { novelty, onSaveError ->
+                                        noveltyFormViewModel.saveNovelty(
+                                            novelty = novelty,
+                                            onSaveError = onSaveError
+                                        ) {
                                             goToVehicleDetail()
                                         }
                                     },
@@ -425,8 +439,11 @@ class MainActivity : ComponentActivity() {
                                     vehicle = vehicle,
                                     modifier = Modifier.padding(innerPadding),
                                     documentToEdit = documentToEdit,
-                                    onSaveDocument = { document ->
-                                        documentFormViewModel.saveDocument(document) {
+                                    onSaveDocument = { document, onSaveError ->
+                                        documentFormViewModel.saveDocument(
+                                            document = document,
+                                            onSaveError = onSaveError
+                                        ) {
                                             goToVehicleDetail()
                                         }
                                     },

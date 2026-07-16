@@ -103,6 +103,12 @@ Para ejecutar las pruebas unitarias:
 ./gradlew testDebugUnitTest
 ```
 
+La base de datos también cuenta con pruebas instrumentadas en memoria. Para ejecutarlas se requiere un emulador o dispositivo conectado:
+
+```bash
+./gradlew connectedDebugAndroidTest
+```
+
 Para compilar la versión debug:
 
 ```bash

@@ -57,7 +57,7 @@ fun ExpenseFormScreen(
     vehicle: Vehicle,
     modifier: Modifier = Modifier,
     expenseToEdit: Expense? = null,
-    onSaveExpense: (Expense) -> Unit,
+    onSaveExpense: (Expense, (String) -> Unit) -> Unit,
     onBackClick: () -> Unit
 ) {
     var date by remember(expenseToEdit?.id) {
@@ -240,7 +240,9 @@ fun ExpenseFormScreen(
                         amount = parsedAmount,
                         description = description.trim().ifBlank { "Gasto registrado" }
                     )
-                )
+                ) { message ->
+                    validationMessage = message
+                }
             }
         ) {
             Text(

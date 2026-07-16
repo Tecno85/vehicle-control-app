@@ -395,12 +395,59 @@ La app todavía no permite:
 
 ---
 
+## Estabilización técnica
+
+Se completó una primera fase de estabilización orientada a proteger los datos y hacer más confiables los formularios:
+
+- Room exporta el esquema de la base de datos en `app/schemas/`.
+- El esquema inicial queda versionado para poder comparar cambios y preparar migraciones futuras.
+- Existen pruebas instrumentadas con una base Room en memoria para verificar el CRUD básico de vehículos.
+- Las pruebas de Room verifican que la placa se consulte sin distinguir mayúsculas y minúsculas.
+- La eliminación transaccional comprueba que también se borren gastos, novedades y documentos asociados.
+- Los repositorios cuentan con una primera prueba unitaria de mapeo y delegación de operaciones.
+- Los formularios de vehículo, gasto, novedad y documento muestran un mensaje comprensible si Room no puede guardar la información.
+- La app solo navega fuera del formulario después de confirmar que el guardado terminó correctamente.
+
+Validación realizada:
+
+```text
+testDebugUnitTest: correcto
+assembleDebug: correcto
+assembleDebugAndroidTest: correcto
+connectedDebugAndroidTest: 3 pruebas correctas en Pixel 7 AVD
+```
+
+Las pruebas instrumentadas fueron ejecutadas correctamente en un emulador Android API 37.
+
+### Validación manual en emulador
+
+También se realizó una revisión funcional y visual en un Pixel 7 con Android API 37:
+
+- Carga inicial de los cuatro vehículos y datos seed.
+- Lista principal en modo claro y modo oscuro.
+- Persistencia de la preferencia de tema.
+- Menú principal y acceso a Reportes.
+- Navegación con Back desde Reportes, formularios e historial.
+- Detalle de vehículo particular y sus estados vacíos.
+- Historial agrupado por fecha con gastos y novedades.
+- Formulario de gasto con vehículo asociado y fecha actual predeterminada.
+- Mensaje de validación al intentar guardar un vehículo incompleto.
+- Entrada mediante teclado y conservación de los valores al ocultarlo.
+- Creación real de un vehículo, actualización del contador y persistencia en Room.
+- Edición de un vehículo existente y regreso al mismo detalle.
+- Confirmación de eliminación indicando placa y datos relacionados.
+- Eliminación del vehículo de prueba y restauración del contador inicial.
+
+Durante la revisión se detectó que el botón flotante se exponía únicamente como `+` a las tecnologías de asistencia. Se añadió la descripción accesible `Agregar vehículo` sin cambiar su apariencia visual.
+
+---
+
 ## Próximos pasos recomendados
 
-1. Revisar visualmente modo claro y modo oscuro después de cada tanda de cambios.
-2. Ajustar textos, espaciados o tamaños que se vean apretados.
-3. Probar flujos completos de creación, edición y eliminación de vehículos, gastos, novedades y documentos.
-4. Evaluar fotos reales por vehículo solo si aportan más claridad que los iconos vectoriales actuales.
-5. Agregar selector de periodo más completo para reportes.
-6. Evaluar Navigation Compose cuando haya historial, reportes y ajustes más complejos.
-7. Mantener actualizado el README cuando cambien pantallas o funcionalidades principales.
+1. Mantener las pruebas instrumentadas actualizadas cuando cambien entidades o relaciones.
+2. Probar manualmente los flujos completos de creación, edición y eliminación.
+3. Revisar visualmente modo claro, modo oscuro, teclado y pantallas pequeñas.
+4. Añadir migraciones Room cuando cambie por primera vez la estructura de las entidades.
+5. Mejorar los errores por campo sin convertir los formularios en flujos complejos.
+6. Agregar selector de periodo más completo para reportes cuando la base actual esté estabilizada.
+7. Evaluar Navigation Compose cuando haya ajustes o rutas con parámetros más complejos.

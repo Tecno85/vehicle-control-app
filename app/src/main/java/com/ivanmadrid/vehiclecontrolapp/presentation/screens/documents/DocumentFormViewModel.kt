@@ -12,16 +12,21 @@ class DocumentFormViewModel(
 ) : ViewModel() {
     fun saveDocument(
         document: VehicleDocument,
+        onSaveError: (String) -> Unit,
         onSaved: () -> Unit
     ) {
         viewModelScope.launch {
-            if (document.id == 0) {
-                vehicleDocumentRepository.insertDocument(document)
-            } else {
-                vehicleDocumentRepository.updateDocument(document)
-            }
+            try {
+                if (document.id == 0) {
+                    vehicleDocumentRepository.insertDocument(document)
+                } else {
+                    vehicleDocumentRepository.updateDocument(document)
+                }
 
-            onSaved()
+                onSaved()
+            } catch (_: Exception) {
+                onSaveError("No fue posible guardar el documento. Intenta nuevamente.")
+            }
         }
     }
 

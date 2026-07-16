@@ -20,7 +20,7 @@ import com.ivanmadrid.vehiclecontrolapp.data.local.entity.VehicleEntity
         VehicleDocumentEntity::class,
     ],
     version = 1,
-    exportSchema = false
+    exportSchema = true
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {

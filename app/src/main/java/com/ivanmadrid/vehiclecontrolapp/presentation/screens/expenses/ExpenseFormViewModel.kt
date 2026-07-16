@@ -12,16 +12,21 @@ class ExpenseFormViewModel(
 ) : ViewModel() {
     fun saveExpense(
         expense: Expense,
+        onSaveError: (String) -> Unit,
         onSaved: () -> Unit
     ) {
         viewModelScope.launch {
-            if (expense.id == 0) {
-                expenseRepository.insertExpense(expense)
-            } else {
-                expenseRepository.updateExpense(expense)
-            }
+            try {
+                if (expense.id == 0) {
+                    expenseRepository.insertExpense(expense)
+                } else {
+                    expenseRepository.updateExpense(expense)
+                }
 
-            onSaved()
+                onSaved()
+            } catch (_: Exception) {
+                onSaveError("No fue posible guardar el gasto. Intenta nuevamente.")
+            }
         }
     }
 
