@@ -36,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -375,7 +376,7 @@ fun VehicleCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             VehicleAvatar(
-                type = vehicle.type,
+                vehicle = vehicle,
                 size = 68
             )
 
@@ -449,23 +450,50 @@ fun VehicleCard(
 
 @Composable
 fun VehicleAvatar(
+    vehicle: Vehicle,
+    size: Int = 84
+) {
+    VehicleAvatarContent(
+        type = vehicle.type,
+        size = size,
+        imageRes = getVehicleImageResource(vehicle),
+        contentDescription = "${vehicle.brand} ${vehicle.model}"
+    )
+}
+
+@Composable
+fun VehicleAvatar(
     type: VehicleType,
     size: Int = 84
+) {
+    val genericImageRes = when (type) {
+        VehicleType.TAXI -> R.drawable.ic_vehicle_taxi
+        VehicleType.PRIVATE -> R.drawable.ic_vehicle_car
+    }
+    val contentDescription = when (type) {
+        VehicleType.TAXI -> "Taxi"
+        VehicleType.PRIVATE -> "Vehículo particular"
+    }
+
+    VehicleAvatarContent(
+        type = type,
+        size = size,
+        imageRes = genericImageRes,
+        contentDescription = contentDescription
+    )
+}
+
+@Composable
+private fun VehicleAvatarContent(
+    type: VehicleType,
+    size: Int,
+    imageRes: Int?,
+    contentDescription: String
 ) {
     val colors = MaterialTheme.vehicleColors
     val backgroundColor = when (type) {
         VehicleType.TAXI -> colors.softYellow
         VehicleType.PRIVATE -> colors.softBlue
-    }
-
-    val iconRes = when (type) {
-        VehicleType.TAXI -> R.drawable.ic_vehicle_taxi
-        VehicleType.PRIVATE -> R.drawable.ic_vehicle_car
-    }
-
-    val contentDescription = when (type) {
-        VehicleType.TAXI -> "Taxi"
-        VehicleType.PRIVATE -> "Vehículo particular"
     }
 
     Box(
@@ -476,10 +504,28 @@ fun VehicleAvatar(
         contentAlignment = Alignment.Center
     ) {
         Image(
-            painter = painterResource(id = iconRes),
+            painter = painterResource(id = imageRes ?: R.drawable.ic_vehicle_car),
             contentDescription = contentDescription,
-            modifier = Modifier.size((size * 0.84f).dp)
+            modifier = Modifier.size((size * 0.92f).dp),
+            contentScale = ContentScale.Fit
         )
+    }
+}
+
+fun getVehicleImageResource(vehicle: Vehicle): Int? {
+    val brand = vehicle.brand.lowercase(Locale.ROOT).filter(Char::isLetterOrDigit)
+    val model = vehicle.model.lowercase(Locale.ROOT).filter(Char::isLetterOrDigit)
+
+    return when {
+        brand.contains("hyundai") && model.contains("i10") ->
+            R.drawable.vehicle_hyundai_i10_2012
+        brand.contains("kia") && model.contains("picanto") ->
+            R.drawable.vehicle_kia_picanto_2014
+        brand.contains("hyundai") && (model.contains("i25") || model.contains("accent")) ->
+            R.drawable.vehicle_hyundai_i25_2014
+        brand.contains("mazda") && model.contains("626") ->
+            R.drawable.vehicle_mazda_626_2002
+        else -> null
     }
 }
 

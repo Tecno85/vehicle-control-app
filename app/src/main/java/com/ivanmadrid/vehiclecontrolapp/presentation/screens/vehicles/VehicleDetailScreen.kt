@@ -333,6 +333,6 @@ fun VehicleDetailHeader(vehicle: Vehicle) {
 
         Spacer(modifier = Modifier.width(16.dp))
 
-        VehicleAvatar(type = vehicle.type)
+        VehicleAvatar(vehicle = vehicle)
     }
 }

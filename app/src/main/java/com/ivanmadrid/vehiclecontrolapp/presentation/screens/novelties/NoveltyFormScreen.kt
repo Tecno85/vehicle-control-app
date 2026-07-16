@@ -781,7 +781,7 @@ fun NoveltyVehicleHeader(vehicle: Vehicle) {
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            VehicleAvatar(type = vehicle.type)
+            VehicleAvatar(vehicle = vehicle)
 
             Spacer(modifier = Modifier.width(16.dp))
 
