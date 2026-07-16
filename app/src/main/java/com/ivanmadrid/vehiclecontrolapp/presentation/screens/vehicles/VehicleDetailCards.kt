@@ -59,13 +59,8 @@ import com.ivanmadrid.vehiclecontrolapp.utils.getDocumentUrgency
 
 @Composable
 fun VehicleGeneralInfoCard(vehicle: Vehicle) {
-    val colors = MaterialTheme.vehicleColors
     DetailSectionCard(
-        title = "Información general",
-        markerText = "i",
-        markerIconRes = R.drawable.ic_detail_info,
-        markerColor = colors.blue,
-        markerBackground = colors.softBlue
+        title = "Información general"
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -90,11 +85,7 @@ fun VehicleGeneralInfoCard(vehicle: Vehicle) {
 fun TaxiInfoCard(vehicle: Vehicle) {
     val colors = MaterialTheme.vehicleColors
     DetailSectionCard(
-        title = "Información del taxi",
-        markerText = "T",
-        markerIconRes = R.drawable.ic_detail_taxi,
-        markerColor = colors.orange,
-        markerBackground = colors.softYellow
+        title = "Información del taxi"
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -137,11 +128,7 @@ fun TaxiBalanceSummaryCard(
     )
 
     DetailSectionCard(
-        title = "Resumen económico",
-        markerText = "$",
-        markerIconRes = R.drawable.ic_detail_expense,
-        markerColor = colors.green,
-        markerBackground = colors.softGreen
+        title = "Resumen económico"
     ) {
         Text(
             text = if (balanceSummary.referenceDate != null) {
@@ -285,11 +272,7 @@ fun VehicleDocumentsCard(
 ) {
     val colors = MaterialTheme.vehicleColors
     DetailSectionCard(
-        title = "Documentos y vencimientos",
-        markerText = "D",
-        markerIconRes = R.drawable.ic_detail_document,
-        markerColor = colors.blue,
-        markerBackground = colors.softBlue
+        title = "Documentos y vencimientos"
     ) {
         if (documents.isEmpty()) {
             EmptySectionMessage(
@@ -366,11 +349,7 @@ fun VehicleExpensesCard(
 ) {
     val colors = MaterialTheme.vehicleColors
     DetailSectionCard(
-        title = "Gastos recientes",
-        markerText = "$",
-        markerIconRes = R.drawable.ic_detail_expense,
-        markerColor = colors.blue,
-        markerBackground = colors.softBlue
+        title = "Gastos recientes"
     ) {
         if (expenses.isEmpty()) {
             EmptySectionMessage(
@@ -432,11 +411,7 @@ fun VehicleNoveltiesCard(
 ) {
     val colors = MaterialTheme.vehicleColors
     DetailSectionCard(
-        title = "Novedades recientes",
-        markerText = "N",
-        markerIconRes = R.drawable.ic_detail_novelty,
-        markerColor = colors.purple,
-        markerBackground = colors.softPurple
+        title = "Novedades recientes"
     ) {
         if (novelties.isEmpty()) {
             EmptySectionMessage(
@@ -529,11 +504,7 @@ fun VehicleQuickActionsCard(
 ) {
     val colors = MaterialTheme.vehicleColors
     DetailSectionCard(
-        title = "Acciones rápidas",
-        markerText = "+",
-        markerIconRes = R.drawable.ic_detail_action,
-        markerColor = colors.green,
-        markerBackground = colors.softGreen
+        title = "Acciones rápidas"
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -592,10 +563,6 @@ fun VehicleQuickActionsCard(
 @Composable
 fun DetailSectionCard(
     title: String,
-    markerText: String,
-    markerIconRes: Int? = null,
-    markerColor: Color,
-    markerBackground: Color,
     actionText: String? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
@@ -615,16 +582,6 @@ fun DetailSectionCard(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                DetailMarker(
-                    text = markerText,
-                    iconRes = markerIconRes,
-                    color = markerColor,
-                    backgroundColor = markerBackground,
-                    size = 30
-                )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
                 Text(
                     text = title,
                     modifier = Modifier.weight(1f),

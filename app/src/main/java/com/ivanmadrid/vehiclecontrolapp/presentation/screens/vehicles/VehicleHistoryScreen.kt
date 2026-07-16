@@ -99,11 +99,7 @@ private fun HistoryDateGroup(
     items: List<VehicleHistoryItem>
 ) {
     DetailSectionCard(
-        title = date,
-        markerText = "H",
-        markerIconRes = R.drawable.ic_detail_history,
-        markerColor = MaterialTheme.vehicleColors.blue,
-        markerBackground = MaterialTheme.vehicleColors.softBlue
+        title = date
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(12.dp)
