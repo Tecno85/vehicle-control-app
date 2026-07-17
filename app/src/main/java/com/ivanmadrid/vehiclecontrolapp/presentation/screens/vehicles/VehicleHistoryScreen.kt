@@ -72,11 +72,7 @@ fun VehicleHistoryScreen(
         if (historyItems.isEmpty()) {
             EmptySectionMessage(
                 title = "Sin historial registrado",
-                description = "Cuando registres gastos, novedades o documentos, aparecerán aquí.",
-                markerText = "H",
-                markerIconRes = R.drawable.ic_detail_history,
-                markerColor = MaterialTheme.vehicleColors.blue,
-                markerBackground = MaterialTheme.vehicleColors.softBlue
+                description = "Cuando registres gastos, novedades o documentos, aparecerán aquí."
             )
         } else {
             groupedItems.forEach { (date, items) ->

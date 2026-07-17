@@ -241,19 +241,13 @@ fun VehicleDocumentsCard(
     onEditDocumentClick: (VehicleDocument) -> Unit,
     onDeleteDocumentClick: (VehicleDocument) -> Unit
 ) {
-    val colors = MaterialTheme.vehicleColors
     DetailSectionCard(
         title = "Documentos y vencimientos"
     ) {
         if (documents.isEmpty()) {
             EmptySectionMessage(
                 title = "Sin documentos registrados",
-                description = "Cuando registres SOAT, tecnicomecánica o impuestos, aparecerán aquí.",
-                markerText = "D",
-                markerIconRes = R.drawable.ic_detail_document,
-                markerColor = colors.blue,
-                markerBackground = colors.softBlue,
-                showMarker = false
+                description = "Cuando registres SOAT, tecnicomecánica o impuestos, aparecerán aquí."
             )
         } else {
             documents.forEachIndexed { index, document ->
@@ -299,19 +293,13 @@ fun VehicleExpensesCard(
     onEditExpenseClick: (Expense) -> Unit,
     onDeleteExpenseClick: (Expense) -> Unit
 ) {
-    val colors = MaterialTheme.vehicleColors
     DetailSectionCard(
         title = "Gastos recientes"
     ) {
         if (expenses.isEmpty()) {
             EmptySectionMessage(
                 title = "Sin gastos recientes",
-                description = "Los gastos registrados para este vehículo se mostrarán en esta sección.",
-                markerText = "$",
-                markerIconRes = R.drawable.ic_detail_expense,
-                markerColor = colors.blue,
-                markerBackground = colors.softBlue,
-                showMarker = false
+                description = "Los gastos registrados para este vehículo se mostrarán en esta sección."
             )
         } else {
             expenses.forEachIndexed { index, expense ->
@@ -358,19 +346,13 @@ fun VehicleNoveltiesCard(
     onEditNoveltyClick: (Novelty) -> Unit,
     onDeleteNoveltyClick: (Novelty) -> Unit
 ) {
-    val colors = MaterialTheme.vehicleColors
     DetailSectionCard(
         title = "Novedades recientes"
     ) {
         if (novelties.isEmpty()) {
             EmptySectionMessage(
                 title = "Sin novedades recientes",
-                description = "Las novedades operativas o económicas del vehículo aparecerán aquí.",
-                markerText = "N",
-                markerIconRes = R.drawable.ic_detail_novelty,
-                markerColor = colors.purple,
-                markerBackground = colors.softPurple,
-                showMarker = false
+                description = "Las novedades operativas o económicas del vehículo aparecerán aquí."
             )
         } else {
             novelties.forEachIndexed { index, novelty ->
@@ -440,44 +422,44 @@ fun VehicleQuickActionsCard(
     DetailSectionCard(
         title = "Acciones rápidas"
     ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                QuickActionTile(
-                    label = "Registrar gasto",
-                    actionColor = colors.blue,
-                    modifier = Modifier.weight(1f),
-                    onClick = onRegisterExpenseClick
-                )
-                QuickActionTile(
-                    label = "Registrar novedad",
-                    actionColor = colors.purple,
-                    modifier = Modifier.weight(1f),
-                    onClick = onRegisterNoveltyClick
-                )
-            }
+            QuickActionTile(
+                label = "Registrar gasto",
+                actionColor = colors.blue,
+                modifier = Modifier.weight(1f),
+                onClick = onRegisterExpenseClick
+            )
+            QuickActionDivider()
+            QuickActionTile(
+                label = "Registrar novedad",
+                actionColor = colors.purple,
+                modifier = Modifier.weight(1f),
+                onClick = onRegisterNoveltyClick
+            )
+        }
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                QuickActionTile(
-                    label = "Registrar documento",
-                    actionColor = colors.green,
-                    modifier = Modifier.weight(1f),
-                    onClick = onRegisterDocumentClick
-                )
-                QuickActionTile(
-                    label = "Ver historial",
-                    actionColor = colors.orange,
-                    modifier = Modifier.weight(1f),
-                    onClick = onHistoryClick
-                )
-            }
+        HorizontalDivider(color = colors.divider)
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            QuickActionTile(
+                label = "Registrar documento",
+                actionColor = colors.green,
+                modifier = Modifier.weight(1f),
+                onClick = onRegisterDocumentClick
+            )
+            QuickActionDivider()
+            QuickActionTile(
+                label = "Ver historial",
+                actionColor = colors.orange,
+                modifier = Modifier.weight(1f),
+                onClick = onHistoryClick
+            )
         }
     }
 }
@@ -492,7 +474,11 @@ fun DetailSectionCard(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        border = BorderStroke(
+            width = 1.dp,
+            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.8f)
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         )
@@ -733,34 +719,33 @@ fun QuickActionTile(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    Card(
+    Box(
         modifier = modifier
-            .heightIn(min = 64.dp)
-            .clickable { onClick() },
-        shape = RoundedCornerShape(14.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.55f)
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+            .heightIn(min = 56.dp)
+            .clip(RoundedCornerShape(10.dp))
+            .clickable { onClick() }
+            .padding(horizontal = 8.dp, vertical = 10.dp),
+        contentAlignment = Alignment.Center
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 64.dp)
-                .padding(horizontal = 10.dp, vertical = 12.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = label,
-                style = MaterialTheme.typography.labelMedium,
-                color = actionColor,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                maxLines = 2
-            )
-        }
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelLarge,
+            color = actionColor,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            maxLines = 2
+        )
     }
+}
+
+@Composable
+fun QuickActionDivider() {
+    Box(
+        modifier = Modifier
+            .width(1.dp)
+            .height(32.dp)
+            .background(MaterialTheme.colorScheme.outline)
+    )
 }
 
 @Composable
@@ -799,51 +784,27 @@ fun DetailMarker(
 @Composable
 fun EmptySectionMessage(
     title: String,
-    description: String,
-    markerText: String = "",
-    markerIconRes: Int? = null,
-    markerColor: Color = Color.Unspecified,
-    markerBackground: Color = MaterialTheme.colorScheme.surfaceVariant,
-    showMarker: Boolean = true
+    description: String
 ) {
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
-            .background(markerBackground.copy(alpha = 0.55f))
-            .padding(14.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(horizontal = 2.dp, vertical = 6.dp)
     ) {
-        if (showMarker) {
-            DetailMarker(
-                text = markerText,
-                iconRes = markerIconRes,
-                color = markerColor,
-                backgroundColor = MaterialTheme.colorScheme.surface,
-                size = 38
-            )
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onSurface,
+            fontWeight = FontWeight.Bold
+        )
 
-            Spacer(modifier = Modifier.width(12.dp))
-        }
+        Spacer(modifier = Modifier.height(2.dp))
 
-        Column(
-            modifier = Modifier.weight(1f)
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.height(2.dp))
-
-            Text(
-                text = description,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
+        Text(
+            text = description,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
 
