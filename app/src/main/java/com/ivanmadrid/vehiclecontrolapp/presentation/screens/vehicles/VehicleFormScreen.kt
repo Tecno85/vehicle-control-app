@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -37,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
 import com.ivanmadrid.vehiclecontrolapp.presentation.components.AppBackButton
+import com.ivanmadrid.vehiclecontrolapp.presentation.components.FormActionBar
 import com.ivanmadrid.vehiclecontrolapp.ui.theme.vehicleColors
 import com.ivanmadrid.vehiclecontrolapp.utils.ValidationField
 import com.ivanmadrid.vehiclecontrolapp.utils.validateVehicleForm
@@ -84,14 +86,68 @@ fun VehicleFormScreen(
         mutableStateOf<ValidationField?>(null)
     }
 
-    Column(
+    val saveVehicle = saveVehicle@{
+        val selectedType = vehicleType
+        val parsedDailyFixedIncome = dailyFixedIncome.toLongOrNull()
+        val validationResult = validateVehicleForm(
+            plate = plate,
+            brand = brand,
+            model = model,
+            vehicleType = selectedType,
+            dailyFixedIncome = parsedDailyFixedIncome
+        )
+
+        if (!validationResult.isValid || selectedType == null) {
+            validationMessage = validationResult.message
+            validationField = validationResult.field
+            return@saveVehicle
+        }
+
+        validationMessage = null
+        validationField = null
+
+        onSaveVehicle(
+            Vehicle(
+                id = vehicleToEdit?.id ?: 0,
+                plate = plate.trim().uppercase(),
+                brand = brand.trim(),
+                model = model.trim(),
+                type = selectedType,
+                status = status.trim().ifBlank { "Activo" },
+                currentDriver = if (selectedType == VehicleType.TAXI) {
+                    currentDriver.trim().ifBlank { null }
+                } else {
+                    null
+                },
+                dailyFixedIncome = if (selectedType == VehicleType.TAXI) {
+                    parsedDailyFixedIncome
+                } else {
+                    null
+                }
+            )
+        ) { message ->
+            validationMessage = message
+            validationField = if (message.contains("placa", ignoreCase = true)) {
+                ValidationField.PLATE
+            } else {
+                null
+            }
+        }
+    }
+
+    Box(
         modifier = modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
             .background(MaterialTheme.colorScheme.background)
-            .padding(horizontal = 16.dp, vertical = 18.dp)
     ) {
-        AppBackButton(onClick = onBackClick)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 18.dp)
+                .padding(bottom = 112.dp)
+        ) {
+            AppBackButton(onClick = onBackClick)
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -359,70 +415,8 @@ fun VehicleFormScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Button(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                val selectedType = vehicleType
-                val parsedDailyFixedIncome = dailyFixedIncome.toLongOrNull()
-                val validationResult = validateVehicleForm(
-                    plate = plate,
-                    brand = brand,
-                    model = model,
-                    vehicleType = selectedType,
-                    dailyFixedIncome = parsedDailyFixedIncome
-                )
-
-                if (!validationResult.isValid || selectedType == null) {
-                    validationMessage = validationResult.message
-                    validationField = validationResult.field
-                    return@Button
-                }
-
-                validationMessage = null
-                validationField = null
-
-                onSaveVehicle(
-                    Vehicle(
-                        id = vehicleToEdit?.id ?: 0,
-                        plate = plate.trim().uppercase(),
-                        brand = brand.trim(),
-                        model = model.trim(),
-                        type = selectedType,
-                        status = status.trim().ifBlank { "Activo" },
-                        currentDriver = if (selectedType == VehicleType.TAXI) {
-                            currentDriver.trim().ifBlank { null }
-                        } else {
-                            null
-                        },
-                        dailyFixedIncome = if (selectedType == VehicleType.TAXI) {
-                            parsedDailyFixedIncome
-                        } else {
-                            null
-                        }
-                    )
-                ) { message ->
-                    validationMessage = message
-                    validationField = if (message.contains("placa", ignoreCase = true)) {
-                        ValidationField.PLATE
-                    } else {
-                        null
-                    }
-                }
-            }
-        ) {
-            Text(
-                text = if (vehicleToEdit == null) {
-                    "Guardar vehículo"
-                } else {
-                    "Actualizar vehículo"
-                }
-            )
-        }
-
         validationMessage?.let { message ->
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -440,16 +434,19 @@ fun VehicleFormScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedButton(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = onBackClick
-        ) {
-            Text(text = "Cancelar")
+            Spacer(modifier = Modifier.height(16.dp))
         }
 
-        Spacer(modifier = Modifier.height(80.dp))
+        FormActionBar(
+            primaryText = if (vehicleToEdit == null) {
+                "Guardar vehículo"
+            } else {
+                "Actualizar vehículo"
+            },
+            onPrimaryClick = saveVehicle,
+            onCancelClick = onBackClick,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
     }
 }
 

@@ -63,21 +63,33 @@ class VehicleDetailViewModel(
         }
     }
 
-    fun deleteExpense(expense: Expense) {
+    fun deleteExpense(
+        expense: Expense,
+        onDeleted: () -> Unit = {}
+    ) {
         viewModelScope.launch {
             expenseRepository.deleteExpense(expense)
+            onDeleted()
         }
     }
 
-    fun deleteNovelty(novelty: Novelty) {
+    fun deleteNovelty(
+        novelty: Novelty,
+        onDeleted: () -> Unit = {}
+    ) {
         viewModelScope.launch {
             noveltyRepository.deleteNovelty(novelty)
+            onDeleted()
         }
     }
 
-    fun deleteDocument(document: VehicleDocument) {
+    fun deleteDocument(
+        document: VehicleDocument,
+        onDeleted: () -> Unit = {}
+    ) {
         viewModelScope.launch {
             vehicleDocumentRepository.deleteDocument(document)
+            onDeleted()
         }
     }
 

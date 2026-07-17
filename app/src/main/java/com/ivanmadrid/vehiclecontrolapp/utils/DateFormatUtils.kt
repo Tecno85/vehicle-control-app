@@ -2,7 +2,20 @@ package com.ivanmadrid.vehiclecontrolapp.utils
 
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
+import java.util.Locale
+
+private val readableDateFormatter = DateTimeFormatter.ofPattern(
+    "d MMM yyyy",
+    Locale.forLanguageTag("es-CO")
+)
+
+fun formatIsoDateForDisplay(dateText: String): String {
+    return runCatching {
+        LocalDate.parse(dateText).format(readableDateFormatter)
+    }.getOrDefault(dateText)
+}
 
 fun getDaysUntilLabel(dateText: String): String {
     return try {

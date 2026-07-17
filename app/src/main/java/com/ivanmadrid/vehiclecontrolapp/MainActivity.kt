@@ -8,15 +8,22 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Expense
@@ -38,6 +45,7 @@ import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleHis
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleListScreen
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleListViewModel
 import com.ivanmadrid.vehiclecontrolapp.ui.theme.VehicleControlAppTheme
+import kotlinx.coroutines.launch
 
 enum class AppScreen {
     VEHICLE_LIST,
@@ -91,6 +99,19 @@ class MainActivity : ComponentActivity() {
                 )
                 val vehicles by vehicleListViewModel.vehicles.collectAsState()
                 val documents by vehicleListViewModel.documents.collectAsState()
+                val snackbarHostState = remember {
+                    SnackbarHostState()
+                }
+                val snackbarScope = rememberCoroutineScope()
+                val showConfirmation: (String) -> Unit = { message ->
+                    snackbarScope.launch {
+                        snackbarHostState.currentSnackbarData?.dismiss()
+                        snackbarHostState.showSnackbar(
+                            message = message,
+                            duration = SnackbarDuration.Short
+                        )
+                    }
+                }
 
                 var selectedVehicle by remember {
                     mutableStateOf<Vehicle?>(null)
@@ -166,7 +187,15 @@ class MainActivity : ComponentActivity() {
                 }
 
                 Scaffold(
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
+                    snackbarHost = {
+                        SnackbarHost(hostState = snackbarHostState) { data ->
+                            Snackbar(
+                                snackbarData = data,
+                                shape = RoundedCornerShape(14.dp)
+                            )
+                        }
+                    }
                 ) { innerPadding ->
                     when (currentScreen) {
                         AppScreen.VEHICLE_LIST -> {
@@ -233,6 +262,7 @@ class MainActivity : ComponentActivity() {
                                     onDeleteVehicleClick = {
                                         vehicleDetailViewModel.deleteVehicle(detailVehicle) {
                                             goToVehicleList()
+                                            showConfirmation("Vehículo ${detailVehicle.plate} eliminado")
                                         }
                                     },
                                     onEditExpenseClick = { expense ->
@@ -241,7 +271,9 @@ class MainActivity : ComponentActivity() {
                                         currentScreen = AppScreen.EXPENSE_FORM
                                     },
                                     onDeleteExpenseClick = { expense ->
-                                        vehicleDetailViewModel.deleteExpense(expense)
+                                        vehicleDetailViewModel.deleteExpense(expense) {
+                                            showConfirmation("Gasto eliminado")
+                                        }
                                     },
                                     onEditNoveltyClick = { novelty ->
                                         clearEditingState()
@@ -249,7 +281,9 @@ class MainActivity : ComponentActivity() {
                                         currentScreen = AppScreen.NOVELTY_FORM
                                     },
                                     onDeleteNoveltyClick = { novelty ->
-                                        vehicleDetailViewModel.deleteNovelty(novelty)
+                                        vehicleDetailViewModel.deleteNovelty(novelty) {
+                                            showConfirmation("Novedad eliminada")
+                                        }
                                     },
                                     onEditDocumentClick = { document ->
                                         clearEditingState()
@@ -257,7 +291,9 @@ class MainActivity : ComponentActivity() {
                                         currentScreen = AppScreen.DOCUMENT_FORM
                                     },
                                     onDeleteDocumentClick = { document ->
-                                        vehicleDetailViewModel.deleteDocument(document)
+                                        vehicleDetailViewModel.deleteDocument(document) {
+                                            showConfirmation("Documento eliminado")
+                                        }
                                     },
                                     onRegisterExpenseClick = {
                                         clearEditingState()
@@ -332,12 +368,20 @@ class MainActivity : ComponentActivity() {
                                         vehicle = vehicle,
                                         onValidationError = onValidationError
                                     ) { savedVehicle ->
+                                        val wasEditing = vehicleToEdit != null
                                         if (vehicleToEdit == null) {
                                             goToVehicleList()
                                         } else {
                                             selectedVehicle = savedVehicle
                                             goToVehicleDetail()
                                         }
+                                        showConfirmation(
+                                            if (wasEditing) {
+                                                "Vehículo actualizado"
+                                            } else {
+                                                "Vehículo guardado"
+                                            }
+                                        )
                                     }
                                 },
                                 onBackClick = {
@@ -367,7 +411,15 @@ class MainActivity : ComponentActivity() {
                                             expense = expense,
                                             onSaveError = onSaveError
                                         ) {
+                                            val wasEditing = expenseToEdit != null
                                             goToVehicleDetail()
+                                            showConfirmation(
+                                                if (wasEditing) {
+                                                    "Gasto actualizado"
+                                                } else {
+                                                    "Gasto guardado"
+                                                }
+                                            )
                                         }
                                     },
                                     onBackClick = goToVehicleDetail
@@ -392,7 +444,15 @@ class MainActivity : ComponentActivity() {
                                             novelty = novelty,
                                             onSaveError = onSaveError
                                         ) {
+                                            val wasEditing = noveltyToEdit != null
                                             goToVehicleDetail()
+                                            showConfirmation(
+                                                if (wasEditing) {
+                                                    "Novedad actualizada"
+                                                } else {
+                                                    "Novedad guardada"
+                                                }
+                                            )
                                         }
                                     },
                                     onBackClick = goToVehicleDetail
@@ -417,7 +477,15 @@ class MainActivity : ComponentActivity() {
                                             document = document,
                                             onSaveError = onSaveError
                                         ) {
+                                            val wasEditing = documentToEdit != null
                                             goToVehicleDetail()
+                                            showConfirmation(
+                                                if (wasEditing) {
+                                                    "Documento actualizado"
+                                                } else {
+                                                    "Documento guardado"
+                                                }
+                                            )
                                         }
                                     },
                                     onBackClick = goToVehicleDetail

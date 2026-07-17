@@ -3,8 +3,10 @@ package com.ivanmadrid.vehiclecontrolapp.presentation.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -95,5 +97,43 @@ fun DeleteConfirmButton(
         onClick = onClick
     ) {
         Text(text = "Eliminar")
+    }
+}
+
+@Composable
+fun AppPrimaryButton(
+    text: String,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    onClick: () -> Unit
+) {
+    Button(
+        modifier = modifier.heightIn(min = 52.dp),
+        enabled = enabled,
+        shape = RoundedCornerShape(14.dp),
+        onClick = onClick
+    ) {
+        Text(
+            text = text,
+            fontWeight = FontWeight.SemiBold
+        )
+    }
+}
+
+@Composable
+fun AppSecondaryButton(
+    text: String,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    OutlinedButton(
+        modifier = modifier.heightIn(min = 52.dp),
+        shape = RoundedCornerShape(14.dp),
+        onClick = onClick
+    ) {
+        Text(
+            text = text,
+            fontWeight = FontWeight.SemiBold
+        )
     }
 }

@@ -1,5 +1,7 @@
 package com.ivanmadrid.vehiclecontrolapp.presentation.screens.expenses
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.Image
@@ -49,6 +51,8 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.Expense
 import com.ivanmadrid.vehiclecontrolapp.domain.model.ExpenseCategory
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.presentation.components.AppBackButton
+import com.ivanmadrid.vehiclecontrolapp.presentation.components.AppDateField
+import com.ivanmadrid.vehiclecontrolapp.presentation.components.FormActionBar
 import com.ivanmadrid.vehiclecontrolapp.presentation.components.getExpenseCategoryIcon
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleAvatar
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleTypeChip
@@ -89,14 +93,52 @@ fun ExpenseFormScreen(
         mutableStateOf<ValidationField?>(null)
     }
 
-    Column(
+    val saveExpense = saveExpense@{
+        val selectedCategory = category
+        val parsedAmount = amount.toLongOrNull()
+        val validationResult = validateExpenseForm(
+            date = date,
+            category = selectedCategory,
+            amount = parsedAmount
+        )
+
+        if (!validationResult.isValid || selectedCategory == null || parsedAmount == null) {
+            validationMessage = validationResult.message
+            validationField = validationResult.field
+            return@saveExpense
+        }
+
+        validationMessage = null
+        validationField = null
+
+        onSaveExpense(
+            Expense(
+                id = expenseToEdit?.id ?: 0,
+                vehicleId = vehicle.id,
+                date = date.trim(),
+                category = selectedCategory,
+                amount = parsedAmount,
+                description = description.trim().ifBlank { "Gasto registrado" }
+            )
+        ) { message ->
+            validationMessage = message
+            validationField = null
+        }
+    }
+
+    Box(
         modifier = modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
             .background(MaterialTheme.colorScheme.background)
-            .padding(horizontal = 16.dp, vertical = 18.dp)
     ) {
-        AppBackButton(onClick = onBackClick)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 18.dp)
+                .padding(bottom = 112.dp)
+        ) {
+            AppBackButton(onClick = onBackClick)
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -135,40 +177,16 @@ fun ExpenseFormScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                OutlinedTextField(
+                AppDateField(
                     modifier = Modifier.fillMaxWidth(),
                     value = date,
+                    label = "Fecha",
                     onValueChange = { newValue ->
                         date = newValue
                         if (validationField == ValidationField.DATE) validationField = null
                     },
-                    label = {
-                        Text(text = "Fecha")
-                    },
-                    placeholder = {
-                        Text(text = "Ej: 2026-07-16")
-                    },
-                    supportingText = {
-                        Text(
-                            text = if (validationField == ValidationField.DATE) {
-                                validationMessage.orEmpty()
-                            } else {
-                                "Formato: yyyy-MM-dd"
-                            }
-                        )
-                    },
-                    trailingIcon = {
-                        TextButton(
-                            onClick = {
-                                date = getTodayIsoDate()
-                                if (validationField == ValidationField.DATE) validationField = null
-                            }
-                        ) {
-                            Text(text = "Hoy")
-                        }
-                    },
                     isError = validationField == ValidationField.DATE,
-                    singleLine = true
+                    errorMessage = validationMessage
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -246,54 +264,8 @@ fun ExpenseFormScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Button(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                val selectedCategory = category
-                val parsedAmount = amount.toLongOrNull()
-                val validationResult = validateExpenseForm(
-                    date = date,
-                    category = selectedCategory,
-                    amount = parsedAmount
-                )
-
-                if (!validationResult.isValid || selectedCategory == null || parsedAmount == null) {
-                    validationMessage = validationResult.message
-                    validationField = validationResult.field
-                    return@Button
-                }
-
-                validationMessage = null
-                validationField = null
-
-                onSaveExpense(
-                    Expense(
-                        id = expenseToEdit?.id ?: 0,
-                        vehicleId = vehicle.id,
-                        date = date.trim(),
-                        category = selectedCategory,
-                        amount = parsedAmount,
-                        description = description.trim().ifBlank { "Gasto registrado" }
-                    )
-                ) { message ->
-                    validationMessage = message
-                    validationField = null
-                }
-            }
-        ) {
-            Text(
-                text = if (expenseToEdit == null) {
-                    "Guardar gasto"
-                } else {
-                    "Actualizar gasto"
-                }
-            )
-        }
-
         validationMessage?.let { message ->
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -311,16 +283,19 @@ fun ExpenseFormScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedButton(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = onBackClick
-        ) {
-            Text(text = "Cancelar")
+            Spacer(modifier = Modifier.height(16.dp))
         }
 
-        Spacer(modifier = Modifier.height(80.dp))
+        FormActionBar(
+            primaryText = if (expenseToEdit == null) {
+                "Guardar gasto"
+            } else {
+                "Actualizar gasto"
+            },
+            onPrimaryClick = saveExpense,
+            onCancelClick = onBackClick,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
     }
 }
 
@@ -369,16 +344,26 @@ fun ExpenseCategoryButton(
 ) {
     val accentColor = getExpenseCategoryColor(category)
     val selectedBackgroundColor = getExpenseCategoryBackgroundColor(category)
-    val containerColor = if (selected) {
-        selectedBackgroundColor
-    } else {
-        MaterialTheme.colorScheme.surface
-    }
-    val borderColor = if (selected) {
-        accentColor.copy(alpha = 0.55f)
-    } else {
-        MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)
-    }
+    val containerColor by animateColorAsState(
+        targetValue = if (selected) {
+            selectedBackgroundColor
+        } else {
+            MaterialTheme.colorScheme.surface
+        },
+        label = "categoryContainer"
+    )
+    val borderColor by animateColorAsState(
+        targetValue = if (selected) {
+            accentColor.copy(alpha = 0.55f)
+        } else {
+            MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)
+        },
+        label = "categoryBorder"
+    )
+    val borderWidth by animateDpAsState(
+        targetValue = if (selected) 2.dp else 1.dp,
+        label = "categoryBorderWidth"
+    )
 
     Card(
         modifier = modifier
@@ -389,7 +374,7 @@ fun ExpenseCategoryButton(
             .clickable { onClick() },
         shape = RoundedCornerShape(14.dp),
         border = BorderStroke(
-            width = if (selected) 2.dp else 1.dp,
+            width = borderWidth,
             color = borderColor
         ),
         colors = CardDefaults.cardColors(

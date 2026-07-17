@@ -44,6 +44,8 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocumentType
 import com.ivanmadrid.vehiclecontrolapp.presentation.components.AppBackButton
+import com.ivanmadrid.vehiclecontrolapp.presentation.components.AppDateField
+import com.ivanmadrid.vehiclecontrolapp.presentation.components.FormActionBar
 import com.ivanmadrid.vehiclecontrolapp.presentation.components.getVehicleDocumentIcon
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleAvatar
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleTypeChip
@@ -79,14 +81,49 @@ fun DocumentFormScreen(
         mutableStateOf<ValidationField?>(null)
     }
 
-    Column(
+    val saveDocument = saveDocument@{
+        val selectedDocumentType = documentType
+        val validationResult = validateDocumentForm(
+            documentType = selectedDocumentType,
+            dueDate = dueDate
+        )
+
+        if (!validationResult.isValid || selectedDocumentType == null) {
+            validationMessage = validationResult.message
+            validationField = validationResult.field
+            return@saveDocument
+        }
+
+        validationMessage = null
+        validationField = null
+
+        onSaveDocument(
+            VehicleDocument(
+                id = documentToEdit?.id ?: 0,
+                vehicleId = vehicle.id,
+                type = selectedDocumentType,
+                dueDate = dueDate.trim(),
+                notes = notes.trim().ifBlank { null }
+            )
+        ) { message ->
+            validationMessage = message
+            validationField = null
+        }
+    }
+
+    Box(
         modifier = modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
             .background(MaterialTheme.colorScheme.background)
-            .padding(horizontal = 16.dp, vertical = 18.dp)
     ) {
-        AppBackButton(onClick = onBackClick)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 18.dp)
+                .padding(bottom = 112.dp)
+        ) {
+            AppBackButton(onClick = onBackClick)
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -152,30 +189,16 @@ fun DocumentFormScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                OutlinedTextField(
+                AppDateField(
                     modifier = Modifier.fillMaxWidth(),
                     value = dueDate,
+                    label = "Fecha de vencimiento",
                     onValueChange = { newValue ->
                         dueDate = newValue
                         if (validationField == ValidationField.DATE) validationField = null
                     },
-                    label = {
-                        Text(text = "Fecha de vencimiento")
-                    },
-                    placeholder = {
-                        Text(text = "Ej: 2026-08-05")
-                    },
-                    supportingText = {
-                        Text(
-                            text = if (validationField == ValidationField.DATE) {
-                                validationMessage.orEmpty()
-                            } else {
-                                "Formato: yyyy-MM-dd"
-                            }
-                        )
-                    },
                     isError = validationField == ValidationField.DATE,
-                    singleLine = true
+                    errorMessage = validationMessage
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -197,51 +220,8 @@ fun DocumentFormScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Button(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                val selectedDocumentType = documentType
-                val validationResult = validateDocumentForm(
-                    documentType = selectedDocumentType,
-                    dueDate = dueDate
-                )
-
-                if (!validationResult.isValid || selectedDocumentType == null) {
-                    validationMessage = validationResult.message
-                    validationField = validationResult.field
-                    return@Button
-                }
-
-                validationMessage = null
-                validationField = null
-
-                onSaveDocument(
-                    VehicleDocument(
-                        id = documentToEdit?.id ?: 0,
-                        vehicleId = vehicle.id,
-                        type = selectedDocumentType,
-                        dueDate = dueDate.trim(),
-                        notes = notes.trim().ifBlank { null }
-                    )
-                ) { message ->
-                    validationMessage = message
-                    validationField = null
-                }
-            }
-        ) {
-            Text(
-                text = if (documentToEdit == null) {
-                    "Guardar documento"
-                } else {
-                    "Actualizar documento"
-                }
-            )
-        }
-
         validationMessage?.let { message ->
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -259,16 +239,19 @@ fun DocumentFormScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedButton(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = onBackClick
-        ) {
-            Text(text = "Cancelar")
+            Spacer(modifier = Modifier.height(16.dp))
         }
 
-        Spacer(modifier = Modifier.height(80.dp))
+        FormActionBar(
+            primaryText = if (documentToEdit == null) {
+                "Guardar documento"
+            } else {
+                "Actualizar documento"
+            },
+            onPrimaryClick = saveDocument,
+            onCancelClick = onBackClick,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
     }
 }
 

@@ -51,6 +51,7 @@ import com.ivanmadrid.vehiclecontrolapp.ui.theme.vehicleColors
 import com.ivanmadrid.vehiclecontrolapp.utils.calculateTaxiBalanceSummary
 import com.ivanmadrid.vehiclecontrolapp.utils.getTaxiBalanceReferenceDates
 import com.ivanmadrid.vehiclecontrolapp.utils.getDaysUntilLabel
+import com.ivanmadrid.vehiclecontrolapp.utils.formatIsoDateForDisplay
 
 @Composable
 fun TaxiInfoCard(vehicle: Vehicle) {
@@ -330,7 +331,7 @@ fun VehicleExpenseItem(
     DetailListItem(
         title = expense.description,
         subtitle = getExpenseCategoryLabel(expense.category),
-        extra = expense.date,
+        extra = formatIsoDateForDisplay(expense.date),
         showMarker = false,
         trailingText = formatCurrency(expense.amount),
         actionText = "Editar",
@@ -393,7 +394,7 @@ fun VehicleNoveltyItem(
 }
 
 fun getNoveltyExtraLabel(novelty: Novelty): String {
-    val baseLabel = "${novelty.date} · Prioridad: ${getNoveltyPriorityLabel(novelty.priority)}"
+    val baseLabel = "${formatIsoDateForDisplay(novelty.date)} · Prioridad: ${getNoveltyPriorityLabel(novelty.priority)}"
 
     if (!novelty.affectsIncome) {
         return baseLabel

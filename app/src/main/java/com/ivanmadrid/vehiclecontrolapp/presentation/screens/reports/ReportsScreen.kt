@@ -1,7 +1,6 @@
 package com.ivanmadrid.vehiclecontrolapp.presentation.screens.reports
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
@@ -27,20 +25,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.ivanmadrid.vehiclecontrolapp.R
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocument
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
 import com.ivanmadrid.vehiclecontrolapp.presentation.components.AppBackButton
-import com.ivanmadrid.vehiclecontrolapp.presentation.components.getVehicleDocumentIcon
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.formatCurrency
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.getDocumentTypeLabel
 import com.ivanmadrid.vehiclecontrolapp.ui.theme.vehicleColors
 import com.ivanmadrid.vehiclecontrolapp.utils.DocumentUrgency
+import com.ivanmadrid.vehiclecontrolapp.utils.formatIsoDateForDisplay
 import com.ivanmadrid.vehiclecontrolapp.utils.getDaysUntilCount
 import com.ivanmadrid.vehiclecontrolapp.utils.getDaysUntilLabel
 import com.ivanmadrid.vehiclecontrolapp.utils.getDocumentUrgency
@@ -101,9 +96,7 @@ fun ReportsScreen(
                 title = "Vehículos",
                 value = vehicles.size.toString(),
                 detail = "$taxiCount taxis · $privateCount particulares",
-                markerIconRes = R.drawable.ic_vehicle_car,
-                markerColor = MaterialTheme.vehicleColors.blue,
-                markerBackground = MaterialTheme.vehicleColors.softBlue,
+                accentColor = MaterialTheme.vehicleColors.blue,
                 modifier = Modifier.weight(1f)
             )
 
@@ -111,9 +104,7 @@ fun ReportsScreen(
                 title = "Ingreso diario taxis",
                 value = formatCurrency(dailyTaxiIncome),
                 detail = "Suma de ingresos fijos",
-                markerIconRes = R.drawable.ic_detail_taxi,
-                markerColor = MaterialTheme.vehicleColors.orange,
-                markerBackground = MaterialTheme.vehicleColors.softYellow,
+                accentColor = MaterialTheme.vehicleColors.orange,
                 modifier = Modifier.weight(1f)
             )
         }
@@ -124,16 +115,10 @@ fun ReportsScreen(
             title = "Vencimientos por atender",
             value = urgentDocuments.toString(),
             detail = "Documentos vencidos o con 15 días o menos",
-            markerIconRes = R.drawable.ic_detail_document,
-            markerColor = if (urgentDocuments > 0) {
+            accentColor = if (urgentDocuments > 0) {
                 MaterialTheme.vehicleColors.red
             } else {
                 MaterialTheme.vehicleColors.green
-            },
-            markerBackground = if (urgentDocuments > 0) {
-                MaterialTheme.vehicleColors.softRed
-            } else {
-                MaterialTheme.vehicleColors.softGreen
             },
             modifier = Modifier.fillMaxWidth()
         )
@@ -162,8 +147,7 @@ fun ReportsScreen(
 
                 ReportListCard(
                     title = vehiclePlate,
-                    detail = "${getDocumentTypeLabel(document.type)} · ${getDaysUntilLabel(document.dueDate)} · ${document.dueDate}",
-                    markerIconRes = getVehicleDocumentIcon(document.type),
+                    detail = "${getDocumentTypeLabel(document.type)} · ${getDaysUntilLabel(document.dueDate)} · ${formatIsoDateForDisplay(document.dueDate)}",
                     urgency = urgency
                 )
 
@@ -180,60 +164,57 @@ fun ReportMetricCard(
     title: String,
     value: String,
     detail: String,
-    markerIconRes: Int,
-    markerColor: Color,
-    markerBackground: Color,
+    accentColor: Color,
     modifier: Modifier = Modifier
 ) {
-    val colors = MaterialTheme.vehicleColors
-
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(14.dp),
+        border = BorderStroke(
+            width = 1.dp,
+            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.8f)
+        ),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
-        Row(
-            modifier = Modifier.padding(14.dp),
-            verticalAlignment = Alignment.Top
+        Column(
+            modifier = Modifier.padding(14.dp)
         ) {
-            ReportMarker(
-                iconRes = markerIconRes,
-                color = markerColor,
-                backgroundColor = markerBackground
+            Box(
+                modifier = Modifier
+                    .width(34.dp)
+                    .height(4.dp)
+                    .clip(RoundedCornerShape(50.dp))
+                    .background(accentColor)
             )
 
-            Spacer(modifier = Modifier.width(10.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontWeight = FontWeight.SemiBold
-                )
+            Text(
+                text = title,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontWeight = FontWeight.SemiBold
+            )
 
-                Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
-                Text(
-                    text = value,
-                    style = MaterialTheme.typography.titleLarge,
-                    color = colors.blue,
-                    fontWeight = FontWeight.Bold
-                )
+            Text(
+                text = value,
+                style = MaterialTheme.typography.titleLarge,
+                color = accentColor,
+                fontWeight = FontWeight.Bold
+            )
 
-                Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
-                Text(
-                    text = detail,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+            Text(
+                text = detail,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }
@@ -242,7 +223,6 @@ fun ReportMetricCard(
 fun ReportListCard(
     title: String,
     detail: String,
-    markerIconRes: Int,
     urgency: DocumentUrgency = DocumentUrgency.UNKNOWN
 ) {
     val colors = MaterialTheme.vehicleColors
@@ -271,35 +251,25 @@ fun ReportListCard(
         colors = CardDefaults.cardColors(
             containerColor = containerColor
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
-        Row(
-            modifier = Modifier.padding(14.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier.padding(14.dp)
         ) {
-            ReportMarker(
-                iconRes = markerIconRes,
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleSmall,
                 color = accentColor,
-                backgroundColor = MaterialTheme.colorScheme.surface
+                fontWeight = FontWeight.Bold
             )
 
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.height(2.dp))
 
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Text(
-                    text = detail,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+            Text(
+                text = detail,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }
@@ -309,69 +279,32 @@ fun ReportEmptyStateCard(
     title: String,
     detail: String
 ) {
-    val colors = MaterialTheme.vehicleColors
-
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
         border = BorderStroke(
             width = 1.dp,
-            color = colors.blue.copy(alpha = 0.18f)
+            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.8f)
         ),
         colors = CardDefaults.cardColors(
-            containerColor = colors.softBlue
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
-        Row(
-            modifier = Modifier.padding(14.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier.padding(14.dp)
         ) {
-            ReportMarker(
-                iconRes = R.drawable.ic_detail_document,
-                color = colors.blue,
-                backgroundColor = MaterialTheme.colorScheme.surface
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Bold
             )
 
-            Spacer(modifier = Modifier.width(12.dp))
-
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Text(
-                    text = detail,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+            Text(
+                text = detail,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
-    }
-}
-
-@Composable
-fun ReportMarker(
-    iconRes: Int,
-    color: Color,
-    backgroundColor: Color
-) {
-    Box(
-        modifier = Modifier
-            .size(38.dp)
-            .clip(CircleShape)
-            .background(backgroundColor),
-        contentAlignment = Alignment.Center
-    ) {
-        Image(
-            painter = painterResource(id = iconRes),
-            contentDescription = null,
-            modifier = Modifier.size(22.dp),
-            colorFilter = ColorFilter.tint(color)
-        )
     }
 }

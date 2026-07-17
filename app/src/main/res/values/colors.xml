@@ -2,4 +2,6 @@
 <resources>
     <color name="launcher_background">#2C5EF5</color>
     <color name="splash_background">#2C5EF5</color>
+    <color name="date_picker_accent_light">#2C5EF5</color>
+    <color name="date_picker_accent_dark">#8AA7FF</color>
 </resources>

@@ -27,6 +27,7 @@ import com.ivanmadrid.vehiclecontrolapp.presentation.components.AppBackButton
 import com.ivanmadrid.vehiclecontrolapp.presentation.components.getExpenseCategoryIcon
 import com.ivanmadrid.vehiclecontrolapp.presentation.components.getVehicleDocumentIcon
 import com.ivanmadrid.vehiclecontrolapp.ui.theme.vehicleColors
+import com.ivanmadrid.vehiclecontrolapp.utils.formatIsoDateForDisplay
 
 @Composable
 fun VehicleHistoryScreen(
@@ -95,7 +96,7 @@ private fun HistoryDateGroup(
     items: List<VehicleHistoryItem>
 ) {
     DetailSectionCard(
-        title = date
+        title = formatIsoDateForDisplay(date)
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -201,7 +202,7 @@ private fun buildVehicleHistoryItems(
             markerText = "D",
             markerIconRes = getVehicleDocumentIcon(document.type),
             title = getDocumentTypeLabel(document.type),
-            subtitle = "Documento · vence ${document.dueDate}",
+            subtitle = "Documento · vence ${formatIsoDateForDisplay(document.dueDate)}",
             extra = document.notes,
             trailingText = null,
             type = VehicleHistoryItemType.DOCUMENT

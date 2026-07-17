@@ -13,4 +13,12 @@
         <item name="android:navigationBarColor">@color/splash_background</item>
         <item name="android:windowLightStatusBar">false</item>
     </style>
+
+    <style name="Theme.VehicleControlApp.DatePicker.Light" parent="android:style/Theme.Material.Light.Dialog.Alert">
+        <item name="android:colorAccent">@color/date_picker_accent_light</item>
+    </style>
+
+    <style name="Theme.VehicleControlApp.DatePicker.Dark" parent="android:style/Theme.Material.Dialog.Alert">
+        <item name="android:colorAccent">@color/date_picker_accent_dark</item>
+    </style>
 </resources>

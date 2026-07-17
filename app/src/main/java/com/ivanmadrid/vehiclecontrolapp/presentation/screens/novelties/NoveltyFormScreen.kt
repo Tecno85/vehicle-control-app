@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -49,6 +50,8 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.NoveltyPriority
 import com.ivanmadrid.vehiclecontrolapp.domain.model.Vehicle
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
 import com.ivanmadrid.vehiclecontrolapp.presentation.components.AppBackButton
+import com.ivanmadrid.vehiclecontrolapp.presentation.components.AppDateField
+import com.ivanmadrid.vehiclecontrolapp.presentation.components.FormActionBar
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleAvatar
 import com.ivanmadrid.vehiclecontrolapp.presentation.screens.vehicles.VehicleTypeChip
 import com.ivanmadrid.vehiclecontrolapp.ui.theme.vehicleColors
@@ -100,14 +103,71 @@ fun NoveltyFormScreen(
         mutableStateOf<ValidationField?>(null)
     }
 
-    Column(
+    val saveNovelty = saveNovelty@{
+        val selectedPriority = priority
+        val selectedAdjustmentType = incomeAdjustmentType
+        val parsedAdjustedIncome = adjustedIncomeAmount.toLongOrNull()
+        val shouldAffectIncome = vehicle.type == VehicleType.TAXI && affectsIncome
+        val validationResult = validateNoveltyForm(
+            date = date,
+            noveltyType = noveltyType,
+            priority = selectedPriority,
+            affectsIncome = shouldAffectIncome,
+            incomeAdjustmentType = selectedAdjustmentType,
+            adjustedIncomeAmount = parsedAdjustedIncome
+        )
+
+        if (!validationResult.isValid || selectedPriority == null) {
+            validationMessage = validationResult.message
+            validationField = validationResult.field
+            return@saveNovelty
+        }
+
+        validationMessage = null
+        validationField = null
+
+        onSaveNovelty(
+            Novelty(
+                id = noveltyToEdit?.id ?: 0,
+                vehicleId = vehicle.id,
+                date = date.trim(),
+                type = noveltyType.trim(),
+                description = description.trim().ifBlank { noveltyType.trim() },
+                priority = selectedPriority,
+                affectsIncome = shouldAffectIncome,
+                incomeAdjustmentType = if (shouldAffectIncome) {
+                    selectedAdjustmentType
+                } else {
+                    null
+                },
+                adjustedIncomeAmount = if (
+                    shouldAffectIncome &&
+                    selectedAdjustmentType == IncomeAdjustmentType.CUSTOM_AMOUNT
+                ) {
+                    parsedAdjustedIncome
+                } else {
+                    null
+                }
+            )
+        ) { message ->
+            validationMessage = message
+            validationField = null
+        }
+    }
+
+    Box(
         modifier = modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
             .background(MaterialTheme.colorScheme.background)
-            .padding(horizontal = 16.dp, vertical = 18.dp)
     ) {
-        AppBackButton(onClick = onBackClick)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 18.dp)
+                .padding(bottom = 112.dp)
+        ) {
+            AppBackButton(onClick = onBackClick)
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -146,40 +206,16 @@ fun NoveltyFormScreen(
 
                 Spacer(modifier = Modifier.height(14.dp))
 
-                OutlinedTextField(
+                AppDateField(
                     modifier = Modifier.fillMaxWidth(),
                     value = date,
+                    label = "Fecha",
                     onValueChange = { newValue ->
                         date = newValue
                         if (validationField == ValidationField.DATE) validationField = null
                     },
-                    label = {
-                        Text(text = "Fecha")
-                    },
-                    placeholder = {
-                        Text(text = "Ej: 2026-07-16")
-                    },
-                    supportingText = {
-                        Text(
-                            text = if (validationField == ValidationField.DATE) {
-                                validationMessage.orEmpty()
-                            } else {
-                                "Formato: yyyy-MM-dd"
-                            }
-                        )
-                    },
-                    trailingIcon = {
-                        TextButton(
-                            onClick = {
-                                date = getTodayIsoDate()
-                                if (validationField == ValidationField.DATE) validationField = null
-                            }
-                        ) {
-                            Text(text = "Hoy")
-                        }
-                    },
                     isError = validationField == ValidationField.DATE,
-                    singleLine = true
+                    errorMessage = validationMessage
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -353,73 +389,8 @@ fun NoveltyFormScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Button(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                val selectedPriority = priority
-                val selectedAdjustmentType = incomeAdjustmentType
-                val parsedAdjustedIncome = adjustedIncomeAmount.toLongOrNull()
-                val shouldAffectIncome = vehicle.type == VehicleType.TAXI && affectsIncome
-                val validationResult = validateNoveltyForm(
-                    date = date,
-                    noveltyType = noveltyType,
-                    priority = selectedPriority,
-                    affectsIncome = shouldAffectIncome,
-                    incomeAdjustmentType = selectedAdjustmentType,
-                    adjustedIncomeAmount = parsedAdjustedIncome
-                )
-
-                if (!validationResult.isValid || selectedPriority == null) {
-                    validationMessage = validationResult.message
-                    validationField = validationResult.field
-                    return@Button
-                }
-
-                validationMessage = null
-                validationField = null
-
-                onSaveNovelty(
-                    Novelty(
-                        id = noveltyToEdit?.id ?: 0,
-                        vehicleId = vehicle.id,
-                        date = date.trim(),
-                        type = noveltyType.trim(),
-                        description = description.trim().ifBlank { noveltyType.trim() },
-                        priority = selectedPriority,
-                        affectsIncome = shouldAffectIncome,
-                        incomeAdjustmentType = if (shouldAffectIncome) {
-                            selectedAdjustmentType
-                        } else {
-                            null
-                        },
-                        adjustedIncomeAmount = if (
-                            shouldAffectIncome &&
-                            selectedAdjustmentType == IncomeAdjustmentType.CUSTOM_AMOUNT
-                        ) {
-                            parsedAdjustedIncome
-                        } else {
-                            null
-                        }
-                    )
-                ) { message ->
-                    validationMessage = message
-                    validationField = null
-                }
-            }
-        ) {
-            Text(
-                text = if (noveltyToEdit == null) {
-                    "Guardar novedad"
-                } else {
-                    "Actualizar novedad"
-                }
-            )
-        }
-
         validationMessage?.let { message ->
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -437,16 +408,19 @@ fun NoveltyFormScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedButton(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = onBackClick
-        ) {
-            Text(text = "Cancelar")
+            Spacer(modifier = Modifier.height(16.dp))
         }
 
-        Spacer(modifier = Modifier.height(80.dp))
+        FormActionBar(
+            primaryText = if (noveltyToEdit == null) {
+                "Guardar novedad"
+            } else {
+                "Actualizar novedad"
+            },
+            onPrimaryClick = saveNovelty,
+            onCancelClick = onBackClick,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
     }
 }
 

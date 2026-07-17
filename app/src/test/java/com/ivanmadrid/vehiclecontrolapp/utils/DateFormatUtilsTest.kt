@@ -68,6 +68,20 @@ class DateFormatUtilsTest {
         assertEquals(false, isValid)
     }
 
+    @Test
+    fun formatIsoDateForDisplay_returnsReadableSpanishDate() {
+        val formattedDate = formatIsoDateForDisplay("2026-07-17")
+
+        assertEquals("17 jul 2026", formattedDate)
+    }
+
+    @Test
+    fun formatIsoDateForDisplay_preservesInvalidValue() {
+        val formattedDate = formatIsoDateForDisplay("fecha-invalida")
+
+        assertEquals("fecha-invalida", formattedDate)
+    }
+
     private fun testDocument(
         id: Int,
         dueDate: String

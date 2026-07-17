@@ -50,6 +50,7 @@ import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleDocumentType
 import com.ivanmadrid.vehiclecontrolapp.domain.model.VehicleType
 import com.ivanmadrid.vehiclecontrolapp.ui.theme.vehicleColors
 import com.ivanmadrid.vehiclecontrolapp.utils.DocumentUrgency
+import com.ivanmadrid.vehiclecontrolapp.utils.formatIsoDateForDisplay
 import com.ivanmadrid.vehiclecontrolapp.utils.getDaysUntilCount
 import com.ivanmadrid.vehiclecontrolapp.utils.getDaysUntilLabel
 import com.ivanmadrid.vehiclecontrolapp.utils.getDocumentUrgency
@@ -98,14 +99,50 @@ fun VehicleListScreen(
             )
 
             DropdownMenu(
+                modifier = Modifier.width(240.dp),
                 expanded = showMainMenu,
                 onDismissRequest = {
                     showMainMenu = false
                 }
             ) {
+                Column(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
+                ) {
+                    Text(
+                        text = "Control Vehicular",
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "Navegación",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
+                HorizontalDivider(
+                    modifier = Modifier.padding(bottom = 6.dp),
+                    color = MaterialTheme.colorScheme.outline
+                )
+
                 DropdownMenuItem(
+                    modifier = Modifier
+                        .padding(horizontal = 6.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(MaterialTheme.vehicleColors.softBlue),
                     text = {
-                        Text(text = "Vehículos")
+                        Text(
+                            text = "Vehículos",
+                            color = MaterialTheme.vehicleColors.blue,
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
+                    trailingIcon = {
+                        Text(
+                            text = "Actual",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.vehicleColors.blue
+                        )
                     },
                     onClick = {
                         showMainMenu = false
@@ -113,6 +150,7 @@ fun VehicleListScreen(
                 )
 
                 DropdownMenuItem(
+                    modifier = Modifier.padding(horizontal = 6.dp),
                     text = {
                         Text(text = "Reportes")
                     },
@@ -359,7 +397,7 @@ fun DocumentReminderCard(
             )
 
             Text(
-                text = document.dueDate,
+                text = formatIsoDateForDisplay(document.dueDate),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
