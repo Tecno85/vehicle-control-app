@@ -1,60 +1,134 @@
 # Control Vehicular
 
-Aplicación Android para control vehicular de taxis y particulares, con gestión de gastos, novedades, documentos, vencimientos e historial.
-
-## Descripción
-
-Control Vehicular es una aplicación móvil desarrollada para administrar una pequeña flota de vehículos particulares y taxis.
-
-La app permite registrar y consultar información importante de cada vehículo, como gastos, novedades operativas, documentos, fechas de vencimiento e historial. En el caso de los taxis, también permite manejar un ingreso diario esperado y calcular un resumen económico según gastos y novedades del día.
+Aplicación Android para administrar una flota pequeña de taxis y vehículos particulares. Centraliza gastos, novedades, documentos, vencimientos e historial en una experiencia local, rápida y fácil de consultar.
 
 <img src="./docs/images/control-vehicular-v1.png" width="900" alt="Presentación de Control Vehicular 1.0">
 
+## Estado del proyecto
+
+La aplicación se encuentra en la versión candidata `1.0.0-rc1`. La compilación actual ya fue instalada y validada manualmente en un Samsung Galaxy A35, incluyendo navegación, persistencia de datos y funcionamiento en modo claro y oscuro.
+
+El proyecto es académico y fue desarrollado como parte del proceso de formación ADSO.
+
 ## Capturas
 
-| Lista de vehículos | Detalle del vehículo | Historial |
-| --- | --- | --- |
-| <img src="./docs/images/vehicle-list.png" width="220" alt="Lista de vehículos"> | <img src="./docs/images/vehicle-detail.png" width="220" alt="Detalle del vehículo"> | <img src="./docs/images/vehicle-history.png" width="220" alt="Historial del vehículo"> |
+| Panel principal | Detalle del vehículo |
+| --- | --- |
+| <img src="./docs/images/vehicle-list.png" width="260" alt="Panel principal con vehículos y próximos vencimientos"> | <img src="./docs/images/vehicle-detail.png" width="260" alt="Detalle, movimientos y acciones rápidas de un vehículo"> |
+| **Registro de gasto** | **Historial del vehículo** |
+| <img src="./docs/images/expense-form.png" width="260" alt="Formulario para registrar un gasto"> | <img src="./docs/images/vehicle-history.png" width="260" alt="Historial cronológico de un vehículo"> |
 
 ## Funcionalidades principales
 
-- Registro, edición y eliminación de vehículos.
-- Diferenciación entre taxis y vehículos particulares.
-- Gestión de gastos por vehículo.
-- Gestión de novedades por vehículo.
-- Gestión de documentos y fechas de vencimiento.
-- Próximos vencimientos con colores según urgencia.
-- Detalle completo por vehículo.
-- Historial agrupado por fecha.
-- Resumen económico para taxis.
-- Reportes básicos de la flota.
-- Modo claro y modo oscuro.
-- Persistencia local de datos.
+- Crear, editar y eliminar vehículos.
+- Diferenciar taxis y vehículos particulares.
+- Mostrar imágenes identificables para los vehículos configurados.
+- Registrar, editar y eliminar gastos y novedades.
+- Administrar documentos y fechas de vencimiento.
+- Destacar próximos vencimientos según su urgencia.
+- Consultar el historial de cada vehículo agrupado por fecha.
+- Calcular el resumen económico diario de los taxis.
+- Consultar reportes básicos de la flota.
+- Alternar entre modo claro y modo oscuro.
+- Conservar la información localmente con Room.
 
-## Tecnologías usadas actualmente
+## Flota configurada
+
+La versión actual incluye datos iniciales e imágenes para cuatro vehículos:
+
+| Vehículo | Modelo | Tipo |
+| --- | ---: | --- |
+| Hyundai i10 | 2012 | Taxi |
+| Kia Picanto | 2014 | Taxi |
+| Hyundai i25 | 2014 | Particular |
+| Mazda 626 | 2002 | Particular |
+
+## Tecnologías
 
 - Kotlin.
-- Android Studio.
 - Jetpack Compose.
-- Room.
-- SQLite.
 - Material Design 3.
+- Room y SQLite.
+- ViewModel y StateFlow.
 - Gradle Kotlin DSL.
 
-## Estado del proyecto
+## Requisitos
 
-El proyecto se encuentra en la versión candidata `1.0.0-rc1`, preparada para validación en un dispositivo Android real.
+- Android Studio con el JDK incluido.
+- Android SDK 36.
+- Emulador o dispositivo con Android 7.0 (API 24) o superior.
+- Depuración USB habilitada para instalar directamente en un celular.
 
-Actualmente la app permite trabajar con datos locales usando Room, incluyendo creación, edición y eliminación de vehículos, gastos, novedades y documentos. También cuenta con una interfaz visual personalizada, iconos vectoriales, modo claro/oscuro, reportes e historial por vehículo.
+## Cómo ejecutar el proyecto
 
-Proyecto académico desarrollado como parte del proceso de formación ADSO.
+1. Clonar el repositorio.
+2. Abrir la carpeta del proyecto en Android Studio.
+3. Esperar a que finalice la sincronización de Gradle.
+4. Seleccionar un emulador o dispositivo Android.
+5. Pulsar **Run**.
 
-No incluye todavía:
+El proyecto usa Gradle Wrapper, por lo que no es necesario instalar Gradle manualmente.
+
+### Instalar en un celular Android
+
+1. Activar las opciones de desarrollador y la depuración USB.
+2. Conectar el celular y aceptar la autorización de depuración.
+3. Confirmar que el equipo aparece con:
+
+```bash
+adb devices
+```
+
+4. Instalar la compilación de desarrollo:
+
+```bash
+./gradlew installDebug
+```
+
+También se puede generar el APK con:
+
+```bash
+./gradlew assembleDebug
+```
+
+El archivo resultante queda en `app/build/outputs/apk/debug/app-debug.apk`.
+
+## Verificación
+
+Ejecutar las pruebas unitarias:
+
+```bash
+./gradlew testDebugUnitTest
+```
+
+Revisar el proyecto con Android Lint:
+
+```bash
+./gradlew lintDebug
+```
+
+Ejecutar las pruebas instrumentadas con un dispositivo o emulador conectado:
+
+```bash
+./gradlew connectedDebugAndroidTest
+```
+
+Generar la aplicación debug:
+
+```bash
+./gradlew assembleDebug
+```
+
+## Persistencia y alcance
+
+Los datos se almacenan únicamente en el dispositivo mediante Room. Desinstalar la aplicación o borrar sus datos puede eliminar la información registrada.
+
+La versión actual no incluye:
 
 - Inicio de sesión.
-- Firebase.
-- Sincronización en la nube.
+- Firebase o sincronización en la nube.
 - Notificaciones del sistema Android.
+- Copias de seguridad automáticas.
 - Exportación a PDF o Excel.
 
 ## Estructura general
@@ -69,91 +143,33 @@ app/src/main/java/com/ivanmadrid/vehiclecontrolapp/
 └── MainActivity.kt
 ```
 
-Descripción breve:
-
+- `data`: base de datos, entidades, DAOs, repositorios y datos iniciales.
 - `domain`: modelos principales del negocio.
-- `data`: base de datos local, entidades, DAOs, repositorios y datos iniciales.
-- `presentation`: pantallas, componentes visuales y ViewModels.
-- `ui`: tema visual de Jetpack Compose.
+- `presentation`: pantallas, componentes y ViewModels.
+- `ui`: tema y fundamentos visuales de Jetpack Compose.
 - `utils`: utilidades de fechas, validaciones y cálculos.
-
-## Pantallas principales
-
-- Lista de vehículos.
-- Detalle del vehículo.
-- Formulario de vehículo.
-- Formulario de gasto.
-- Formulario de novedad.
-- Formulario de documento.
-- Historial del vehículo.
-- Reportes.
-
-## Cómo ejecutar el proyecto
-
-1. Clonar el repositorio.
-2. Abrir el proyecto en Android Studio.
-3. Esperar la sincronización de Gradle.
-4. Ejecutar la app en un emulador o dispositivo Android.
-
-El proyecto usa Gradle Wrapper, por lo que no es necesario instalar Gradle manualmente.
-
-### Instalar en un celular Android
-
-El dispositivo debe usar Android 7.0 o superior.
-
-1. Activar las opciones de desarrollador y la depuración USB en el celular.
-2. Conectar el dispositivo y aceptar la autorización de depuración.
-3. Comprobar la conexión con `adb devices`.
-4. Instalar la compilación candidata:
-
-```bash
-./gradlew installDebug
-```
-
-También se puede generar el APK con `./gradlew assembleDebug` y copiar `app/build/outputs/apk/debug/app-debug.apk` al dispositivo. Android solicitará autorización para instalar aplicaciones desde esa fuente.
-
-## Pruebas
-
-Para ejecutar las pruebas unitarias:
-
-```bash
-./gradlew testDebugUnitTest
-```
-
-La base de datos también cuenta con pruebas instrumentadas en memoria. Para ejecutarlas se requiere un emulador o dispositivo conectado:
-
-```bash
-./gradlew connectedDebugAndroidTest
-```
-
-Para compilar la versión debug:
-
-```bash
-./gradlew assembleDebug
-```
 
 ## Documentación
 
-El proyecto incluye documentación en la carpeta `docs/`, donde se registran:
+La carpeta [`docs`](./docs/) contiene la descripción del proyecto, requisitos funcionales, modelo de datos, navegación, decisiones técnicas, diseño de interfaz, migraciones de Room y validación del MVP.
 
-- Descripción general.
-- Requisitos funcionales.
-- Modelo de datos.
-- Flujo de navegación.
-- Decisiones técnicas.
-- Registro de desarrollo.
-- Diseño UI.
-- Resumen de progreso.
-- Estrategia de migraciones Room.
-- Lista de validación de la entrega MVP 1.0.
+Documentos destacados:
 
-## Próximos pasos posibles
+- [Descripción del proyecto](./docs/01-descripcion-proyecto.md)
+- [Requisitos funcionales](./docs/02-requisitos-funcionales.md)
+- [Modelo de datos](./docs/03-modelo-datos.md)
+- [Flujo de navegación](./docs/04-flujo-navegacion.md)
+- [Diseño de interfaz](./docs/07-diseño-ui.md)
+- [Validación de la entrega MVP 1.0](./docs/11-entrega-mvp-1.0.md)
 
-- Mejorar reportes con selector de periodo.
-- Agregar historial con filtros.
-- Validar la versión candidata en un celular real.
-- Evaluar notificaciones internas o del sistema.
-- Evaluar sincronización en la nube más adelante.
+## Próximos pasos
+
+- Continuar las pruebas de uso en el Samsung Galaxy A35.
+- Mejorar los reportes con selección de periodos.
+- Incorporar filtros al historial.
+- Evaluar recordatorios de vencimientos.
+- Diseñar una opción de copia de seguridad o exportación.
+- Considerar sincronización en la nube en una etapa posterior.
 
 ## Autor
 

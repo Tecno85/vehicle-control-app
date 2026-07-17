@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1774" height="887" viewBox="0 0 1774 887">
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1774" y2="887" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#09111F"/>
+      <stop offset="0.55" stop-color="#101D38"/>
+      <stop offset="1" stop-color="#172A52"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientTransform="translate(1325 330) rotate(135) scale(700 560)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4776FF" stop-opacity="0.32"/>
+      <stop offset="1" stop-color="#4776FF" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="shadow" x="-30%" y="-20%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#000814" flood-opacity="0.48"/>
+    </filter>
+    <clipPath id="screen-list">
+      <rect x="764" y="111" width="286" height="636" rx="30"/>
+    </clipPath>
+    <clipPath id="screen-detail">
+      <rect x="1069" y="177" width="246" height="547" rx="27"/>
+    </clipPath>
+    <clipPath id="screen-expense">
+      <rect x="1334" y="225" width="222" height="493" rx="25"/>
+    </clipPath>
+  </defs>
+
+  <rect width="1774" height="887" rx="34" fill="url(#background)"/>
+  <rect width="1774" height="887" rx="34" fill="url(#glow)"/>
+
+  <g opacity="0.2">
+    <circle cx="1650" cy="92" r="174" stroke="#7EA1FF" stroke-width="2"/>
+    <circle cx="1650" cy="92" r="122" stroke="#7EA1FF" stroke-width="2"/>
+    <circle cx="106" cy="786" r="218" stroke="#2ED6A1" stroke-width="2"/>
+  </g>
+
+  <g font-family="Inter, Arial, sans-serif">
+    <rect x="82" y="82" width="196" height="48" rx="24" fill="#20345E"/>
+    <circle cx="111" cy="106" r="8" fill="#50E3B3"/>
+    <text x="132" y="114" fill="#DCE7FF" font-size="22" font-weight="700">Android · RC1</text>
+
+    <text x="82" y="244" fill="#F7F9FF" font-size="78" font-weight="800">Control</text>
+    <text x="82" y="330" fill="#86A5FF" font-size="78" font-weight="800">Vehicular</text>
+
+    <text x="86" y="393" fill="#C6D1E7" font-size="29" font-weight="500">
+      Gestión local para taxis y vehículos particulares
+    </text>
+
+    <g font-size="25" font-weight="600">
+      <circle cx="101" cy="480" r="9" fill="#50E3B3"/>
+      <text x="128" y="489" fill="#F0F4FF">Gastos, novedades y documentos</text>
+      <circle cx="101" cy="540" r="9" fill="#FFCA4B"/>
+      <text x="128" y="549" fill="#F0F4FF">Vencimientos e historial por vehículo</text>
+      <circle cx="101" cy="600" r="9" fill="#86A5FF"/>
+      <text x="128" y="609" fill="#F0F4FF">Modo claro y oscuro con datos locales</text>
+    </g>
+
+    <rect x="82" y="686" width="526" height="94" rx="26" fill="#101C32" stroke="#38517D" stroke-width="2"/>
+    <circle cx="130" cy="733" r="21" fill="#143F36"/>
+    <path d="M119 733l8 8 15-18" fill="none" stroke="#50E3B3" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="169" y="725" fill="#F7F9FF" font-size="22" font-weight="700">Validada en Samsung Galaxy A35</text>
+    <text x="169" y="756" fill="#AEBBD2" font-size="19">Kotlin · Jetpack Compose · Room</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="750" y="97" width="314" height="664" rx="40" fill="#0B1020" stroke="#7597FF" stroke-width="4"/>
+    <image href="vehicle-list.png" x="764" y="111" width="286" height="636" preserveAspectRatio="xMidYMid slice" clip-path="url(#screen-list)"/>
+
+    <rect x="1056" y="164" width="272" height="573" rx="37" fill="#0B1020" stroke="#526FBA" stroke-width="4"/>
+    <image href="vehicle-detail.png" x="1069" y="177" width="246" height="547" preserveAspectRatio="xMidYMid slice" clip-path="url(#screen-detail)"/>
+
+    <rect x="1322" y="213" width="246" height="517" rx="35" fill="#0B1020" stroke="#38517D" stroke-width="4"/>
+    <image href="expense-form.png" x="1334" y="225" width="222" height="493" preserveAspectRatio="xMidYMid slice" clip-path="url(#screen-expense)"/>
+  </g>
+
+  <g font-family="Inter, Arial, sans-serif" font-size="19" font-weight="700" text-anchor="middle">
+    <rect x="815" y="780" width="184" height="45" rx="22.5" fill="#20345E"/>
+    <text x="907" y="809" fill="#DCE7FF">Flota</text>
+    <rect x="1094" y="764" width="196" height="45" rx="22.5" fill="#20345E"/>
+    <text x="1192" y="793" fill="#DCE7FF">Detalle</text>
+    <rect x="1353" y="756" width="184" height="45" rx="22.5" fill="#20345E"/>
+    <text x="1445" y="785" fill="#DCE7FF">Registro</text>
+  </g>
+</svg>
